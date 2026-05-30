@@ -275,7 +275,7 @@ UPDATE users SET role = 'admin' WHERE username = 'your_admin_username';
 
 迁移还创建了：
 
-- 视图 `v_adoptable_pets`：查询可领养宠物及待处理申请数量。
+- 视图 `v_adoptable_pets`：查询当前可领养且已疫苗、已驱虫宠物的详细信息、所在救助站及待处理申请数量。
 - 函数 `sp_monthly_statistics(year, month)`：统计月度找回、领养和线索数据。
 - 触发器：自动更新时间戳、处理领养通过后的状态联动、阻止重复申请、生成回访提醒。
 

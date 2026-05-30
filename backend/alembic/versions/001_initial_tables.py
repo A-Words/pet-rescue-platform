@@ -170,7 +170,9 @@ def upgrade() -> None:
             WHERE status = 'pending'
             GROUP BY pet_id
         ) app_count ON ap.id = app_count.pet_id
-        WHERE ap.adoption_status = 'available';
+        WHERE ap.adoption_status = 'available'
+          AND ap.is_vaccinated = true
+          AND ap.is_dewormed = true;
     """)
 
     # === STORED PROCEDURE ===
