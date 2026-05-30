@@ -29,30 +29,41 @@ class CRUDAdoptablePet:
         keyword: str | None = None,
     ) -> tuple[list, int]:
         # Use the database view for listing available pets
-        query = text("""
+        where_clauses: list[str] = []
+        params: dict[str, object] = {
+            "skip": skip,
+            "limit": limit,
+        }
+
+        if pet_type:
+            where_clauses.append("pet_type = :pet_type")
+            params["pet_type"] = pet_type
+
+        if keyword:
+            where_clauses.append(
+                "(pet_name ILIKE :keyword OR breed ILIKE :keyword OR description ILIKE :keyword)"
+            )
+            params["keyword"] = f"%{keyword}%"
+
+        where_sql = f"WHERE {' AND '.join(where_clauses)}" if where_clauses else ""
+
+        query = text(f"""
             SELECT * FROM v_adoptable_pets
-            WHERE (:pet_type IS NULL OR pet_type = :pet_type)
-              AND (:keyword IS NULL OR pet_name ILIKE :keyword OR breed ILIKE :keyword OR description ILIKE :keyword)
+            {where_sql}
             ORDER BY intake_date DESC
             OFFSET :skip LIMIT :limit
         """)
-        count_query = text("""
+        count_query = text(f"""
             SELECT COUNT(*) FROM v_adoptable_pets
-            WHERE (:pet_type IS NULL OR pet_type = :pet_type)
-              AND (:keyword IS NULL OR pet_name ILIKE :keyword OR breed ILIKE :keyword OR description ILIKE :keyword)
+            {where_sql}
         """)
 
-        keyword_pattern = f"%{keyword}%" if keyword else None
+        count_params = {key: value for key, value in params.items() if key not in {"skip", "limit"}}
 
-        total_result = await db.execute(count_query, {"pet_type": pet_type, "keyword": keyword_pattern})
+        total_result = await db.execute(count_query, count_params)
         total = total_result.scalar() or 0
 
-        result = await db.execute(query, {
-            "pet_type": pet_type,
-            "keyword": keyword_pattern,
-            "skip": skip,
-            "limit": limit,
-        })
+        result = await db.execute(query, params)
         rows = result.fetchall()
         return rows, total
 
