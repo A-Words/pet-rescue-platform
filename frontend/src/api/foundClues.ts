@@ -3,10 +3,10 @@ import type { FoundClue } from '@/types/models'
 
 export const foundCluesApi = {
   submit(petId: string, data: Partial<FoundClue>) {
-    return api.post<FoundClue>(`/lost-pets/${petId}/clues`, data)
+    return api.post<FoundClue>(`/found-clues/lost-pets/${petId}/clues`, data)
   },
   listForPet(petId: string) {
-    return api.get<FoundClue[]>(`/lost-pets/${petId}/clues`)
+    return api.get<FoundClue[]>(`/found-clues/lost-pets/${petId}/clues`)
   },
   getDetail(id: string) {
     return api.get<FoundClue>(`/found-clues/${id}`)
