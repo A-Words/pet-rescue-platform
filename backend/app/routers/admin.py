@@ -69,8 +69,10 @@ async def review_application(
     # Update application status (triggers will fire automatically)
     app.status = body.decision
     await db.commit()
-    await db.refresh(app)
-    return app
+    reviewed_app = await crud_adoption_application.get(db, id=app_id)
+    if not reviewed_app:
+        raise HTTPException(status_code=404, detail="Application not found")
+    return reviewed_app
 
 
 # === Statistics ===

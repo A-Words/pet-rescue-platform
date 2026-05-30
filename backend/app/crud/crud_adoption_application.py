@@ -12,9 +12,13 @@ class CRUDAdoptionApplication:
     async def create(self, db: AsyncSession, *, obj_in: AdoptionApplicationCreate, applicant_id: UUID) -> AdoptionApplication:
         db_obj = AdoptionApplication(**obj_in.model_dump(), applicant_id=applicant_id)
         db.add(db_obj)
+        await db.flush()
+        application_id = db_obj.id
         await db.commit()
-        await db.refresh(db_obj)
-        return db_obj
+        created = await self.get(db, id=application_id)
+        if created is None:
+            raise RuntimeError("Created adoption application not found")
+        return created
 
     async def get(self, db: AsyncSession, *, id: UUID) -> AdoptionApplication | None:
         result = await db.execute(
@@ -31,7 +35,10 @@ class CRUDAdoptionApplication:
         result = await db.execute(
             select(AdoptionApplication)
             .where(AdoptionApplication.applicant_id == applicant_id)
-            .options(selectinload(AdoptionApplication.pet))
+            .options(
+                selectinload(AdoptionApplication.pet),
+                selectinload(AdoptionApplication.review_records),
+            )
             .order_by(AdoptionApplication.created_at.desc())
         )
         return list(result.scalars().all())
@@ -63,9 +70,12 @@ class CRUDAdoptionApplication:
 
     async def cancel(self, db: AsyncSession, *, db_obj: AdoptionApplication) -> AdoptionApplication:
         db_obj.status = "cancelled"
+        application_id = db_obj.id
         await db.commit()
-        await db.refresh(db_obj)
-        return db_obj
+        cancelled = await self.get(db, id=application_id)
+        if cancelled is None:
+            raise RuntimeError("Cancelled adoption application not found")
+        return cancelled
 
 
 crud_adoption_application = CRUDAdoptionApplication()
