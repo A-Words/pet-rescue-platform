@@ -5,7 +5,7 @@ import { useAdminStore } from '@/stores/admin'
 const store = useAdminStore()
 
 const now = new Date()
-const year = ref(now.getFullYear())
+const year = ref(new Date(now.getFullYear(), 0, 1))
 const month = ref(now.getMonth() + 1)
 
 onMounted(() => {
@@ -13,10 +13,10 @@ onMounted(() => {
 })
 
 function loadStats() {
-  store.fetchStatistics(year.value, month.value)
+  store.fetchStatistics(year.value.getFullYear(), month.value)
 }
 
-function handleMonthChange() {
+function handleFilterChange() {
   loadStats()
 }
 </script>
@@ -32,10 +32,10 @@ function handleMonthChange() {
         v-model="year"
         type="year"
         placeholder="选择年份"
-        @change="handleMonthChange"
+        @change="handleFilterChange"
         style="width: 120px"
       />
-      <el-select v-model="month" @change="handleMonthChange" style="width: 100px">
+      <el-select v-model="month" @change="handleFilterChange" style="width: 100px">
         <el-option v-for="m in 12" :key="m" :label="`${m}月`" :value="m" />
       </el-select>
     </div>
