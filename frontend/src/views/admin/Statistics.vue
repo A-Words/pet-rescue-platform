@@ -7,13 +7,14 @@ const store = useAdminStore()
 const now = new Date()
 const year = ref(new Date(now.getFullYear(), 0, 1))
 const month = ref(now.getMonth() + 1)
+const rescueStation = ref('')
 
 onMounted(() => {
   loadStats()
 })
 
 function loadStats() {
-  store.fetchStatistics(year.value.getFullYear(), month.value)
+  store.fetchStatistics(year.value.getFullYear(), month.value, rescueStation.value.trim())
 }
 
 function handleFilterChange() {
@@ -38,6 +39,14 @@ function handleFilterChange() {
       <el-select v-model="month" @change="handleFilterChange" style="width: 100px">
         <el-option v-for="m in 12" :key="m" :label="`${m}月`" :value="m" />
       </el-select>
+      <el-input
+        v-model="rescueStation"
+        placeholder="救助站"
+        clearable
+        @change="handleFilterChange"
+        @clear="handleFilterChange"
+        style="width: 180px"
+      />
     </div>
 
     <el-row :gutter="20" v-if="store.statistics">

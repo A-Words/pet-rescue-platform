@@ -18,8 +18,10 @@ export const adminApi = {
   },
 
   // Statistics
-  getStatistics(year: number, month: number) {
-    return api.get<MonthlyStatistics>('/admin/statistics', { params: { year, month } })
+  getStatistics(year: number, month: number, rescueStation?: string) {
+    return api.get<MonthlyStatistics>('/admin/statistics', {
+      params: { year, month, rescue_station: rescueStation || undefined },
+    })
   },
   getDashboardOverview() {
     return api.get<DashboardOverview>('/admin/statistics/overview')

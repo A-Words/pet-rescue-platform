@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Annotated
 from uuid import UUID
 
@@ -81,12 +82,16 @@ async def review_application(
 async def get_statistics(
     admin: Annotated[User, Depends(require_admin)],
     db: Annotated[AsyncSession, Depends(get_db)],
-    year: int = Query(...),
-    month: int = Query(..., ge=1, le=12),
+    year: int | None = Query(None),
+    month: int | None = Query(None, ge=1, le=12),
+    rescue_station: str | None = Query(None),
 ):
+    today = date.today()
+    target_year = year or today.year
+    target_month = month or today.month
     result = await db.execute(
-        text("SELECT * FROM sp_monthly_statistics(:year, :month)"),
-        {"year": year, "month": month},
+        text("SELECT * FROM sp_monthly_statistics(:rescue_station, :year, :month)"),
+        {"rescue_station": rescue_station, "year": target_year, "month": target_month},
     )
     row = result.fetchone()
     if not row:

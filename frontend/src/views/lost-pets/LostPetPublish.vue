@@ -17,6 +17,7 @@ const form = ref({
   description: '',
   lost_date: '',
   lost_location: '',
+  rescue_station: '',
   contact_info: '',
   reward_amount: 0,
   photo_urls: [] as string[],
@@ -30,7 +31,11 @@ async function handleSubmit() {
   }
   loading.value = true
   try {
-    await store.publishPet(form.value as any)
+    const payload = {
+      ...form.value,
+      rescue_station: form.value.rescue_station.trim() || undefined,
+    }
+    await store.publishPet(payload as any)
     ElMessage.success('发布成功')
     router.push('/lost-pets')
   } catch (err: any) {
@@ -102,6 +107,11 @@ async function handleSubmit() {
           <el-col :span="24">
             <el-form-item label="走失地点" required>
               <el-input v-model="form.lost_location" placeholder="请输入走失地点" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="救助站">
+              <el-input v-model="form.rescue_station" placeholder="请输入负责救助站" />
             </el-form-item>
           </el-col>
           <el-col :span="24">

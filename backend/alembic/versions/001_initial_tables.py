@@ -48,6 +48,7 @@ def upgrade() -> None:
         sa.Column("description", sa.Text, nullable=False),
         sa.Column("lost_date", sa.Date, nullable=False),
         sa.Column("lost_location", sa.String(255), nullable=False),
+        sa.Column("rescue_station", sa.String(100)),
         sa.Column("latitude", sa.Numeric(10, 7)),
         sa.Column("longitude", sa.Numeric(10, 7)),
         sa.Column("contact_info", sa.String(100), nullable=False),
@@ -144,10 +145,12 @@ def upgrade() -> None:
     op.create_index("idx_lost_pets_user_id", "lost_pets", ["user_id"])
     op.create_index("idx_lost_pets_status", "lost_pets", ["status"])
     op.create_index("idx_lost_pets_lost_date", "lost_pets", ["lost_date"])
+    op.create_index("idx_lost_pets_rescue_station", "lost_pets", ["rescue_station"])
     op.create_index("idx_found_clues_lost_pet_id", "found_clues", ["lost_pet_id"])
     op.create_index("idx_found_clues_reporter_id", "found_clues", ["reporter_id"])
     op.create_index("idx_adoptable_pets_type", "adoptable_pets", ["pet_type"])
     op.create_index("idx_adoptable_pets_status", "adoptable_pets", ["adoption_status"])
+    op.create_index("idx_adoptable_pets_rescue_station", "adoptable_pets", ["rescue_station"])
     op.create_index("idx_adoption_applications_pet_id", "adoption_applications", ["pet_id"])
     op.create_index("idx_adoption_applications_applicant_id", "adoption_applications", ["applicant_id"])
     op.create_index("idx_adoption_applications_status", "adoption_applications", ["status"])
@@ -176,8 +179,14 @@ def upgrade() -> None:
     """)
 
     # === STORED PROCEDURE ===
+    op.execute("DROP FUNCTION IF EXISTS sp_monthly_statistics(INTEGER, INTEGER);")
+    op.execute("DROP FUNCTION IF EXISTS sp_monthly_statistics(VARCHAR, INTEGER, INTEGER);")
     op.execute("""
-        CREATE OR REPLACE FUNCTION sp_monthly_statistics(p_year INTEGER, p_month INTEGER)
+        CREATE OR REPLACE FUNCTION sp_monthly_statistics(
+            p_rescue_station VARCHAR,
+            p_year INTEGER DEFAULT EXTRACT(YEAR FROM CURRENT_DATE)::INTEGER,
+            p_month INTEGER DEFAULT EXTRACT(MONTH FROM CURRENT_DATE)::INTEGER
+        )
         RETURNS TABLE (
             total_lost_reports BIGINT,
             successful_recoveries BIGINT,
@@ -188,56 +197,81 @@ def upgrade() -> None:
             total_found_clues BIGINT,
             confirmed_clues BIGINT
         ) AS $$
+        DECLARE
+            v_month_start DATE;
+            v_next_month_start DATE;
         BEGIN
+            v_month_start := make_date(p_year, p_month, 1);
+            v_next_month_start := (v_month_start + INTERVAL '1 month')::DATE;
+
             RETURN QUERY
             SELECT
                 (SELECT COUNT(*) FROM lost_pets
-                 WHERE EXTRACT(YEAR FROM created_at) = p_year
-                   AND EXTRACT(MONTH FROM created_at) = p_month) AS total_lost_reports,
+                 WHERE created_at >= v_month_start
+                   AND created_at < v_next_month_start
+                   AND (p_rescue_station IS NULL OR rescue_station = p_rescue_station)) AS total_lost_reports,
                 (SELECT COUNT(*) FROM lost_pets
-                 WHERE EXTRACT(YEAR FROM created_at) = p_year
-                   AND EXTRACT(MONTH FROM created_at) = p_month
+                 WHERE created_at >= v_month_start
+                   AND created_at < v_next_month_start
+                   AND (p_rescue_station IS NULL OR rescue_station = p_rescue_station)
                    AND status = 'found') AS successful_recoveries,
                 CASE
                     WHEN (SELECT COUNT(*) FROM lost_pets
-                          WHERE EXTRACT(YEAR FROM created_at) = p_year
-                            AND EXTRACT(MONTH FROM created_at) = p_month) = 0 THEN 0
+                          WHERE created_at >= v_month_start
+                            AND created_at < v_next_month_start
+                            AND (p_rescue_station IS NULL OR rescue_station = p_rescue_station)) = 0 THEN 0
                     ELSE ROUND(
                         (SELECT COUNT(*)::NUMERIC FROM lost_pets
-                         WHERE EXTRACT(YEAR FROM created_at) = p_year
-                           AND EXTRACT(MONTH FROM created_at) = p_month
+                         WHERE created_at >= v_month_start
+                           AND created_at < v_next_month_start
+                           AND (p_rescue_station IS NULL OR rescue_station = p_rescue_station)
                            AND status = 'found') /
                         (SELECT COUNT(*)::NUMERIC FROM lost_pets
-                         WHERE EXTRACT(YEAR FROM created_at) = p_year
-                           AND EXTRACT(MONTH FROM created_at) = p_month) * 100, 2)
+                         WHERE created_at >= v_month_start
+                           AND created_at < v_next_month_start
+                           AND (p_rescue_station IS NULL OR rescue_station = p_rescue_station)) * 100, 2)
                 END AS recovery_rate,
-                (SELECT COUNT(*) FROM adoption_applications
-                 WHERE EXTRACT(YEAR FROM created_at) = p_year
-                   AND EXTRACT(MONTH FROM created_at) = p_month) AS total_adoption_applications,
-                (SELECT COUNT(*) FROM adoption_applications
-                 WHERE EXTRACT(YEAR FROM created_at) = p_year
-                   AND EXTRACT(MONTH FROM created_at) = p_month
-                   AND status = 'approved') AS approved_adoptions,
+                (SELECT COUNT(*) FROM adoption_applications aa
+                 JOIN adoptable_pets ap ON ap.id = aa.pet_id
+                 WHERE aa.created_at >= v_month_start
+                   AND aa.created_at < v_next_month_start
+                   AND (p_rescue_station IS NULL OR ap.rescue_station = p_rescue_station)) AS total_adoption_applications,
+                (SELECT COUNT(*) FROM adoption_applications aa
+                 JOIN adoptable_pets ap ON ap.id = aa.pet_id
+                 WHERE aa.created_at >= v_month_start
+                   AND aa.created_at < v_next_month_start
+                   AND (p_rescue_station IS NULL OR ap.rescue_station = p_rescue_station)
+                   AND aa.status = 'approved') AS approved_adoptions,
                 CASE
-                    WHEN (SELECT COUNT(*) FROM adoption_applications
-                          WHERE EXTRACT(YEAR FROM created_at) = p_year
-                            AND EXTRACT(MONTH FROM created_at) = p_month) = 0 THEN 0
+                    WHEN (SELECT COUNT(*) FROM adoption_applications aa
+                          JOIN adoptable_pets ap ON ap.id = aa.pet_id
+                          WHERE aa.created_at >= v_month_start
+                            AND aa.created_at < v_next_month_start
+                            AND (p_rescue_station IS NULL OR ap.rescue_station = p_rescue_station)) = 0 THEN 0
                     ELSE ROUND(
-                        (SELECT COUNT(*)::NUMERIC FROM adoption_applications
-                         WHERE EXTRACT(YEAR FROM created_at) = p_year
-                           AND EXTRACT(MONTH FROM created_at) = p_month
-                           AND status = 'approved') /
-                        (SELECT COUNT(*)::NUMERIC FROM adoption_applications
-                         WHERE EXTRACT(YEAR FROM created_at) = p_year
-                           AND EXTRACT(MONTH FROM created_at) = p_month) * 100, 2)
+                        (SELECT COUNT(*)::NUMERIC FROM adoption_applications aa
+                         JOIN adoptable_pets ap ON ap.id = aa.pet_id
+                         WHERE aa.created_at >= v_month_start
+                           AND aa.created_at < v_next_month_start
+                           AND (p_rescue_station IS NULL OR ap.rescue_station = p_rescue_station)
+                           AND aa.status = 'approved') /
+                        (SELECT COUNT(*)::NUMERIC FROM adoption_applications aa
+                         JOIN adoptable_pets ap ON ap.id = aa.pet_id
+                         WHERE aa.created_at >= v_month_start
+                           AND aa.created_at < v_next_month_start
+                           AND (p_rescue_station IS NULL OR ap.rescue_station = p_rescue_station)) * 100, 2)
                 END AS adoption_success_rate,
-                (SELECT COUNT(*) FROM found_clues
-                 WHERE EXTRACT(YEAR FROM created_at) = p_year
-                   AND EXTRACT(MONTH FROM created_at) = p_month) AS total_found_clues,
-                (SELECT COUNT(*) FROM found_clues
-                 WHERE EXTRACT(YEAR FROM created_at) = p_year
-                   AND EXTRACT(MONTH FROM created_at) = p_month
-                   AND status = 'confirmed') AS confirmed_clues;
+                (SELECT COUNT(*) FROM found_clues fc
+                 JOIN lost_pets lp ON lp.id = fc.lost_pet_id
+                 WHERE fc.created_at >= v_month_start
+                   AND fc.created_at < v_next_month_start
+                   AND (p_rescue_station IS NULL OR lp.rescue_station = p_rescue_station)) AS total_found_clues,
+                (SELECT COUNT(*) FROM found_clues fc
+                 JOIN lost_pets lp ON lp.id = fc.lost_pet_id
+                 WHERE fc.created_at >= v_month_start
+                   AND fc.created_at < v_next_month_start
+                   AND (p_rescue_station IS NULL OR lp.rescue_station = p_rescue_station)
+                   AND fc.status = 'confirmed') AS confirmed_clues;
         END;
         $$ LANGUAGE plpgsql;
     """)
@@ -349,6 +383,7 @@ def downgrade() -> None:
     op.execute("DROP FUNCTION IF EXISTS fn_update_timestamp();")
 
     # Drop stored procedure
+    op.execute("DROP FUNCTION IF EXISTS sp_monthly_statistics(VARCHAR, INTEGER, INTEGER);")
     op.execute("DROP FUNCTION IF EXISTS sp_monthly_statistics(INTEGER, INTEGER);")
 
     # Drop view
@@ -360,10 +395,12 @@ def downgrade() -> None:
     op.drop_index("idx_adoption_applications_status")
     op.drop_index("idx_adoption_applications_applicant_id")
     op.drop_index("idx_adoption_applications_pet_id")
+    op.drop_index("idx_adoptable_pets_rescue_station")
     op.drop_index("idx_adoptable_pets_status")
     op.drop_index("idx_adoptable_pets_type")
     op.drop_index("idx_found_clues_reporter_id")
     op.drop_index("idx_found_clues_lost_pet_id")
+    op.drop_index("idx_lost_pets_rescue_station")
     op.drop_index("idx_lost_pets_lost_date")
     op.drop_index("idx_lost_pets_status")
     op.drop_index("idx_lost_pets_user_id")

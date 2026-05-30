@@ -23,6 +23,7 @@ export interface LostPet {
   description: string
   lost_date: string
   lost_location: string
+  rescue_station?: string
   latitude?: number
   longitude?: number
   contact_info: string

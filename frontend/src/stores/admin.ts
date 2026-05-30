@@ -16,8 +16,8 @@ export const useAdminStore = defineStore('admin', () => {
     dashboard.value = res.data
   }
 
-  async function fetchStatistics(year: number, month: number) {
-    const res = await adminApi.getStatistics(year, month)
+  async function fetchStatistics(year: number, month: number, rescueStation?: string) {
+    const res = await adminApi.getStatistics(year, month, rescueStation)
     statistics.value = res.data
   }
 

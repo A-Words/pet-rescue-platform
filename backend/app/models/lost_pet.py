@@ -22,6 +22,7 @@ class LostPet(Base):
     description = Column(Text, nullable=False)
     lost_date = Column(Date, nullable=False)
     lost_location = Column(String(255), nullable=False)
+    rescue_station = Column(String(100))
     latitude = Column(Numeric(10, 7))
     longitude = Column(Numeric(10, 7))
     contact_info = Column(String(100), nullable=False)

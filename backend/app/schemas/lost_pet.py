@@ -18,6 +18,7 @@ class LostPetCreate(BaseModel):
     description: str
     lost_date: date
     lost_location: str
+    rescue_station: str | None = None
     latitude: Decimal | None = None
     longitude: Decimal | None = None
     contact_info: str
@@ -35,6 +36,7 @@ class LostPetUpdate(BaseModel):
     description: str | None = None
     lost_date: date | None = None
     lost_location: str | None = None
+    rescue_station: str | None = None
     latitude: Decimal | None = None
     longitude: Decimal | None = None
     contact_info: str | None = None
@@ -54,6 +56,7 @@ class LostPetResponse(BaseModel):
     description: str
     lost_date: date
     lost_location: str
+    rescue_station: str | None = None
     latitude: Decimal | None = None
     longitude: Decimal | None = None
     contact_info: str
