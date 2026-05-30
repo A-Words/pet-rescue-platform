@@ -323,6 +323,15 @@ def upgrade() -> None:
         CREATE OR REPLACE FUNCTION fn_check_duplicate_application()
         RETURNS TRIGGER AS $$
         BEGIN
+            IF NOT EXISTS (
+                SELECT 1 FROM adoptable_pets
+                WHERE id = NEW.pet_id
+                  AND adoption_status = 'available'
+            ) THEN
+                RAISE EXCEPTION 'Pet is not available for adoption'
+                    USING ERRCODE = 'check_violation';
+            END IF;
+
             IF EXISTS (
                 SELECT 1 FROM adoption_applications
                 WHERE pet_id = NEW.pet_id
@@ -350,11 +359,7 @@ def upgrade() -> None:
         BEGIN
             IF NEW.status = 'approved' AND (OLD.status IS NULL OR OLD.status != 'approved') THEN
                 INSERT INTO visit_reminders (application_id, adopter_id, pet_id, reminder_date, status)
-                VALUES (NEW.id, NEW.applicant_id, NEW.pet_id, CURRENT_DATE + INTERVAL '7 days', 'pending');
-                INSERT INTO visit_reminders (application_id, adopter_id, pet_id, reminder_date, status)
                 VALUES (NEW.id, NEW.applicant_id, NEW.pet_id, CURRENT_DATE + INTERVAL '30 days', 'pending');
-                INSERT INTO visit_reminders (application_id, adopter_id, pet_id, reminder_date, status)
-                VALUES (NEW.id, NEW.applicant_id, NEW.pet_id, CURRENT_DATE + INTERVAL '90 days', 'pending');
             END IF;
             RETURN NEW;
         END;

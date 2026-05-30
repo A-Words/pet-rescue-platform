@@ -22,6 +22,8 @@ async def submit_application(
         app = await crud_adoption_application.create(db, obj_in=obj_in, applicant_id=current_user.id)
         return app
     except Exception as e:
+        if "not available for adoption" in str(e).lower() or "check_violation" in str(e).lower():
+            raise HTTPException(status_code=400, detail="该宠物已不可申请领养")
         if "duplicate" in str(e).lower() or "unique_violation" in str(e).lower():
             raise HTTPException(status_code=400, detail="您已提交过该宠物的领养申请")
         raise
