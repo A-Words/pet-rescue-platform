@@ -4,6 +4,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { adoptablePetsApi } from '@/api/adoptablePets'
 import type { AdoptablePet } from '@/types/models'
 import { petTypeLabels, healthStatusLabels, formatDate } from '@/utils/format'
+import ImageUploader from '@/components/common/ImageUploader.vue'
 
 const pets = ref<AdoptablePet[]>([])
 const total = ref(0)
@@ -28,6 +29,7 @@ const form = ref({
   is_sterilized: false,
   rescue_station: '',
   intake_date: '',
+  photo_urls: [] as string[],
 })
 
 onMounted(() => {
@@ -51,7 +53,7 @@ function openAdd() {
     pet_name: '', pet_type: 'dog' as const, breed: '', color: '', gender: 'unknown' as const,
     age_months: null, description: '', health_status: 'healthy' as const,
     is_vaccinated: false, is_dewormed: false, is_sterilized: false,
-    rescue_station: '', intake_date: '',
+    rescue_station: '', intake_date: '', photo_urls: [],
   }
   dialogVisible.value = true
 }
@@ -73,6 +75,7 @@ function openEdit(pet: AdoptablePet) {
     is_sterilized: pet.is_sterilized,
     rescue_station: pet.rescue_station || '',
     intake_date: pet.intake_date,
+    photo_urls: pet.photo_urls || [],
   }
   dialogVisible.value = true
 }
@@ -216,6 +219,9 @@ async function handleDelete(id: string) {
           </el-col>
           <el-col :span="24">
             <el-form-item label="描述"><el-input v-model="form.description" type="textarea" :rows="3" /></el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="宠物照片"><ImageUploader v-model="form.photo_urls" /></el-form-item>
           </el-col>
         </el-row>
       </el-form>

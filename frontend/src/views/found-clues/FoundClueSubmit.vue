@@ -5,6 +5,7 @@ import { ElMessage } from 'element-plus'
 import { foundCluesApi } from '@/api/foundClues'
 import { lostPetsApi } from '@/api/lostPets'
 import type { LostPet } from '@/types/models'
+import ImageUploader from '@/components/common/ImageUploader.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -63,6 +64,9 @@ async function handleSubmit() {
         </el-form-item>
         <el-form-item label="联系方式" required>
           <el-input v-model="form.contact_info" placeholder="手机号或微信号" />
+        </el-form-item>
+        <el-form-item label="现场照片">
+          <ImageUploader v-model="form.photo_urls" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" :loading="loading" @click="handleSubmit">提交线索</el-button>

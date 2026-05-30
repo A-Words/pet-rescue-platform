@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { useLostPetsStore } from '@/stores/lostPets'
+import ImageUploader from '@/components/common/ImageUploader.vue'
 
 const router = useRouter()
 const store = useLostPetsStore()
@@ -122,6 +123,11 @@ async function handleSubmit() {
           <el-col :span="24">
             <el-form-item label="详细描述" required>
               <el-input v-model="form.description" type="textarea" :rows="4" placeholder="请详细描述宠物特征、走失经过等" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="宠物照片">
+              <ImageUploader v-model="form.photo_urls" />
             </el-form-item>
           </el-col>
         </el-row>
