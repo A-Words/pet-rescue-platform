@@ -12,7 +12,7 @@ from app.schemas.adoptable_pet import AdoptablePetCreate, AdoptablePetResponse, 
 router = APIRouter()
 
 
-@router.post("/", response_model=AdoptablePetResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=AdoptablePetResponse, status_code=status.HTTP_201_CREATED)
 async def create_adoptable_pet(
     obj_in: AdoptablePetCreate,
     admin: Annotated[User, Depends(require_admin)],
@@ -21,7 +21,7 @@ async def create_adoptable_pet(
     return await crud_adoptable_pet.create(db, obj_in=obj_in)
 
 
-@router.get("/", response_model=dict)
+@router.get("", response_model=dict)
 async def list_adoptable_pets(
     db: Annotated[AsyncSession, Depends(get_db)],
     page: int = Query(1, ge=1),

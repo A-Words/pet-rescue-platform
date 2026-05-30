@@ -12,7 +12,7 @@ from app.schemas.adoption_application import AdoptionApplicationCreate, Adoption
 router = APIRouter()
 
 
-@router.post("/", response_model=AdoptionApplicationResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=AdoptionApplicationResponse, status_code=status.HTTP_201_CREATED)
 async def submit_application(
     obj_in: AdoptionApplicationCreate,
     current_user: Annotated[User, Depends(get_current_user)],

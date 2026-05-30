@@ -12,7 +12,7 @@ from app.schemas.lost_pet import LostPetCreate, LostPetResponse, LostPetUpdate
 router = APIRouter()
 
 
-@router.post("/", response_model=LostPetResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=LostPetResponse, status_code=status.HTTP_201_CREATED)
 async def create_lost_pet(
     obj_in: LostPetCreate,
     current_user: Annotated[User, Depends(get_current_user)],
@@ -22,7 +22,7 @@ async def create_lost_pet(
     return pet
 
 
-@router.get("/", response_model=dict)
+@router.get("", response_model=dict)
 async def list_lost_pets(
     db: Annotated[AsyncSession, Depends(get_db)],
     page: int = Query(1, ge=1),
