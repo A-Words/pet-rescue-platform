@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import { useAdminStore } from '@/stores/admin'
 import { clueStatusLabels, clueStatusTypes, formatDate } from '@/utils/format'

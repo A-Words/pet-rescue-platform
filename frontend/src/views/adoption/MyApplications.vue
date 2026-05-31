@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
 import { useAdoptionApplicationsStore } from '@/stores/adoptionApplications'
 import { applicationStatusLabels, applicationStatusTypes, formatDate } from '@/utils/format'
 

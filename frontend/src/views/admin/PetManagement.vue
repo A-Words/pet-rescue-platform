@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import { adoptablePetsApi } from '@/api/adoptablePets'
 import type { AdoptablePet } from '@/types/models'
@@ -161,7 +160,7 @@ async function handleDelete(id: string) {
         <el-table-column prop="adoption_status" label="状态" width="100" />
         <el-table-column label="操作" width="160">
           <template #default="{ row }">
-            <el-button size="small" @click="openEdit(row)">编辑</el-button>
+            <el-button size="small" @click="openEdit(row as AdoptablePet)">编辑</el-button>
             <el-button size="small" type="danger" @click="handleDelete(row.id)">删除</el-button>
           </template>
         </el-table-column>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
-import { ElMessage, type UploadProps, type UploadRequestOptions, type UploadUserFile } from 'element-plus'
+import type { UploadProps, UploadRequestOptions, UploadUserFile } from 'element-plus'
 import { uploadApi } from '@/api/upload'
 
 const props = withDefaults(defineProps<{

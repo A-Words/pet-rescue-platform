@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
 import { useLostPetsStore } from '@/stores/lostPets'
 import { useUserStore } from '@/stores/user'
 import { foundCluesApi } from '@/api/foundClues'

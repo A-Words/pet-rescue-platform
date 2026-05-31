@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import { adoptablePetsApi } from '@/api/adoptablePets'
 import { useAdoptionApplicationsStore } from '@/stores/adoptionApplications'

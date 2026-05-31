@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import { useLostPetsStore } from '@/stores/lostPets'
 import ImageUploader from '@/components/common/ImageUploader.vue'
