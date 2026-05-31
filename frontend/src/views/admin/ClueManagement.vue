@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
+import type { FormInstance, FormRules } from 'element-plus'
 import { useAdminStore } from '@/stores/admin'
 import { clueStatusLabels, clueStatusTypes, formatDate } from '@/utils/format'
 
@@ -8,6 +9,12 @@ const store = useAdminStore()
 const reviewDialogVisible = ref(false)
 const reviewingClueId = ref('')
 const reviewForm = ref({ status: 'confirmed', admin_notes: '' })
+type ReviewForm = typeof reviewForm.value
+
+const reviewFormRef = ref<FormInstance>()
+const reviewRules: FormRules<ReviewForm> = {
+  status: [{ required: true, message: '请选择审核结果', trigger: 'change' }],
+}
 
 onMounted(() => {
   store.fetchClues({ page: 1, page_size: 20 })
@@ -20,6 +27,10 @@ function openReview(id: string) {
 }
 
 async function handleReview() {
+  const isValid = await reviewFormRef.value?.validate().catch(() => false)
+  if (!isValid) {
+    return
+  }
   try {
     await store.reviewClue(reviewingClueId.value, reviewForm.value.status, reviewForm.value.admin_notes)
     ElMessage.success('审核成功')
@@ -61,14 +72,14 @@ async function handleReview() {
     </el-table>
 
     <el-dialog v-model="reviewDialogVisible" title="审核线索" width="500px">
-      <el-form :model="reviewForm" label-width="80px">
-        <el-form-item label="审核结果">
+      <el-form ref="reviewFormRef" :model="reviewForm" :rules="reviewRules" label-width="80px">
+        <el-form-item label="审核结果" prop="status">
           <el-radio-group v-model="reviewForm.status">
             <el-radio value="confirmed">确认</el-radio>
             <el-radio value="rejected">拒绝</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="备注">
+        <el-form-item label="备注" prop="admin_notes">
           <el-input v-model="reviewForm.admin_notes" type="textarea" :rows="3" placeholder="审核备注（选填）" />
         </el-form-item>
       </el-form>

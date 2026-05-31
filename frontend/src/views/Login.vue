@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import type { FormInstance, FormRules } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
@@ -9,11 +10,18 @@ const route = useRoute()
 const userStore = useUserStore()
 
 const form = ref({ username: '', password: '' })
+type LoginForm = typeof form.value
+
+const formRef = ref<FormInstance>()
+const rules: FormRules<LoginForm> = {
+  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+  password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+}
 const loading = ref(false)
 
 async function handleLogin() {
-  if (!form.value.username || !form.value.password) {
-    ElMessage.warning('请输入用户名和密码')
+  const isValid = await formRef.value?.validate().catch(() => false)
+  if (!isValid) {
     return
   }
   loading.value = true
@@ -34,11 +42,11 @@ async function handleLogin() {
   <div class="login-page">
     <el-card class="login-card">
       <h2>用户登录</h2>
-      <el-form :model="form" @submit.prevent="handleLogin" label-position="top">
-        <el-form-item label="用户名">
+      <el-form ref="formRef" :model="form" :rules="rules" @submit.prevent="handleLogin" label-position="top">
+        <el-form-item label="用户名" prop="username">
           <el-input v-model="form.username" placeholder="请输入用户名" />
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item label="密码" prop="password">
           <el-input v-model="form.password" type="password" placeholder="请输入密码" show-password />
         </el-form-item>
         <el-form-item>

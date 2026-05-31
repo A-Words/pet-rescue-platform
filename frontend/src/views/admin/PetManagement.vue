@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import type { FormInstance, FormRules } from 'element-plus'
 import { adoptablePetsApi } from '@/api/adoptablePets'
 import type { AdoptablePet } from '@/types/models'
 import { petTypeLabels, healthStatusLabels, formatDate } from '@/utils/format'
@@ -31,6 +32,13 @@ const form = ref({
   intake_date: '',
   photo_urls: [] as string[],
 })
+type PetForm = typeof form.value
+
+const formRef = ref<FormInstance>()
+const rules: FormRules<PetForm> = {
+  pet_name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+  intake_date: [{ required: true, message: '请选择入站日期', trigger: 'change' }],
+}
 
 onMounted(() => {
   loadPets()
@@ -56,6 +64,7 @@ function openAdd() {
     rescue_station: '', intake_date: '', photo_urls: [],
   }
   dialogVisible.value = true
+  formRef.value?.clearValidate()
 }
 
 function openEdit(pet: AdoptablePet) {
@@ -78,11 +87,12 @@ function openEdit(pet: AdoptablePet) {
     photo_urls: pet.photo_urls || [],
   }
   dialogVisible.value = true
+  formRef.value?.clearValidate()
 }
 
 async function handleSave() {
-  if (!form.value.pet_name || !form.value.intake_date) {
-    ElMessage.warning('请填写必填字段')
+  const isValid = await formRef.value?.validate().catch(() => false)
+  if (!isValid) {
     return
   }
   try {
@@ -162,13 +172,13 @@ async function handleDelete(id: string) {
     </div>
 
     <el-dialog v-model="dialogVisible" :title="isEdit ? '编辑宠物' : '添加宠物'" width="600px">
-      <el-form :model="form" label-width="100px" label-position="top">
+      <el-form ref="formRef" :model="form" :rules="rules" label-width="100px" label-position="top">
         <el-row :gutter="16">
           <el-col :span="12">
-            <el-form-item label="名称" required><el-input v-model="form.pet_name" /></el-form-item>
+            <el-form-item label="名称" prop="pet_name"><el-input v-model="form.pet_name" /></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="类型">
+            <el-form-item label="类型" prop="pet_type">
               <el-select v-model="form.pet_type" style="width: 100%">
                 <el-option label="狗" value="dog" /><el-option label="猫" value="cat" />
                 <el-option label="鸟" value="bird" /><el-option label="其他" value="other" />
@@ -176,13 +186,13 @@ async function handleDelete(id: string) {
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="品种"><el-input v-model="form.breed" /></el-form-item>
+            <el-form-item label="品种" prop="breed"><el-input v-model="form.breed" /></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="颜色"><el-input v-model="form.color" /></el-form-item>
+            <el-form-item label="颜色" prop="color"><el-input v-model="form.color" /></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="性别">
+            <el-form-item label="性别" prop="gender">
               <el-select v-model="form.gender" style="width: 100%">
                 <el-option label="公" value="male" /><el-option label="母" value="female" />
                 <el-option label="未知" value="unknown" />
@@ -190,10 +200,10 @@ async function handleDelete(id: string) {
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="年龄(月)"><el-input-number v-model="form.age_months" :min="0" style="width: 100%" /></el-form-item>
+            <el-form-item label="年龄(月)" prop="age_months"><el-input-number v-model="form.age_months" :min="0" style="width: 100%" /></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="健康状态">
+            <el-form-item label="健康状态" prop="health_status">
               <el-select v-model="form.health_status" style="width: 100%">
                 <el-option label="健康" value="healthy" /><el-option label="治疗中" value="treating" />
                 <el-option label="慢性病" value="chronic" />
@@ -201,27 +211,27 @@ async function handleDelete(id: string) {
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="入站日期" required>
+            <el-form-item label="入站日期" prop="intake_date">
               <el-date-picker v-model="form.intake_date" type="date" value-format="YYYY-MM-DD" style="width: 100%" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="已疫苗"><el-switch v-model="form.is_vaccinated" /></el-form-item>
+            <el-form-item label="已疫苗" prop="is_vaccinated"><el-switch v-model="form.is_vaccinated" /></el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="已驱虫"><el-switch v-model="form.is_dewormed" /></el-form-item>
+            <el-form-item label="已驱虫" prop="is_dewormed"><el-switch v-model="form.is_dewormed" /></el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="已绝育"><el-switch v-model="form.is_sterilized" /></el-form-item>
+            <el-form-item label="已绝育" prop="is_sterilized"><el-switch v-model="form.is_sterilized" /></el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="救助站"><el-input v-model="form.rescue_station" /></el-form-item>
+            <el-form-item label="救助站" prop="rescue_station"><el-input v-model="form.rescue_station" /></el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="描述"><el-input v-model="form.description" type="textarea" :rows="3" /></el-form-item>
+            <el-form-item label="描述" prop="description"><el-input v-model="form.description" type="textarea" :rows="3" /></el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="宠物照片"><ImageUploader v-model="form.photo_urls" /></el-form-item>
+            <el-form-item label="宠物照片" prop="photo_urls"><ImageUploader v-model="form.photo_urls" /></el-form-item>
           </el-col>
         </el-row>
       </el-form>

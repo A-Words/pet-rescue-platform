@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
+import type { FormInstance, FormRules } from 'element-plus'
 import { useAdminStore } from '@/stores/admin'
 import { reminderStatusLabels, reminderStatusTypes, formatDate } from '@/utils/format'
 
@@ -8,6 +9,10 @@ const store = useAdminStore()
 const completeDialogVisible = ref(false)
 const completingReminderId = ref('')
 const completeForm = ref({ visit_date: '', visit_notes: '' })
+type CompleteForm = typeof completeForm.value
+
+const completeFormRef = ref<FormInstance>()
+const completeRules: FormRules<CompleteForm> = {}
 
 onMounted(() => {
   store.fetchReminders({ page: 1, page_size: 20 })
@@ -20,6 +25,10 @@ function openComplete(id: string) {
 }
 
 async function handleComplete() {
+  const isValid = await completeFormRef.value?.validate().catch(() => false)
+  if (!isValid) {
+    return
+  }
   try {
     await store.updateReminder(completingReminderId.value, {
       status: 'completed',
@@ -66,11 +75,11 @@ async function handleComplete() {
     </el-table>
 
     <el-dialog v-model="completeDialogVisible" title="记录回访" width="500px">
-      <el-form :model="completeForm" label-width="80px">
-        <el-form-item label="回访日期">
+      <el-form ref="completeFormRef" :model="completeForm" :rules="completeRules" label-width="80px">
+        <el-form-item label="回访日期" prop="visit_date">
           <el-date-picker v-model="completeForm.visit_date" type="date" value-format="YYYY-MM-DD" style="width: 100%" />
         </el-form-item>
-        <el-form-item label="回访记录">
+        <el-form-item label="回访记录" prop="visit_notes">
           <el-input v-model="completeForm.visit_notes" type="textarea" :rows="3" placeholder="回访情况记录" />
         </el-form-item>
       </el-form>

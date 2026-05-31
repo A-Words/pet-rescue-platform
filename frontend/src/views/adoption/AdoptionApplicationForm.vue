@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import type { FormInstance, FormRules } from 'element-plus'
 import { adoptablePetsApi } from '@/api/adoptablePets'
 import { useAdoptionApplicationsStore } from '@/stores/adoptionApplications'
 import type { AdoptablePet } from '@/types/models'
@@ -22,6 +23,16 @@ const form = ref({
   adoption_reason: '',
   experience_description: '',
 })
+type AdoptionApplicationForm = typeof form.value
+
+const formRef = ref<FormInstance>()
+const rules: FormRules<AdoptionApplicationForm> = {
+  applicant_name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
+  applicant_phone: [{ required: true, message: '请输入手机号', trigger: 'blur' }],
+  applicant_address: [{ required: true, message: '请输入住址', trigger: 'blur' }],
+  applicant_id_number: [{ required: true, message: '请输入身份证号', trigger: 'blur' }],
+  adoption_reason: [{ required: true, message: '请输入领养原因', trigger: 'blur' }],
+}
 const loading = ref(false)
 
 onMounted(async () => {
@@ -32,8 +43,8 @@ onMounted(async () => {
 })
 
 async function handleSubmit() {
-  if (!form.value.applicant_name || !form.value.applicant_phone || !form.value.applicant_address || !form.value.applicant_id_number || !form.value.adoption_reason) {
-    ElMessage.warning('请填写所有必填字段')
+  const isValid = await formRef.value?.validate().catch(() => false)
+  if (!isValid) {
     return
   }
   loading.value = true
@@ -57,30 +68,30 @@ async function handleSubmit() {
     </div>
 
     <el-card>
-      <el-form :model="form" label-width="120px" label-position="top">
+      <el-form ref="formRef" :model="form" :rules="rules" label-width="120px" label-position="top">
         <el-row :gutter="24">
           <el-col :span="12">
-            <el-form-item label="姓名" required>
+            <el-form-item label="姓名" prop="applicant_name">
               <el-input v-model="form.applicant_name" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="手机号" required>
+            <el-form-item label="手机号" prop="applicant_phone">
               <el-input v-model="form.applicant_phone" />
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="住址" required>
+            <el-form-item label="住址" prop="applicant_address">
               <el-input v-model="form.applicant_address" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="身份证号" required>
+            <el-form-item label="身份证号" prop="applicant_id_number">
               <el-input v-model="form.applicant_id_number" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="住房类型">
+            <el-form-item label="住房类型" prop="housing_type">
               <el-select v-model="form.housing_type" style="width: 100%">
                 <el-option label="自有住房" value="own" />
                 <el-option label="租房" value="rent" />
@@ -89,17 +100,17 @@ async function handleSubmit() {
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="是否已有宠物">
+            <el-form-item label="是否已有宠物" prop="has_other_pets">
               <el-switch v-model="form.has_other_pets" />
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="领养原因" required>
+            <el-form-item label="领养原因" prop="adoption_reason">
               <el-input v-model="form.adoption_reason" type="textarea" :rows="3" placeholder="请说明您的领养原因" />
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="养宠经验">
+            <el-form-item label="养宠经验" prop="experience_description">
               <el-input v-model="form.experience_description" type="textarea" :rows="3" placeholder="请描述您的养宠经验（选填）" />
             </el-form-item>
           </el-col>

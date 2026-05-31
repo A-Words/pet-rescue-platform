@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import type { FormInstance, FormRules } from 'element-plus'
 import { foundCluesApi } from '@/api/foundClues'
 import { lostPetsApi } from '@/api/lostPets'
 import type { LostPet } from '@/types/models'
@@ -18,6 +19,15 @@ const form = ref({
   contact_info: '',
   photo_urls: [] as string[],
 })
+type FoundClueForm = typeof form.value
+
+const formRef = ref<FormInstance>()
+const rules: FormRules<FoundClueForm> = {
+  found_location: [{ required: true, message: '请输入发现地点', trigger: 'blur' }],
+  found_date: [{ required: true, message: '请选择发现日期', trigger: 'change' }],
+  description: [{ required: true, message: '请输入详细描述', trigger: 'blur' }],
+  contact_info: [{ required: true, message: '请输入联系方式', trigger: 'blur' }],
+}
 const loading = ref(false)
 
 onMounted(async () => {
@@ -27,8 +37,8 @@ onMounted(async () => {
 })
 
 async function handleSubmit() {
-  if (!form.value.description || !form.value.found_location || !form.value.found_date || !form.value.contact_info) {
-    ElMessage.warning('请填写所有必填字段')
+  const isValid = await formRef.value?.validate().catch(() => false)
+  if (!isValid) {
     return
   }
   loading.value = true
@@ -52,20 +62,20 @@ async function handleSubmit() {
     </div>
 
     <el-card>
-      <el-form :model="form" label-width="100px" label-position="top">
-        <el-form-item label="发现地点" required>
+      <el-form ref="formRef" :model="form" :rules="rules" label-width="100px" label-position="top">
+        <el-form-item label="发现地点" prop="found_location">
           <el-input v-model="form.found_location" placeholder="请输入发现地点" />
         </el-form-item>
-        <el-form-item label="发现日期" required>
+        <el-form-item label="发现日期" prop="found_date">
           <el-date-picker v-model="form.found_date" type="date" value-format="YYYY-MM-DD" style="width: 100%" />
         </el-form-item>
-        <el-form-item label="详细描述" required>
+        <el-form-item label="详细描述" prop="description">
           <el-input v-model="form.description" type="textarea" :rows="4" placeholder="请详细描述发现情况" />
         </el-form-item>
-        <el-form-item label="联系方式" required>
+        <el-form-item label="联系方式" prop="contact_info">
           <el-input v-model="form.contact_info" placeholder="手机号或微信号" />
         </el-form-item>
-        <el-form-item label="现场照片">
+        <el-form-item label="现场照片" prop="photo_urls">
           <ImageUploader v-model="form.photo_urls" />
         </el-form-item>
         <el-form-item>
