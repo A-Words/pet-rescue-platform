@@ -60,10 +60,10 @@ This system solves the problems of information asymmetry and irregular processes
   - 5.3 创建视图
   - 5.4 创建存储过程
   - 5.5 创建触发器
-- 第6章 数据库的安全性
+- 第6章 数据库的安全性（选做）
   - 6.1 用户和权限管理
   - 6.2 数据库的备份与恢复
-- 第7章 系统实现
+- 第7章 系统实现（选做）
   - 7.1 走失宠物发布功能
     - 7.1.1 界面
     - 7.1.2 数据操作核心代码
@@ -266,7 +266,7 @@ This system solves the problems of information asymmetry and irregular processes
 
 （5）领养申请管理规则
 
-每个用户对同一宠物只能提交一次有效的领养申请（状态为"待审核"或"已通过"）。只有状态为"可领养"的宠物才能接受新的领养申请。这些约束通过数据库触发器在数据库层面强制执行，确保数据一致性。领养申请被批准后，系统自动将该宠物状态更新为"已领养"，并自动拒绝该宠物的其他待审核申请。
+每个用户对同一宠物最多保留一条领养申请记录，避免同一用户重复占用审核资源。系统在插入申请前检查宠物是否仍为"可领养"状态，以及是否已存在同一用户对同一宠物的待审核或已通过申请。这些约束通过唯一约束和数据库触发器共同实现，确保数据一致性。领养申请被批准后，系统自动将该宠物状态更新为"已领养"，并自动拒绝该宠物的其他待审核申请。
 
 （6）回访提醒管理规则
 
@@ -571,7 +571,7 @@ E-R模型向关系模型的转换遵循以下规则：
 
 （4）可领养宠物关系模式：所有非主属性完全依赖于主键宠物编号，不存在传递依赖，满足3NF。
 
-（5）领养申请关系模式：所有非主属性完全依赖于主键申请编号，宠物编号和申请人编号为外键。设置（宠物编号，申请人编号）为唯一约束，确保同一用户对同一宠物只能有一条有效申请，满足3NF。
+（5）领养申请关系模式：所有非主属性完全依赖于主键申请编号，宠物编号和申请人编号为外键。设置（宠物编号，申请人编号）为唯一约束，确保同一用户对同一宠物最多保留一条申请记录；同时通过触发器检查宠物是否可领养以及是否存在待审核或已通过的重复申请，满足3NF。
 
 （6）审核记录关系模式：所有非主属性完全依赖于主键记录编号，申请编号和审核人编号为外键，满足3NF。
 
@@ -903,11 +903,34 @@ CREATE TABLE visit_reminders (
 );
 ```
 
+除数据表以外，结合物理结构设计中的索引策略，创建以下索引以提高常用筛选、关联和统计查询的执行效率：
+
+```sql
+CREATE INDEX idx_lost_pets_user_id ON lost_pets(user_id);
+CREATE INDEX idx_lost_pets_status ON lost_pets(status);
+CREATE INDEX idx_lost_pets_lost_date ON lost_pets(lost_date);
+CREATE INDEX idx_lost_pets_rescue_station ON lost_pets(rescue_station);
+
+CREATE INDEX idx_found_clues_lost_pet_id ON found_clues(lost_pet_id);
+CREATE INDEX idx_found_clues_reporter_id ON found_clues(reporter_id);
+
+CREATE INDEX idx_adoptable_pets_type ON adoptable_pets(pet_type);
+CREATE INDEX idx_adoptable_pets_status ON adoptable_pets(adoption_status);
+CREATE INDEX idx_adoptable_pets_rescue_station ON adoptable_pets(rescue_station);
+
+CREATE INDEX idx_adoption_applications_pet_id ON adoption_applications(pet_id);
+CREATE INDEX idx_adoption_applications_applicant_id ON adoption_applications(applicant_id);
+CREATE INDEX idx_adoption_applications_status ON adoption_applications(status);
+
+CREATE INDEX idx_visit_reminders_reminder_date ON visit_reminders(reminder_date);
+CREATE INDEX idx_visit_reminders_status ON visit_reminders(status);
+```
+
 ### 5.2 数据操作
 
 #### 5.2.1 插入数据
 
-为各表插入初始测试数据，每个表至少插入8条记录。
+为用户、走失宠物、发现线索、可领养宠物、领养申请等主要业务表插入初始测试数据，用于后续查询、更新、删除和触发器验证。
 
 （1）用户表数据插入：
 
@@ -971,7 +994,7 @@ INSERT INTO adoptable_pets (pet_name, pet_type, breed, color, gender, age_months
 INSERT INTO adoption_applications (pet_id, applicant_id, applicant_name, applicant_phone, applicant_address, applicant_id_number, housing_type, has_other_pets, adoption_reason, experience_description, status) VALUES
 ((SELECT id FROM adoptable_pets WHERE pet_name='团团'), (SELECT id FROM users WHERE username='zhangsan'), '张三', '13800000002', '广州市天河区XX路XX号', '440100199001011234', 'apartment', false, '非常喜欢布偶猫，家里环境适合养猫', '之前养过一只英短，有3年养猫经验', 'pending'),
 ((SELECT id FROM adoptable_pets WHERE pet_name='团团'), (SELECT id FROM users WHERE username='lisi'), '李四', '13800000003', '广州市番禺区XX路XX号', '440100199002022345', 'house', true, '想给家里的猫咪找个伴', '有5年养猫经验，家中目前有一只橘猫', 'pending'),
-((SELECT id FROM adoptable_pets WHERE pet_name='圆圆'), (SELECT id FROM users WHERE username='wangwu'), '王五', '13800000004', '佛山市禅城区XX路XX号', '440100199003033456', 'house', false, '一直想养一只比熊，家里有院子', '之前养过金毛，熟悉犬类护理', 'approved'),
+((SELECT id FROM adoptable_pets WHERE pet_name='圆圆'), (SELECT id FROM users WHERE username='wangwu'), '王五', '13800000004', '佛山市禅城区XX路XX号', '440100199003033456', 'house', false, '一直想养一只比熊，家里有院子', '之前养过金毛，熟悉犬类护理', 'pending'),
 ((SELECT id FROM adoptable_pets WHERE pet_name='小花'), (SELECT id FROM users WHERE username='zhaoliu'), '赵六', '13800000005', '东莞市XX区XX路XX号', '440100199004044567', 'apartment', false, '喜欢中华田园猫，想给流浪猫一个家', '无养宠经验，但已学习相关知识', 'pending'),
 ((SELECT id FROM adoptable_pets WHERE pet_name='小花'), (SELECT id FROM users WHERE username='sunqi'), '孙七', '13800000006', '珠海市XX区XX路XX号', '440100199005055678', 'apartment', true, '想给家里增加一个新成员', '养过两只猫，有丰富经验', 'rejected'),
 ((SELECT id FROM adoptable_pets WHERE pet_name='雪球'), (SELECT id FROM users WHERE username='zhouba'), '周八', '13800000007', '广州市XX区XX路XX号', '440100199006066789', 'apartment', false, '一直很喜欢波斯猫', '有2年养猫经验', 'pending'),
@@ -1004,7 +1027,10 @@ UPDATE users SET phone = '13900000002' WHERE username = 'zhangsan';
 （1）删除一条被拒绝的发现线索：
 
 ```sql
-DELETE FROM found_clues WHERE status = 'rejected' LIMIT 1;
+DELETE FROM found_clues
+WHERE id = (
+    SELECT id FROM found_clues WHERE status = 'rejected' LIMIT 1
+);
 ```
 
 （2）删除一条已关闭的走失宠物信息：
@@ -1049,7 +1075,7 @@ ORDER BY clue_count DESC;
 
 | pet_name | pet_type | lost_location | status | clue_count |
 |----------|----------|---------------|--------|------------|
-| 豆豆 | dog | 广州市天河区体育中心附近 | found | 2 |
+| 豆豆 | dog | 广州市天河区体育中心附近 | found | 1 |
 | 咪咪 | cat | 深圳市南山区科技园 | active | 1 |
 | 小白 | dog | 佛山市禅城区祖庙 | found | 1 |
 | 花花 | cat | 广州市越秀区北京路 | active | 1 |
@@ -1073,9 +1099,10 @@ ORDER BY pet_name;
 | pet_name | pet_type | breed | health_status | rescue_station |
 |----------|----------|-------|---------------|----------------|
 | 团团 | cat | 布偶猫 | healthy | 广州市小动物救助中心 |
+| 圆圆 | dog | 比熊 | healthy | 广州市小动物救助中心 |
 | 小花 | cat | 中华田园猫 | healthy | 深圳市流浪动物救助站 |
 | 奶茶 | cat | 英国短毛猫 | healthy | 广州市小动物救助中心 |
-| 黑豆 | dog | 拉布拉多 | treating | 深圳市流浪动物救助站 |
+| 黑豆 | dog | 拉布拉多 | healthy | 佛山市宠物之家 |
 | 雪球 | cat | 波斯猫 | healthy | 佛山市宠物之家 |
 
 （4）带聚合函数的查询：按宠物种类统计走失宠物数量
@@ -1093,7 +1120,7 @@ ORDER BY total_count DESC;
 
 | pet_type | total_count | found_count | recovery_rate |
 |----------|-------------|-------------|---------------|
-| dog | 4 | 1 | 25.00 |
+| dog | 3 | 2 | 66.67 |
 | cat | 3 | 0 | 0.00 |
 | bird | 1 | 0 | 0.00 |
 
@@ -1245,7 +1272,7 @@ SELECT * FROM sp_monthly_statistics('广州市小动物救助中心', 2026, 5);
 
 ### 5.5 创建触发器
 
-本系统共创建了4个触发器函数和对应的触发器。
+本系统共创建了4个触发器函数和7个触发器。
 
 （1）自动更新时间戳触发器
 
@@ -1377,7 +1404,7 @@ WHERE pet_id = (SELECT id FROM adoptable_pets WHERE pet_name = '圆圆');
 
 ---
 
-## 第6章 数据库的安全性
+## 第6章 数据库的安全性（选做）
 
 ### 6.1 用户和权限管理
 
@@ -1418,7 +1445,7 @@ docker run --rm -v pgdata:/data -v $(pwd):/backup alpine tar czf /backup/pgdata_
 
 ---
 
-## 第7章 系统实现
+## 第7章 系统实现（选做）
 
 ### 7.1 走失宠物发布功能
 
@@ -1439,58 +1466,79 @@ docker run --rm -v pgdata:/data -v $(pwd):/backup alpine tar czf /backup/pgdata_
 
 ```typescript
 import api from './index'
+import type { LostPet, PaginatedResponse } from '@/types/models'
 
 export const lostPetsApi = {
-  create(data: LostPetCreate) {
-    return api.post('/api/lost-pets/', data)
-  },
-  list(params: { page: number; page_size: number; pet_type?: string; status?: string; keyword?: string }) {
-    return api.get('/api/lost-pets/', { params })
+  list(params: Record<string, any>) {
+    return api.get<PaginatedResponse<LostPet>>('/lost-pets', { params })
   },
   getDetail(id: string) {
-    return api.get(`/api/lost-pets/${id}`)
+    return api.get<LostPet>(`/lost-pets/${id}`)
   },
-  update(id: string, data: LostPetUpdate) {
-    return api.put(`/api/lost-pets/${id}`, data)
+  create(data: Partial<LostPet>) {
+    return api.post<LostPet>('/lost-pets', data)
+  },
+  update(id: string, data: Partial<LostPet>) {
+    return api.put<LostPet>(`/lost-pets/${id}`, data)
+  },
+  delete(id: string) {
+    return api.delete(`/lost-pets/${id}`)
   },
   updateStatus(id: string, status: string) {
-    return api.patch(`/api/lost-pets/${id}/status`, { status })
+    return api.patch(`/lost-pets/${id}/status`, { status })
+  },
+  getMy() {
+    return api.get<LostPet[]>('/lost-pets/my')
   }
 }
 ```
 
+其中Axios实例统一配置了`baseURL`为`/api`，因此各业务API文件中只保留资源路径。
+
 后端路由处理代码（backend/app/routers/lost_pets.py）：
 
 ```python
-from fastapi import APIRouter, Depends, HTTPException, Query
+from typing import Annotated
+from uuid import UUID
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.dependencies import get_db, get_current_user
-from app.crud.crud_lost_pet import CRUDLostPet
-from app.schemas.lost_pet import LostPetCreate, LostPetResponse
+
+from app.crud.crud_lost_pet import crud_lost_pet
+from app.dependencies import get_current_user, get_db
+from app.models.user import User
+from app.schemas.lost_pet import LostPetCreate, LostPetResponse, LostPetUpdate
 
 router = APIRouter()
 
-@router.post("/", response_model=LostPetResponse)
+@router.post("", response_model=LostPetResponse, status_code=status.HTTP_201_CREATED)
 async def create_lost_pet(
-    data: LostPetCreate,
-    db: AsyncSession = Depends(get_db),
-    current_user = Depends(get_current_user),
+    obj_in: LostPetCreate,
+    current_user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    return await CRUDLostPet.create(db, user_id=current_user.id, data=data)
+    pet = await crud_lost_pet.create(db, obj_in=obj_in, user_id=current_user.id)
+    return pet
 
-@router.get("/", response_model=dict)
+@router.get("", response_model=dict)
 async def list_lost_pets(
+    db: Annotated[AsyncSession, Depends(get_db)],
     page: int = Query(1, ge=1),
-    page_size: int = Query(10, ge=1, le=100),
+    page_size: int = Query(12, ge=1, le=50),
     pet_type: str | None = None,
     status: str | None = None,
     keyword: str | None = None,
-    db: AsyncSession = Depends(get_db),
 ):
-    return await CRUDLostPet.get_list(
-        db, page=page, page_size=page_size,
-        pet_type=pet_type, status=status, keyword=keyword
+    skip = (page - 1) * page_size
+    items, total = await crud_lost_pet.get_multi(
+        db, skip=skip, limit=page_size, pet_type=pet_type, status=status, keyword=keyword
     )
+    return {
+        "items": [LostPetResponse.model_validate(p) for p in items],
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+    }
 ```
 
 ### 7.2 领养申请功能
@@ -1510,63 +1558,66 @@ async def list_lost_pets(
 前端提交领养申请的代码：
 
 ```typescript
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
+import type { AdoptionApplication } from '@/types/models'
+import { adoptionApplicationsApi } from '@/api/adoptionApplications'
+
 export const useAdoptionApplicationsStore = defineStore('adoptionApplications', () => {
   const applications = ref<AdoptionApplication[]>([])
-
-  async function submitApplication(data: AdoptionApplicationCreate) {
-    const response = await adoptionApplicationsApi.create(data)
-    return response.data
-  }
+  const loading = ref(false)
 
   async function fetchMyApplications() {
-    const response = await adoptionApplicationsApi.getMy()
-    applications.value = response.data.items
+    loading.value = true
+    try {
+      const res = await adoptionApplicationsApi.getMy()
+      applications.value = res.data
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function submitApplication(data: Partial<AdoptionApplication>) {
+    const res = await adoptionApplicationsApi.create(data)
+    return res.data
   }
 
   async function cancelApplication(id: string) {
     await adoptionApplicationsApi.cancel(id)
-    await fetchMyApplications()
+    const app = applications.value.find((a) => a.id === id)
+    if (app) app.status = 'cancelled'
   }
 
-  return { applications, submitApplication, fetchMyApplications, cancelApplication }
+  return { applications, loading, fetchMyApplications, submitApplication, cancelApplication }
 })
 ```
 
 后端领养申请创建的CRUD操作（backend/app/crud/crud_adoption_application.py）：
 
 ```python
+from uuid import UUID
+
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 from app.models.adoption_application import AdoptionApplication
 from app.schemas.adoption_application import AdoptionApplicationCreate
 
 class CRUDAdoptionApplication:
-    @staticmethod
-    async def create(db: AsyncSession, applicant_id: str, data: AdoptionApplicationCreate):
-        application = AdoptionApplication(
-            applicant_id=applicant_id,
-            **data.model_dump()
-        )
-        db.add(application)
+    async def create(
+        self,
+        db: AsyncSession,
+        *,
+        obj_in: AdoptionApplicationCreate,
+        applicant_id: UUID,
+    ) -> AdoptionApplication:
+        db_obj = AdoptionApplication(**obj_in.model_dump(), applicant_id=applicant_id)
+        db.add(db_obj)
+        await db.flush()
+        application_id = db_obj.id
         await db.commit()
-        await db.refresh(application)
-        return application
-
-    @staticmethod
-    async def get_by_id(db: AsyncSession, app_id: str):
-        result = await db.execute(
-            select(AdoptionApplication).where(AdoptionApplication.id == app_id)
-        )
-        return result.scalar_one_or_none()
-
-    @staticmethod
-    async def get_user_applications(db: AsyncSession, user_id: str):
-        result = await db.execute(
-            select(AdoptionApplication)
-            .where(AdoptionApplication.applicant_id == user_id)
-            .order_by(AdoptionApplication.created_at.desc())
-        )
-        return result.scalars().all()
+        created = await self.get(db, id=application_id)
+        if created is None:
+            raise RuntimeError("Created adoption application not found")
+        return created
 ```
 
 ---
@@ -1583,7 +1634,7 @@ class CRUDAdoptionApplication:
 
 （4）物理结构设计阶段：选择PostgreSQL 16作为数据库管理系统，设计了7张数据表的物理结构，创建了14个索引以优化查询性能。
 
-（5）数据库实施阶段：编写了完整的建表SQL语句，创建了1个视图（v_adoptable_pets）用于简化可领养宠物查询，创建了1个存储过程（sp_monthly_statistics）用于月度统计，创建了4个触发器函数和8个触发器用于实现自动时间戳更新、领养审批级联处理、申请重复检查和回访提醒自动生成等业务逻辑。
+（5）数据库实施阶段：编写了完整的建表SQL语句，创建了1个视图（v_adoptable_pets）用于简化可领养宠物查询，创建了1个存储过程（sp_monthly_statistics）用于月度统计，创建了4个触发器函数和7个触发器用于实现自动时间戳更新、领养审批级联处理、申请重复检查和回访提醒自动生成等业务逻辑。
 
 （6）系统实现阶段：使用FastAPI框架实现了后端RESTful API，使用Vue 3 + TypeScript + Element Plus实现了前端界面，使用Docker Compose实现了容器化部署。
 
