@@ -49,58 +49,61 @@ function handleFilterChange() {
       />
     </div>
 
-    <el-row :gutter="20" v-if="store.statistics">
-      <el-col :span="6">
+    <div class="stats-grid" v-if="store.statistics">
         <el-card class="stat-card" shadow="hover">
           <div class="stat-value">{{ store.statistics.total_lost_reports }}</div>
           <div class="stat-label">走失上报总数</div>
         </el-card>
-      </el-col>
-      <el-col :span="6">
         <el-card class="stat-card" shadow="hover">
           <div class="stat-value" style="color: #67c23a">{{ store.statistics.successful_recoveries }}</div>
           <div class="stat-label">成功找回数</div>
         </el-card>
-      </el-col>
-      <el-col :span="6">
         <el-card class="stat-card" shadow="hover">
           <div class="stat-value" style="color: #409eff">{{ store.statistics.recovery_rate }}%</div>
           <div class="stat-label">找回率</div>
         </el-card>
-      </el-col>
-      <el-col :span="6">
         <el-card class="stat-card" shadow="hover">
           <div class="stat-value" style="color: #e6a23c">{{ store.statistics.total_found_clues }}</div>
           <div class="stat-label">线索总数</div>
         </el-card>
-      </el-col>
-    </el-row>
+    </div>
 
-    <el-row :gutter="20" style="margin-top: 20px" v-if="store.statistics">
-      <el-col :span="6">
+    <div class="stats-grid stats-grid-secondary" v-if="store.statistics">
         <el-card class="stat-card" shadow="hover">
           <div class="stat-value">{{ store.statistics.total_adoption_applications }}</div>
           <div class="stat-label">领养申请总数</div>
         </el-card>
-      </el-col>
-      <el-col :span="6">
         <el-card class="stat-card" shadow="hover">
           <div class="stat-value" style="color: #67c23a">{{ store.statistics.approved_adoptions }}</div>
           <div class="stat-label">通过申请数</div>
         </el-card>
-      </el-col>
-      <el-col :span="6">
         <el-card class="stat-card" shadow="hover">
           <div class="stat-value" style="color: #409eff">{{ store.statistics.adoption_success_rate }}%</div>
           <div class="stat-label">领养成功率</div>
         </el-card>
-      </el-col>
-      <el-col :span="6">
         <el-card class="stat-card" shadow="hover">
           <div class="stat-value" style="color: #67c23a">{{ store.statistics.confirmed_clues }}</div>
           <div class="stat-label">确认线索数</div>
         </el-card>
-      </el-col>
-    </el-row>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 20px;
+}
+
+.stats-grid-secondary {
+  margin-top: 20px;
+}
+
+@media (max-width: 560px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+}
+</style>

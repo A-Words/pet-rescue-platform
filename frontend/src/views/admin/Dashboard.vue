@@ -23,23 +23,28 @@ const stats = [
       <h2>管理仪表盘</h2>
     </div>
 
-    <el-row :gutter="20">
-      <el-col v-for="item in stats" :key="item.key" :span="4" :offset="item.key === 'active_lost_pets' ? 2 : 0">
-        <el-card class="stat-card" shadow="hover">
-          <div class="stat-value" :style="{ color: item.color }">
-            {{ store.dashboard?.[item.key as keyof typeof store.dashboard] ?? '-' }}
-          </div>
-          <div class="stat-label">{{ item.label }}</div>
-        </el-card>
-      </el-col>
-    </el-row>
+    <div class="stats-grid">
+      <el-card v-for="item in stats" :key="item.key" class="stat-card" shadow="hover">
+        <div class="stat-value" :style="{ color: item.color }">
+          {{ store.dashboard?.[item.key as keyof typeof store.dashboard] ?? '-' }}
+        </div>
+        <div class="stat-label">{{ item.label }}</div>
+      </el-card>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 20px;
+}
+
 .stat-card {
   text-align: center;
   padding: 20px;
+  min-height: 130px;
 }
 
 .stat-value {
@@ -51,5 +56,22 @@ const stats = [
   margin-top: 8px;
   font-size: 14px;
   color: #909399;
+  line-height: 1.4;
+}
+
+@media (max-width: 560px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .stat-card {
+    min-height: 112px;
+    padding: 14px 10px;
+  }
+
+  .stat-value {
+    font-size: 30px;
+  }
 }
 </style>
