@@ -44,14 +44,10 @@ function handlePageChange(page: number) {
 <template>
   <div>
     <div class="page-header">
-      <el-row justify="space-between" align="middle">
-        <el-col>
-          <h2>走失宠物</h2>
-        </el-col>
-        <el-col :span="4" style="text-align: right">
-          <el-button type="primary" @click="router.push('/lost-pets/publish')">发布走失信息</el-button>
-        </el-col>
-      </el-row>
+      <div class="page-header-row">
+        <h2>走失宠物</h2>
+        <el-button type="primary" @click="router.push('/lost-pets/publish')">发布走失信息</el-button>
+      </div>
     </div>
 
     <div class="filter-bar">
@@ -117,6 +113,13 @@ function handlePageChange(page: number) {
 </template>
 
 <style scoped>
+.page-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
 .pet-card {
   cursor: pointer;
   transition: transform 0.2s;
