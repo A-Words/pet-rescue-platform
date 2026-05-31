@@ -21,19 +21,19 @@ const router = useRouter()
 
     <div class="features">
       <el-row :gutter="24">
-        <el-col :span="8">
+        <el-col :xs="24" :md="8">
           <el-card class="feature-card">
             <h3>发布走失信息</h3>
             <p>快速发布宠物走失信息，上传照片和描述，让更多人帮助寻找</p>
           </el-card>
         </el-col>
-        <el-col :span="8">
+        <el-col :xs="24" :md="8">
           <el-card class="feature-card">
             <h3>提交发现线索</h3>
             <p>发现疑似走失宠物时，提交线索帮助宠物主人找回爱宠</p>
           </el-card>
         </el-col>
-        <el-col :span="8">
+        <el-col :xs="24" :md="8">
           <el-card class="feature-card">
             <h3>领养救助宠物</h3>
             <p>浏览待领养宠物信息，提交领养申请，给流浪动物一个家</p>

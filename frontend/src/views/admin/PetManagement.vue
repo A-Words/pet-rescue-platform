@@ -124,8 +124,8 @@ async function handleDelete(id: string) {
   <div>
     <div class="page-header">
       <el-row justify="space-between" align="middle">
-        <el-col><h2>宠物管理</h2></el-col>
-        <el-col :span="4" style="text-align: right">
+        <el-col :xs="24" :sm="12"><h2>宠物管理</h2></el-col>
+        <el-col :xs="24" :sm="12" class="page-actions">
           <el-button type="primary" @click="openAdd">添加宠物</el-button>
         </el-col>
       </el-row>
@@ -231,13 +231,13 @@ async function handleDelete(id: string) {
           <el-col :xs="12" :sm="8">
             <el-form-item label="已绝育" prop="is_sterilized"><el-switch v-model="form.is_sterilized" /></el-form-item>
           </el-col>
-          <el-col :span="24">
+          <el-col :xs="24">
             <el-form-item label="救助站" prop="rescue_station"><el-input v-model="form.rescue_station" /></el-form-item>
           </el-col>
-          <el-col :span="24">
+          <el-col :xs="24">
             <el-form-item label="描述" prop="description"><el-input v-model="form.description" type="textarea" :rows="3" /></el-form-item>
           </el-col>
-          <el-col :span="24">
+          <el-col :xs="24">
             <el-form-item label="宠物照片" prop="photo_urls"><ImageUploader v-model="form.photo_urls" /></el-form-item>
           </el-col>
         </el-row>
@@ -251,6 +251,10 @@ async function handleDelete(id: string) {
 </template>
 
 <style scoped>
+.page-actions {
+  text-align: right;
+}
+
 :deep(.pet-form-dialog .el-dialog__body) {
   max-height: min(70vh, 680px);
   overflow-y: auto;
@@ -277,6 +281,11 @@ async function handleDelete(id: string) {
   :deep(.pet-form-dialog .el-dialog__footer .el-button) {
     flex: 1;
     margin-left: 0;
+  }
+
+  .page-actions {
+    margin-top: 12px;
+    text-align: left;
   }
 }
 </style>

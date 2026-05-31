@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAdoptablePetsStore } from '@/stores/adoptablePets'
 import { useUserStore } from '@/stores/user'
@@ -11,9 +11,24 @@ const store = useAdoptablePetsStore()
 const userStore = useUserStore()
 
 const pet = computed(() => store.currentPet)
+const descriptionColumns = ref(2)
+
+let detailMediaQuery: MediaQueryList | undefined
+
+function updateDescriptionColumns() {
+  descriptionColumns.value = detailMediaQuery?.matches ? 1 : 2
+}
 
 onMounted(async () => {
+  detailMediaQuery = window.matchMedia('(max-width: 640px)')
+  updateDescriptionColumns()
+  detailMediaQuery.addEventListener('change', updateDescriptionColumns)
+
   await store.fetchPetDetail(route.params.id as string)
+})
+
+onBeforeUnmount(() => {
+  detailMediaQuery?.removeEventListener('change', updateDescriptionColumns)
 })
 </script>
 
@@ -25,7 +40,7 @@ onMounted(async () => {
       </div>
 
       <el-row :gutter="24">
-        <el-col :span="10">
+        <el-col :xs="24" :md="10">
           <div class="photo-section">
             <el-carousel v-if="pet.photo_urls?.length" height="300px">
               <el-carousel-item v-for="(url, idx) in pet.photo_urls" :key="idx">
@@ -35,8 +50,8 @@ onMounted(async () => {
             <div v-else class="no-photo">暂无照片</div>
           </div>
         </el-col>
-        <el-col :span="14">
-          <el-descriptions :column="2" border>
+        <el-col :xs="24" :md="14">
+          <el-descriptions :column="descriptionColumns" border>
             <el-descriptions-item label="宠物类型">{{ petTypeLabels[pet.pet_type] }}</el-descriptions-item>
             <el-descriptions-item label="品种">{{ pet.breed || '-' }}</el-descriptions-item>
             <el-descriptions-item label="颜色">{{ pet.color || '-' }}</el-descriptions-item>
@@ -62,7 +77,7 @@ onMounted(async () => {
             </el-descriptions-item>
             <el-descriptions-item label="救助站">{{ pet.rescue_station || '-' }}</el-descriptions-item>
             <el-descriptions-item label="入站日期">{{ formatDate(pet.intake_date) }}</el-descriptions-item>
-            <el-descriptions-item label="描述" :span="2">{{ pet.description || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="描述" :span="descriptionColumns">{{ pet.description || '-' }}</el-descriptions-item>
           </el-descriptions>
 
           <div class="actions" style="margin-top: 16px">

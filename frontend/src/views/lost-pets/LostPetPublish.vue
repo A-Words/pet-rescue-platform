@@ -68,12 +68,12 @@ async function handleSubmit() {
     <el-card>
       <el-form ref="formRef" :model="form" :rules="rules" label-width="100px" label-position="top">
         <el-row :gutter="24">
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="宠物名称" prop="pet_name">
               <el-input v-model="form.pet_name" placeholder="请输入宠物名称" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="宠物类型" prop="pet_type">
               <el-select v-model="form.pet_type" style="width: 100%">
                 <el-option label="狗" value="dog" />
@@ -83,17 +83,17 @@ async function handleSubmit() {
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="品种" prop="breed">
               <el-input v-model="form.breed" placeholder="如：金毛、英短" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="毛色" prop="color">
               <el-input v-model="form.color" placeholder="如：白色、棕色" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="性别" prop="gender">
               <el-select v-model="form.gender" style="width: 100%">
                 <el-option label="公" value="male" />
@@ -102,42 +102,42 @@ async function handleSubmit() {
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="年龄描述" prop="age_description">
               <el-input v-model="form.age_description" placeholder="如：约2岁" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="走失日期" prop="lost_date">
               <el-date-picker v-model="form.lost_date" type="date" value-format="YYYY-MM-DD" style="width: 100%" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="悬赏金额" prop="reward_amount">
               <el-input-number v-model="form.reward_amount" :min="0" :precision="2" style="width: 100%" />
             </el-form-item>
           </el-col>
-          <el-col :span="24">
+          <el-col :xs="24">
             <el-form-item label="走失地点" prop="lost_location">
               <el-input v-model="form.lost_location" placeholder="请输入走失地点" />
             </el-form-item>
           </el-col>
-          <el-col :span="24">
+          <el-col :xs="24">
             <el-form-item label="救助站" prop="rescue_station">
               <el-input v-model="form.rescue_station" placeholder="请输入负责救助站" />
             </el-form-item>
           </el-col>
-          <el-col :span="24">
+          <el-col :xs="24">
             <el-form-item label="联系方式" prop="contact_info">
               <el-input v-model="form.contact_info" placeholder="手机号或微信号" />
             </el-form-item>
           </el-col>
-          <el-col :span="24">
+          <el-col :xs="24">
             <el-form-item label="详细描述" prop="description">
               <el-input v-model="form.description" type="textarea" :rows="4" placeholder="请详细描述宠物特征、走失经过等" />
             </el-form-item>
           </el-col>
-          <el-col :span="24">
+          <el-col :xs="24">
             <el-form-item label="宠物照片" prop="photo_urls">
               <ImageUploader v-model="form.photo_urls" />
             </el-form-item>

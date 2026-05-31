@@ -70,27 +70,27 @@ async function handleSubmit() {
     <el-card>
       <el-form ref="formRef" :model="form" :rules="rules" label-width="120px" label-position="top">
         <el-row :gutter="24">
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="姓名" prop="applicant_name">
               <el-input v-model="form.applicant_name" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="手机号" prop="applicant_phone">
               <el-input v-model="form.applicant_phone" />
             </el-form-item>
           </el-col>
-          <el-col :span="24">
+          <el-col :xs="24">
             <el-form-item label="住址" prop="applicant_address">
               <el-input v-model="form.applicant_address" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="身份证号" prop="applicant_id_number">
               <el-input v-model="form.applicant_id_number" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="住房类型" prop="housing_type">
               <el-select v-model="form.housing_type" style="width: 100%">
                 <el-option label="自有住房" value="own" />
@@ -99,17 +99,17 @@ async function handleSubmit() {
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="是否已有宠物" prop="has_other_pets">
               <el-switch v-model="form.has_other_pets" />
             </el-form-item>
           </el-col>
-          <el-col :span="24">
+          <el-col :xs="24">
             <el-form-item label="领养原因" prop="adoption_reason">
               <el-input v-model="form.adoption_reason" type="textarea" :rows="3" placeholder="请说明您的领养原因" />
             </el-form-item>
           </el-col>
-          <el-col :span="24">
+          <el-col :xs="24">
             <el-form-item label="养宠经验" prop="experience_description">
               <el-input v-model="form.experience_description" type="textarea" :rows="3" placeholder="请描述您的养宠经验（选填）" />
             </el-form-item>

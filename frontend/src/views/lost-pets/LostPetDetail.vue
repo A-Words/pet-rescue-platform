@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { useLostPetsStore } from '@/stores/lostPets'
@@ -16,8 +16,19 @@ const userStore = useUserStore()
 const pet = computed(() => petStore.currentPet)
 const clues = ref<FoundClue[]>([])
 const isOwner = computed(() => userStore.user?.id === pet.value?.user_id)
+const descriptionColumns = ref(2)
+
+let detailMediaQuery: MediaQueryList | undefined
+
+function updateDescriptionColumns() {
+  descriptionColumns.value = detailMediaQuery?.matches ? 1 : 2
+}
 
 onMounted(async () => {
+  detailMediaQuery = window.matchMedia('(max-width: 640px)')
+  updateDescriptionColumns()
+  detailMediaQuery.addEventListener('change', updateDescriptionColumns)
+
   const id = route.params.id as string
   await petStore.fetchPetDetail(id)
   if (isOwner.value || userStore.isAdmin) {
@@ -26,6 +37,10 @@ onMounted(async () => {
       clues.value = res.data
     } catch {}
   }
+})
+
+onBeforeUnmount(() => {
+  detailMediaQuery?.removeEventListener('change', updateDescriptionColumns)
 })
 
 async function updateStatus(status: string) {
@@ -44,10 +59,10 @@ async function updateStatus(status: string) {
     <template v-if="pet">
       <div class="page-header">
         <el-row justify="space-between" align="middle">
-          <el-col>
+          <el-col :xs="16" :sm="18">
             <h2>{{ pet.pet_name }}</h2>
           </el-col>
-          <el-col :span="6" style="text-align: right">
+          <el-col :xs="8" :sm="6" style="text-align: right">
             <el-tag :type="(lostPetStatusTypes[pet.status] as any)" size="large">
               {{ lostPetStatusLabels[pet.status] }}
             </el-tag>
@@ -56,7 +71,7 @@ async function updateStatus(status: string) {
       </div>
 
       <el-row :gutter="24">
-        <el-col :span="10">
+        <el-col :xs="24" :md="10">
           <div class="photo-section">
             <el-carousel v-if="pet.photo_urls?.length" height="300px">
               <el-carousel-item v-for="(url, idx) in pet.photo_urls" :key="idx">
@@ -66,18 +81,18 @@ async function updateStatus(status: string) {
             <div v-else class="no-photo">暂无照片</div>
           </div>
         </el-col>
-        <el-col :span="14">
-          <el-descriptions :column="2" border>
+        <el-col :xs="24" :md="14">
+          <el-descriptions :column="descriptionColumns" border>
             <el-descriptions-item label="宠物类型">{{ petTypeLabels[pet.pet_type] }}</el-descriptions-item>
             <el-descriptions-item label="品种">{{ pet.breed || '-' }}</el-descriptions-item>
             <el-descriptions-item label="颜色">{{ pet.color || '-' }}</el-descriptions-item>
             <el-descriptions-item label="性别">{{ genderLabels[pet.gender || 'unknown'] }}</el-descriptions-item>
             <el-descriptions-item label="年龄">{{ pet.age_description || '-' }}</el-descriptions-item>
             <el-descriptions-item label="悬赏金额">{{ pet.reward_amount ? `¥${pet.reward_amount}` : '无' }}</el-descriptions-item>
-            <el-descriptions-item label="走失日期" :span="2">{{ formatDate(pet.lost_date) }}</el-descriptions-item>
-            <el-descriptions-item label="走失地点" :span="2">{{ pet.lost_location }}</el-descriptions-item>
-            <el-descriptions-item label="联系方式" :span="2">{{ pet.contact_info }}</el-descriptions-item>
-            <el-descriptions-item label="详细描述" :span="2">{{ pet.description }}</el-descriptions-item>
+            <el-descriptions-item label="走失日期" :span="descriptionColumns">{{ formatDate(pet.lost_date) }}</el-descriptions-item>
+            <el-descriptions-item label="走失地点" :span="descriptionColumns">{{ pet.lost_location }}</el-descriptions-item>
+            <el-descriptions-item label="联系方式" :span="descriptionColumns">{{ pet.contact_info }}</el-descriptions-item>
+            <el-descriptions-item label="详细描述" :span="descriptionColumns">{{ pet.description }}</el-descriptions-item>
           </el-descriptions>
 
           <div class="actions" style="margin-top: 16px">
