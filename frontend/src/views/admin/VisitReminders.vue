@@ -50,29 +50,31 @@ async function handleComplete() {
       <h2>回访提醒</h2>
     </div>
 
-    <el-table v-loading="store.loading" :data="store.reminders" border>
-      <el-table-column prop="reminder_date" label="提醒日期" width="120">
-        <template #default="{ row }">{{ formatDate(row.reminder_date) }}</template>
-      </el-table-column>
-      <el-table-column prop="visit_date" label="回访日期" width="120">
-        <template #default="{ row }">{{ formatDate(row.visit_date) }}</template>
-      </el-table-column>
-      <el-table-column prop="status" label="状态" width="100">
-        <template #default="{ row }">
-          <el-tag :type="(reminderStatusTypes[row.status] as any)" size="small">
-            {{ reminderStatusLabels[row.status] }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column prop="visit_notes" label="回访记录" show-overflow-tooltip min-width="200" />
-      <el-table-column label="操作" width="120">
-        <template #default="{ row }">
-          <el-button v-if="row.status !== 'completed'" size="small" type="primary" @click="openComplete(row.id)">
-            完成
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="responsive-table" style="--table-min-width: 720px">
+      <el-table v-loading="store.loading" :data="store.reminders" border max-height="640">
+        <el-table-column prop="reminder_date" label="提醒日期" width="120">
+          <template #default="{ row }">{{ formatDate(row.reminder_date) }}</template>
+        </el-table-column>
+        <el-table-column prop="visit_date" label="回访日期" width="120">
+          <template #default="{ row }">{{ formatDate(row.visit_date) }}</template>
+        </el-table-column>
+        <el-table-column prop="status" label="状态" width="100">
+          <template #default="{ row }">
+            <el-tag :type="(reminderStatusTypes[row.status] as any)" size="small">
+              {{ reminderStatusLabels[row.status] }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="visit_notes" label="回访记录" show-overflow-tooltip min-width="200" />
+        <el-table-column label="操作" width="120">
+          <template #default="{ row }">
+            <el-button v-if="row.status !== 'completed'" size="small" type="primary" @click="openComplete(row.id)">
+              完成
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
     <el-dialog v-model="completeDialogVisible" title="记录回访" width="500px">
       <el-form ref="completeFormRef" :model="completeForm" :rules="completeRules" label-width="80px">

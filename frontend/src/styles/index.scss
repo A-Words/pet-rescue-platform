@@ -55,3 +55,31 @@ a {
     color: #909399;
   }
 }
+
+.responsive-table {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: 4px;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+
+  > .el-table {
+    min-width: var(--table-min-width, 720px);
+  }
+
+  .el-table__cell {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 560px) {
+  .page-header {
+    margin-bottom: 16px;
+
+    h2 {
+      font-size: 20px;
+    }
+  }
+}

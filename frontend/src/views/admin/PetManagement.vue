@@ -131,40 +131,42 @@ async function handleDelete(id: string) {
       </el-row>
     </div>
 
-    <el-table v-loading="loading" :data="pets" border>
-      <el-table-column prop="pet_name" label="名称" width="120" />
-      <el-table-column label="类型" width="80">
-        <template #default="{ row }">{{ petTypeLabels[row.pet_type] }}</template>
-      </el-table-column>
-      <el-table-column prop="breed" label="品种" width="120" />
-      <el-table-column label="健康状态" width="100">
-        <template #default="{ row }">{{ healthStatusLabels[row.health_status] }}</template>
-      </el-table-column>
-      <el-table-column label="疫苗" width="70">
-        <template #default="{ row }">
-          <el-tag :type="row.is_vaccinated ? 'success' : 'info'" size="small">
-            {{ row.is_vaccinated ? '是' : '否' }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="驱虫" width="70">
-        <template #default="{ row }">
-          <el-tag :type="row.is_dewormed ? 'success' : 'info'" size="small">
-            {{ row.is_dewormed ? '是' : '否' }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="入站日期" width="120">
-        <template #default="{ row }">{{ formatDate(row.intake_date) }}</template>
-      </el-table-column>
-      <el-table-column prop="adoption_status" label="状态" width="100" />
-      <el-table-column label="操作" width="160">
-        <template #default="{ row }">
-          <el-button size="small" @click="openEdit(row)">编辑</el-button>
-          <el-button size="small" type="danger" @click="handleDelete(row.id)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="responsive-table" style="--table-min-width: 960px">
+      <el-table v-loading="loading" :data="pets" border max-height="640">
+        <el-table-column prop="pet_name" label="名称" width="120" />
+        <el-table-column label="类型" width="80">
+          <template #default="{ row }">{{ petTypeLabels[row.pet_type] }}</template>
+        </el-table-column>
+        <el-table-column prop="breed" label="品种" width="120" />
+        <el-table-column label="健康状态" width="100">
+          <template #default="{ row }">{{ healthStatusLabels[row.health_status] }}</template>
+        </el-table-column>
+        <el-table-column label="疫苗" width="70">
+          <template #default="{ row }">
+            <el-tag :type="row.is_vaccinated ? 'success' : 'info'" size="small">
+              {{ row.is_vaccinated ? '是' : '否' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="驱虫" width="70">
+          <template #default="{ row }">
+            <el-tag :type="row.is_dewormed ? 'success' : 'info'" size="small">
+              {{ row.is_dewormed ? '是' : '否' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="入站日期" width="120">
+          <template #default="{ row }">{{ formatDate(row.intake_date) }}</template>
+        </el-table-column>
+        <el-table-column prop="adoption_status" label="状态" width="100" />
+        <el-table-column label="操作" width="160">
+          <template #default="{ row }">
+            <el-button size="small" @click="openEdit(row)">编辑</el-button>
+            <el-button size="small" type="danger" @click="handleDelete(row.id)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
     <div v-if="total > pageSize" style="margin-top: 16px; display: flex; justify-content: center;">
       <el-pagination :current-page="page" :page-size="pageSize" :total="total" layout="prev, pager, next"

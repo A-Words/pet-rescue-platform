@@ -107,19 +107,21 @@ async function updateStatus(status: string) {
 
       <div v-if="clues.length > 0" class="clues-section">
         <h3>发现线索 ({{ clues.length }})</h3>
-        <el-table :data="clues" border>
-          <el-table-column prop="found_location" label="发现地点" />
-          <el-table-column prop="found_date" label="发现日期" width="120">
-            <template #default="{ row }">{{ formatDate(row.found_date) }}</template>
-          </el-table-column>
-          <el-table-column prop="description" label="描述" show-overflow-tooltip />
-          <el-table-column prop="contact_info" label="联系方式" width="140" />
-          <el-table-column prop="status" label="状态" width="100">
-            <template #default="{ row }">
-              <el-tag size="small">{{ clueStatusLabels[row.status] }}</el-tag>
-            </template>
-          </el-table-column>
-        </el-table>
+        <div class="responsive-table" style="--table-min-width: 760px">
+          <el-table :data="clues" border max-height="640">
+            <el-table-column prop="found_location" label="发现地点" />
+            <el-table-column prop="found_date" label="发现日期" width="120">
+              <template #default="{ row }">{{ formatDate(row.found_date) }}</template>
+            </el-table-column>
+            <el-table-column prop="description" label="描述" show-overflow-tooltip />
+            <el-table-column prop="contact_info" label="联系方式" width="140" />
+            <el-table-column prop="status" label="状态" width="100">
+              <template #default="{ row }">
+                <el-tag size="small">{{ clueStatusLabels[row.status] }}</el-tag>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
       </div>
     </template>
   </div>
