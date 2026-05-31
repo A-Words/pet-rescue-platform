@@ -173,13 +173,18 @@ async function handleDelete(id: string) {
         @current-change="(p: number) => { page = p; loadPets() }" />
     </div>
 
-    <el-dialog v-model="dialogVisible" :title="isEdit ? '编辑宠物' : '添加宠物'" width="600px">
+    <el-dialog
+      v-model="dialogVisible"
+      :title="isEdit ? '编辑宠物' : '添加宠物'"
+      width="min(600px, calc(100vw - 24px))"
+      class="pet-form-dialog"
+    >
       <el-form ref="formRef" :model="form" :rules="rules" label-width="100px" label-position="top">
         <el-row :gutter="16">
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="名称" prop="pet_name"><el-input v-model="form.pet_name" /></el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="类型" prop="pet_type">
               <el-select v-model="form.pet_type" style="width: 100%">
                 <el-option label="狗" value="dog" /><el-option label="猫" value="cat" />
@@ -187,13 +192,13 @@ async function handleDelete(id: string) {
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="品种" prop="breed"><el-input v-model="form.breed" /></el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="颜色" prop="color"><el-input v-model="form.color" /></el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="性别" prop="gender">
               <el-select v-model="form.gender" style="width: 100%">
                 <el-option label="公" value="male" /><el-option label="母" value="female" />
@@ -201,10 +206,10 @@ async function handleDelete(id: string) {
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="年龄(月)" prop="age_months"><el-input-number v-model="form.age_months" :min="0" style="width: 100%" /></el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="健康状态" prop="health_status">
               <el-select v-model="form.health_status" style="width: 100%">
                 <el-option label="健康" value="healthy" /><el-option label="治疗中" value="treating" />
@@ -212,18 +217,18 @@ async function handleDelete(id: string) {
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="入站日期" prop="intake_date">
               <el-date-picker v-model="form.intake_date" type="date" value-format="YYYY-MM-DD" style="width: 100%" />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :xs="12" :sm="8">
             <el-form-item label="已疫苗" prop="is_vaccinated"><el-switch v-model="form.is_vaccinated" /></el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :xs="12" :sm="8">
             <el-form-item label="已驱虫" prop="is_dewormed"><el-switch v-model="form.is_dewormed" /></el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :xs="12" :sm="8">
             <el-form-item label="已绝育" prop="is_sterilized"><el-switch v-model="form.is_sterilized" /></el-form-item>
           </el-col>
           <el-col :span="24">
@@ -244,3 +249,34 @@ async function handleDelete(id: string) {
     </el-dialog>
   </div>
 </template>
+
+<style scoped>
+:deep(.pet-form-dialog .el-dialog__body) {
+  max-height: min(70vh, 680px);
+  overflow-y: auto;
+}
+
+@media (max-width: 560px) {
+  :deep(.pet-form-dialog) {
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+
+  :deep(.pet-form-dialog .el-dialog__header),
+  :deep(.pet-form-dialog .el-dialog__body),
+  :deep(.pet-form-dialog .el-dialog__footer) {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  :deep(.pet-form-dialog .el-dialog__footer) {
+    display: flex;
+    gap: 12px;
+  }
+
+  :deep(.pet-form-dialog .el-dialog__footer .el-button) {
+    flex: 1;
+    margin-left: 0;
+  }
+}
+</style>
