@@ -15,8 +15,8 @@ class CRUDAdoptablePet:
         await db.refresh(db_obj)
         return db_obj
 
-    async def get(self, db: AsyncSession, *, id: UUID) -> AdoptablePet | None:
-        result = await db.execute(select(AdoptablePet).where(AdoptablePet.id == id))
+    async def get(self, db: AsyncSession, *, adoptable_pet_id: UUID) -> AdoptablePet | None:
+        result = await db.execute(select(AdoptablePet).where(AdoptablePet.adoptable_pet_id == adoptable_pet_id))
         return result.scalar_one_or_none()
 
     async def get_multi(
@@ -74,7 +74,7 @@ class CRUDAdoptablePet:
         skip: int = 0,
         limit: int = 10,
     ) -> tuple[list[AdoptablePet], int]:
-        count_result = await db.execute(select(func.count(AdoptablePet.id)))
+        count_result = await db.execute(select(func.count(AdoptablePet.adoptable_pet_id)))
         total = count_result.scalar() or 0
 
         result = await db.execute(
@@ -90,8 +90,8 @@ class CRUDAdoptablePet:
         await db.refresh(db_obj)
         return db_obj
 
-    async def remove(self, db: AsyncSession, *, id: UUID) -> None:
-        result = await db.execute(select(AdoptablePet).where(AdoptablePet.id == id))
+    async def remove(self, db: AsyncSession, *, adoptable_pet_id: UUID) -> None:
+        result = await db.execute(select(AdoptablePet).where(AdoptablePet.adoptable_pet_id == adoptable_pet_id))
         obj = result.scalar_one_or_none()
         if obj:
             await db.delete(obj)

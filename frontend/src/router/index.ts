@@ -9,13 +9,13 @@ const routes: RouteRecordRaw[] = [
   // Lost Pets
   { path: '/lost-pets', name: 'LostPetList', component: () => import('@/views/lost-pets/LostPetList.vue') },
   { path: '/lost-pets/publish', name: 'LostPetPublish', component: () => import('@/views/lost-pets/LostPetPublish.vue'), meta: { requiresAuth: true } },
-  { path: '/lost-pets/:id', name: 'LostPetDetail', component: () => import('@/views/lost-pets/LostPetDetail.vue') },
-  { path: '/lost-pets/:id/clue', name: 'FoundClueSubmit', component: () => import('@/views/found-clues/FoundClueSubmit.vue'), meta: { requiresAuth: true } },
+  { path: '/lost-pets/:lostPetId', name: 'LostPetDetail', component: () => import('@/views/lost-pets/LostPetDetail.vue') },
+  { path: '/lost-pets/:lostPetId/clue', name: 'FoundClueSubmit', component: () => import('@/views/found-clues/FoundClueSubmit.vue'), meta: { requiresAuth: true } },
 
   // Adoption
   { path: '/adoption', name: 'AdoptablePetList', component: () => import('@/views/adoption/AdoptablePetList.vue') },
-  { path: '/adoption/:id', name: 'AdoptablePetDetail', component: () => import('@/views/adoption/AdoptablePetDetail.vue') },
-  { path: '/adoption/:id/apply', name: 'AdoptionApplicationForm', component: () => import('@/views/adoption/AdoptionApplicationForm.vue'), meta: { requiresAuth: true } },
+  { path: '/adoption/:adoptablePetId', name: 'AdoptablePetDetail', component: () => import('@/views/adoption/AdoptablePetDetail.vue') },
+  { path: '/adoption/:adoptablePetId/apply', name: 'AdoptionApplicationForm', component: () => import('@/views/adoption/AdoptionApplicationForm.vue'), meta: { requiresAuth: true } },
   { path: '/my/applications', name: 'MyApplications', component: () => import('@/views/adoption/MyApplications.vue'), meta: { requiresAuth: true } },
 
   // Admin

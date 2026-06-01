@@ -5,20 +5,20 @@ export const lostPetsApi = {
   list(params: Record<string, any>) {
     return api.get<PaginatedResponse<LostPet>>('/lost-pets', { params })
   },
-  getDetail(id: string) {
-    return api.get<LostPet>(`/lost-pets/${id}`)
+  getDetail(lostPetId: string) {
+    return api.get<LostPet>(`/lost-pets/${lostPetId}`)
   },
   create(data: Partial<LostPet>) {
     return api.post<LostPet>('/lost-pets', data)
   },
-  update(id: string, data: Partial<LostPet>) {
-    return api.put<LostPet>(`/lost-pets/${id}`, data)
+  update(lostPetId: string, data: Partial<LostPet>) {
+    return api.put<LostPet>(`/lost-pets/${lostPetId}`, data)
   },
-  delete(id: string) {
-    return api.delete(`/lost-pets/${id}`)
+  delete(lostPetId: string) {
+    return api.delete(`/lost-pets/${lostPetId}`)
   },
-  updateStatus(id: string, status: string) {
-    return api.patch(`/lost-pets/${id}/status`, { status })
+  updateStatus(lostPetId: string, status: string) {
+    return api.patch(`/lost-pets/${lostPetId}/status`, { status })
   },
   getMy() {
     return api.get<LostPet[]>('/lost-pets/my')

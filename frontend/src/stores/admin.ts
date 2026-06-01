@@ -31,8 +31,8 @@ export const useAdminStore = defineStore('admin', () => {
     }
   }
 
-  async function reviewApplication(id: string, decision: string, notes?: string) {
-    await adminApi.reviewApplication(id, decision, notes)
+  async function reviewApplication(applicationId: string, decision: string, notes?: string) {
+    await adminApi.reviewApplication(applicationId, decision, notes)
   }
 
   async function fetchReminders(params: Record<string, any> = {}) {
@@ -45,8 +45,8 @@ export const useAdminStore = defineStore('admin', () => {
     }
   }
 
-  async function updateReminder(id: string, data: Partial<VisitReminder>) {
-    await adminApi.updateReminder(id, data)
+  async function updateReminder(reminderId: string, data: Partial<VisitReminder>) {
+    await adminApi.updateReminder(reminderId, data)
   }
 
   async function fetchClues(params: Record<string, any> = {}) {
@@ -59,8 +59,8 @@ export const useAdminStore = defineStore('admin', () => {
     }
   }
 
-  async function reviewClue(id: string, status: string, notes?: string) {
-    await adminApi.reviewClue(id, status, notes)
+  async function reviewClue(foundClueId: string, status: string, notes?: string) {
+    await adminApi.reviewClue(foundClueId, status, notes)
   }
 
   return {

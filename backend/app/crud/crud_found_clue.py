@@ -16,9 +16,9 @@ class CRUDFoundClue:
         await db.refresh(db_obj)
         return db_obj
 
-    async def get(self, db: AsyncSession, *, id: UUID) -> FoundClue | None:
+    async def get(self, db: AsyncSession, *, found_clue_id: UUID) -> FoundClue | None:
         result = await db.execute(
-            select(FoundClue).where(FoundClue.id == id).options(selectinload(FoundClue.reporter))
+            select(FoundClue).where(FoundClue.found_clue_id == found_clue_id).options(selectinload(FoundClue.reporter))
         )
         return result.scalar_one_or_none()
 
@@ -43,7 +43,7 @@ class CRUDFoundClue:
         from sqlalchemy import func
 
         query = select(FoundClue).options(selectinload(FoundClue.reporter))
-        count_query = select(func.count(FoundClue.id))
+        count_query = select(func.count(FoundClue.found_clue_id))
 
         if status:
             query = query.where(FoundClue.status == status)

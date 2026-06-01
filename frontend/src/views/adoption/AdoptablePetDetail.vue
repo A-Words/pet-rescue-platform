@@ -24,7 +24,7 @@ onMounted(async () => {
   updateDescriptionColumns()
   detailMediaQuery.addEventListener('change', updateDescriptionColumns)
 
-  await store.fetchPetDetail(route.params.id as string)
+  await store.fetchPetDetail(route.params.adoptablePetId as string)
 })
 
 onBeforeUnmount(() => {
@@ -85,7 +85,7 @@ onBeforeUnmount(() => {
               v-if="userStore.isLoggedIn && pet.adoption_status === 'available'"
               type="primary"
               size="large"
-              @click="router.push(`/adoption/${pet.id}/apply`)"
+              @click="router.push(`/adoption/${pet.adoptable_pet_id}/apply`)"
             >
               申请领养
             </el-button>

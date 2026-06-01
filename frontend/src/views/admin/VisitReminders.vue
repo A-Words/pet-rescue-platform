@@ -17,8 +17,8 @@ onMounted(() => {
   store.fetchReminders({ page: 1, page_size: 20 })
 })
 
-function openComplete(id: string) {
-  completingReminderId.value = id
+function openComplete(reminderId: string) {
+  completingReminderId.value = reminderId
   completeForm.value = { visit_date: '', visit_notes: '' }
   completeDialogVisible.value = true
 }
@@ -67,7 +67,7 @@ async function handleComplete() {
         <el-table-column prop="visit_notes" label="回访记录" show-overflow-tooltip min-width="200" />
         <el-table-column label="操作" width="120">
           <template #default="{ row }">
-            <el-button v-if="row.status !== 'completed'" size="small" type="primary" @click="openComplete(row.id)">
+            <el-button v-if="row.status !== 'completed'" size="small" type="primary" @click="openComplete(row.reminder_id)">
               完成
             </el-button>
           </template>

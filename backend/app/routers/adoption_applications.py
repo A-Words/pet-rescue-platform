@@ -19,7 +19,7 @@ async def submit_application(
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
     try:
-        app = await crud_adoption_application.create(db, obj_in=obj_in, applicant_id=current_user.id)
+        app = await crud_adoption_application.create(db, obj_in=obj_in, applicant_id=current_user.user_id)
         return app
     except Exception as e:
         if "not available for adoption" in str(e).lower() or "check_violation" in str(e).lower():
@@ -34,7 +34,7 @@ async def my_applications(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    return await crud_adoption_application.get_by_applicant(db, applicant_id=current_user.id)
+    return await crud_adoption_application.get_by_applicant(db, applicant_id=current_user.user_id)
 
 
 @router.get("/{app_id}", response_model=AdoptionApplicationResponse)
@@ -43,10 +43,10 @@ async def get_application(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    app = await crud_adoption_application.get(db, id=app_id)
+    app = await crud_adoption_application.get(db, application_id=app_id)
     if not app:
         raise HTTPException(status_code=404, detail="Application not found")
-    if app.applicant_id != current_user.id and current_user.role != "admin":
+    if app.applicant_id != current_user.user_id and current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
     return app
 
@@ -57,10 +57,10 @@ async def cancel_application(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    app = await crud_adoption_application.get(db, id=app_id)
+    app = await crud_adoption_application.get(db, application_id=app_id)
     if not app:
         raise HTTPException(status_code=404, detail="Application not found")
-    if app.applicant_id != current_user.id:
+    if app.applicant_id != current_user.user_id:
         raise HTTPException(status_code=403, detail="Not authorized")
     if app.status != "pending":
         raise HTTPException(status_code=400, detail="Can only cancel pending applications")

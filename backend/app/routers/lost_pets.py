@@ -18,7 +18,7 @@ async def create_lost_pet(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    pet = await crud_lost_pet.create(db, obj_in=obj_in, user_id=current_user.id)
+    pet = await crud_lost_pet.create(db, obj_in=obj_in, user_id=current_user.user_id)
     return pet
 
 
@@ -48,57 +48,57 @@ async def my_lost_pets(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    return await crud_lost_pet.get_by_user(db, user_id=current_user.id)
+    return await crud_lost_pet.get_by_user(db, user_id=current_user.user_id)
 
 
-@router.get("/{pet_id}", response_model=LostPetResponse)
-async def get_lost_pet(pet_id: UUID, db: Annotated[AsyncSession, Depends(get_db)]):
-    pet = await crud_lost_pet.get(db, id=pet_id)
+@router.get("/{lost_pet_id}", response_model=LostPetResponse)
+async def get_lost_pet(lost_pet_id: UUID, db: Annotated[AsyncSession, Depends(get_db)]):
+    pet = await crud_lost_pet.get(db, lost_pet_id=lost_pet_id)
     if not pet:
         raise HTTPException(status_code=404, detail="Pet not found")
     return pet
 
 
-@router.put("/{pet_id}", response_model=LostPetResponse)
+@router.put("/{lost_pet_id}", response_model=LostPetResponse)
 async def update_lost_pet(
-    pet_id: UUID,
+    lost_pet_id: UUID,
     obj_in: LostPetUpdate,
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    pet = await crud_lost_pet.get(db, id=pet_id)
+    pet = await crud_lost_pet.get(db, lost_pet_id=lost_pet_id)
     if not pet:
         raise HTTPException(status_code=404, detail="Pet not found")
-    if pet.user_id != current_user.id and current_user.role != "admin":
+    if pet.user_id != current_user.user_id and current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
     return await crud_lost_pet.update(db, db_obj=pet, obj_in=obj_in)
 
 
-@router.delete("/{pet_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{lost_pet_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_lost_pet(
-    pet_id: UUID,
+    lost_pet_id: UUID,
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    pet = await crud_lost_pet.get(db, id=pet_id)
+    pet = await crud_lost_pet.get(db, lost_pet_id=lost_pet_id)
     if not pet:
         raise HTTPException(status_code=404, detail="Pet not found")
-    if pet.user_id != current_user.id and current_user.role != "admin":
+    if pet.user_id != current_user.user_id and current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
-    await crud_lost_pet.remove(db, id=pet_id)
+    await crud_lost_pet.remove(db, lost_pet_id=lost_pet_id)
 
 
-@router.patch("/{pet_id}/status", response_model=LostPetResponse)
+@router.patch("/{lost_pet_id}/status", response_model=LostPetResponse)
 async def update_lost_pet_status(
-    pet_id: UUID,
+    lost_pet_id: UUID,
     body: dict,
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    pet = await crud_lost_pet.get(db, id=pet_id)
+    pet = await crud_lost_pet.get(db, lost_pet_id=lost_pet_id)
     if not pet:
         raise HTTPException(status_code=404, detail="Pet not found")
-    if pet.user_id != current_user.id and current_user.role != "admin":
+    if pet.user_id != current_user.user_id and current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
     new_status = body.get("status")
     if new_status not in ("active", "found", "closed"):

@@ -39,7 +39,7 @@ class AdoptablePetUpdate(BaseModel):
 
 
 class AdoptablePetResponse(BaseModel):
-    id: UUID
+    adoptable_pet_id: UUID
     pet_name: str
     pet_type: str
     breed: str | None = None

@@ -8,7 +8,7 @@ from app.schemas.review_record import ReviewRecordResponse
 
 
 class AdoptionApplicationCreate(BaseModel):
-    pet_id: UUID
+    adoptable_pet_id: UUID
     applicant_name: str
     applicant_phone: str
     applicant_address: str
@@ -20,8 +20,8 @@ class AdoptionApplicationCreate(BaseModel):
 
 
 class AdoptionApplicationResponse(BaseModel):
-    id: UUID
-    pet_id: UUID
+    application_id: UUID
+    adoptable_pet_id: UUID
     applicant_id: UUID
     applicant_name: str
     applicant_phone: str

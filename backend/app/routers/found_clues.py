@@ -13,32 +13,32 @@ from app.schemas.found_clue import FoundClueCreate, FoundClueResponse, FoundClue
 router = APIRouter()
 
 
-@router.post("/lost-pets/{pet_id}/clues", response_model=FoundClueResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/lost-pets/{lost_pet_id}/clues", response_model=FoundClueResponse, status_code=status.HTTP_201_CREATED)
 async def submit_clue(
-    pet_id: UUID,
+    lost_pet_id: UUID,
     obj_in: FoundClueCreate,
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    pet = await crud_lost_pet.get(db, id=pet_id)
+    pet = await crud_lost_pet.get(db, lost_pet_id=lost_pet_id)
     if not pet:
         raise HTTPException(status_code=404, detail="Pet not found")
-    clue = await crud_found_clue.create(db, obj_in=obj_in, lost_pet_id=pet_id, reporter_id=current_user.id)
+    clue = await crud_found_clue.create(db, obj_in=obj_in, lost_pet_id=lost_pet_id, reporter_id=current_user.user_id)
     return clue
 
 
-@router.get("/lost-pets/{pet_id}/clues", response_model=list[FoundClueResponse])
+@router.get("/lost-pets/{lost_pet_id}/clues", response_model=list[FoundClueResponse])
 async def list_clues_for_pet(
-    pet_id: UUID,
+    lost_pet_id: UUID,
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    pet = await crud_lost_pet.get(db, id=pet_id)
+    pet = await crud_lost_pet.get(db, lost_pet_id=lost_pet_id)
     if not pet:
         raise HTTPException(status_code=404, detail="Pet not found")
-    if pet.user_id != current_user.id and current_user.role != "admin":
+    if pet.user_id != current_user.user_id and current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
-    return await crud_found_clue.get_by_pet(db, lost_pet_id=pet_id)
+    return await crud_found_clue.get_by_pet(db, lost_pet_id=lost_pet_id)
 
 
 @router.get("/my", response_model=list[FoundClueResponse])
@@ -46,7 +46,7 @@ async def my_clues(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    return await crud_found_clue.get_by_reporter(db, reporter_id=current_user.id)
+    return await crud_found_clue.get_by_reporter(db, reporter_id=current_user.user_id)
 
 
 @router.get("/{clue_id}", response_model=FoundClueResponse)
@@ -55,7 +55,7 @@ async def get_clue(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    clue = await crud_found_clue.get(db, id=clue_id)
+    clue = await crud_found_clue.get(db, found_clue_id=clue_id)
     if not clue:
         raise HTTPException(status_code=404, detail="Clue not found")
     return clue
@@ -68,7 +68,7 @@ async def review_clue(
     admin: Annotated[User, Depends(require_admin)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    clue = await crud_found_clue.get(db, id=clue_id)
+    clue = await crud_found_clue.get(db, found_clue_id=clue_id)
     if not clue:
         raise HTTPException(status_code=404, detail="Clue not found")
-    return await crud_found_clue.update_status(db, db_obj=clue, obj_in=obj_in, reviewer_id=admin.id)
+    return await crud_found_clue.update_status(db, db_obj=clue, obj_in=obj_in, reviewer_id=admin.user_id)

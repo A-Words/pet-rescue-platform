@@ -41,10 +41,11 @@ class LostPetUpdate(BaseModel):
     longitude: Decimal | None = None
     contact_info: str | None = None
     reward_amount: Decimal | None = None
+    status: str | None = None
 
 
 class LostPetResponse(BaseModel):
-    id: UUID
+    lost_pet_id: UUID
     user_id: UUID
     pet_name: str
     pet_type: str

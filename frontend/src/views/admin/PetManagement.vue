@@ -95,8 +95,8 @@ async function handleSave() {
     return
   }
   try {
-    if (isEdit.value && editingPet.value.id) {
-      await adoptablePetsApi.update(editingPet.value.id, form.value as any)
+    if (isEdit.value && editingPet.value.adoptable_pet_id) {
+      await adoptablePetsApi.update(editingPet.value.adoptable_pet_id, form.value as any)
       ElMessage.success('更新成功')
     } else {
       await adoptablePetsApi.create(form.value as any)
@@ -109,10 +109,10 @@ async function handleSave() {
   }
 }
 
-async function handleDelete(id: string) {
+async function handleDelete(adoptablePetId: string) {
   try {
     await ElMessageBox.confirm('确定要删除此宠物吗？', '确认')
-    await adoptablePetsApi.delete(id)
+    await adoptablePetsApi.delete(adoptablePetId)
     ElMessage.success('删除成功')
     loadPets()
   } catch {}
@@ -161,7 +161,7 @@ async function handleDelete(id: string) {
         <el-table-column label="操作" width="160">
           <template #default="{ row }">
             <el-button size="small" @click="openEdit(row as AdoptablePet)">编辑</el-button>
-            <el-button size="small" type="danger" @click="handleDelete(row.id)">删除</el-button>
+            <el-button size="small" type="danger" @click="handleDelete(row.adoptable_pet_id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

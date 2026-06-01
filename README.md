@@ -229,15 +229,15 @@ UPDATE users SET role = 'admin' WHERE username = 'your_admin_username';
 - `GET /api/lost-pets`：分页查询走失宠物
 - `POST /api/lost-pets`：发布走失宠物
 - `GET /api/lost-pets/my`：查询我的走失宠物
-- `GET /api/lost-pets/{pet_id}`：查询走失宠物详情
-- `PUT /api/lost-pets/{pet_id}`：更新走失宠物
-- `DELETE /api/lost-pets/{pet_id}`：删除走失宠物
-- `PATCH /api/lost-pets/{pet_id}/status`：更新走失宠物状态
+- `GET /api/lost-pets/{lost_pet_id}`：查询走失宠物详情
+- `PUT /api/lost-pets/{lost_pet_id}`：更新走失宠物
+- `DELETE /api/lost-pets/{lost_pet_id}`：删除走失宠物
+- `PATCH /api/lost-pets/{lost_pet_id}/status`：更新走失宠物状态
 
 ### 寻宠线索
 
-- `POST /api/found-clues/lost-pets/{pet_id}/clues`：提交线索
-- `GET /api/found-clues/lost-pets/{pet_id}/clues`：查询指定宠物线索
+- `POST /api/found-clues/lost-pets/{lost_pet_id}/clues`：提交线索
+- `GET /api/found-clues/lost-pets/{lost_pet_id}/clues`：查询指定宠物线索
 - `GET /api/found-clues/my`：查询我提交的线索
 - `GET /api/found-clues/{clue_id}`：查询线索详情
 - `PATCH /api/found-clues/{clue_id}/status`：审核线索
@@ -246,10 +246,10 @@ UPDATE users SET role = 'admin' WHERE username = 'your_admin_username';
 
 - `GET /api/adoptable-pets`：分页查询待领养宠物
 - `POST /api/adoptable-pets`：新增待领养宠物
-- `GET /api/adoptable-pets/{pet_id}`：查询待领养宠物详情
-- `PUT /api/adoptable-pets/{pet_id}`：更新待领养宠物
-- `DELETE /api/adoptable-pets/{pet_id}`：删除待领养宠物
-- `PATCH /api/adoptable-pets/{pet_id}/status`：更新领养状态
+- `GET /api/adoptable-pets/{adoptable_pet_id}`：查询待领养宠物详情
+- `PUT /api/adoptable-pets/{adoptable_pet_id}`：更新待领养宠物
+- `DELETE /api/adoptable-pets/{adoptable_pet_id}`：删除待领养宠物
+- `PATCH /api/adoptable-pets/{adoptable_pet_id}/status`：更新领养状态
 
 ### 领养申请
 

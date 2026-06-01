@@ -286,7 +286,7 @@ This system solves the problems of information asymmetry and irregular processes
 
 各实体及其属性描述如下：
 
-（1）用户实体（User）包含用户编号（id）、用户名（username）、邮箱（email）、密码哈希值（hashed_password）、手机号（phone）、头像地址（avatar_url）、角色（role）、是否激活（is_active）、创建时间（created_at）、更新时间（updated_at）等属性。用户实体属性图如图2.1所示。
+（1）用户实体（User）包含用户编号（user_id）、用户名（username）、邮箱（email）、密码哈希值（hashed_password）、手机号（phone）、头像地址（avatar_url）、角色（role）、是否激活（is_active）、创建时间（created_at）、更新时间（updated_at）等属性。用户实体属性图如图2.1所示。
 
 图2.1 用户实体属性图
 
@@ -295,7 +295,7 @@ This system solves the problems of information asymmetry and irregular processes
                     │       用户           │
                     │      (User)          │
                     ├─────────────────────┤
-                    │ id (PK)             │
+                    │ user_id (PK)        │
                     │ username (UNIQUE)    │
                     │ email (UNIQUE)       │
                     │ hashed_password      │
@@ -308,7 +308,7 @@ This system solves the problems of information asymmetry and irregular processes
                     └─────────────────────┘
 ```
 
-（2）走失宠物实体（LostPet）包含宠物编号（id）、发布用户编号（user_id）、宠物名称（pet_name）、宠物种类（pet_type）、品种（breed）、颜色（color）、性别（gender）、年龄描述（age_description）、照片地址（photo_urls）、描述信息（description）、走失日期（lost_date）、走失地点（lost_location）、救助站（rescue_station）、纬度（latitude）、经度（longitude）、联系方式（contact_info）、悬赏金额（reward_amount）、状态（status）、创建时间（created_at）、更新时间（updated_at）等属性。走失宠物实体属性图如图2.2所示。
+（2）走失宠物实体（LostPet）包含宠物编号（lost_pet_id）、发布用户编号（user_id）、宠物名称（pet_name）、宠物种类（pet_type）、品种（breed）、颜色（color）、性别（gender）、年龄描述（age_description）、照片地址（photo_urls）、描述信息（description）、走失日期（lost_date）、走失地点（lost_location）、救助站（rescue_station）、纬度（latitude）、经度（longitude）、联系方式（contact_info）、悬赏金额（reward_amount）、状态（status）、创建时间（created_at）、更新时间（updated_at）等属性。走失宠物实体属性图如图2.2所示。
 
 图2.2 走失宠物实体属性图
 
@@ -317,7 +317,7 @@ This system solves the problems of information asymmetry and irregular processes
                     │     走失宠物         │
                     │    (LostPet)         │
                     ├─────────────────────┤
-                    │ id (PK)             │
+                    │ lost_pet_id (PK)    │
                     │ user_id (FK)        │
                     │ pet_name             │
                     │ pet_type             │
@@ -340,7 +340,7 @@ This system solves the problems of information asymmetry and irregular processes
                     └─────────────────────┘
 ```
 
-（3）发现线索实体（FoundClue）包含线索编号（id）、关联走失宠物编号（lost_pet_id）、上报用户编号（reporter_id）、照片地址（photo_urls）、描述信息（description）、发现地点（found_location）、纬度（latitude）、经度（longitude）、发现日期（found_date）、联系方式（contact_info）、状态（status）、管理员备注（admin_notes）、审核人编号（reviewed_by）、审核时间（reviewed_at）、创建时间（created_at）等属性。发现线索实体属性图如图2.3所示。
+（3）发现线索实体（FoundClue）包含线索编号（found_clue_id）、关联走失宠物编号（lost_pet_id）、上报用户编号（reporter_id）、照片地址（photo_urls）、描述信息（description）、发现地点（found_location）、纬度（latitude）、经度（longitude）、发现日期（found_date）、联系方式（contact_info）、状态（status）、管理员备注（admin_notes）、审核人编号（reviewed_by）、审核时间（reviewed_at）、创建时间（created_at）等属性。发现线索实体属性图如图2.3所示。
 
 图2.3 发现线索实体属性图
 
@@ -349,7 +349,7 @@ This system solves the problems of information asymmetry and irregular processes
                     │     发现线索         │
                     │   (FoundClue)        │
                     ├─────────────────────┤
-                    │ id (PK)             │
+                    │ found_clue_id (PK)  │
                     │ lost_pet_id (FK)    │
                     │ reporter_id (FK)    │
                     │ photo_urls[]         │
@@ -367,7 +367,7 @@ This system solves the problems of information asymmetry and irregular processes
                     └─────────────────────┘
 ```
 
-（4）可领养宠物实体（AdoptablePet）包含宠物编号（id）、宠物名称（pet_name）、宠物种类（pet_type）、品种（breed）、颜色（color）、性别（gender）、月龄（age_months）、照片地址（photo_urls）、描述信息（description）、健康状况（health_status）、是否已接种疫苗（is_vaccinated）、是否已驱虫（is_dewormed）、是否已绝育（is_sterilized）、领养状态（adoption_status）、救助站（rescue_station）、入站日期（intake_date）、创建时间（created_at）、更新时间（updated_at）等属性。可领养宠物实体属性图如图2.4所示。
+（4）可领养宠物实体（AdoptablePet）包含宠物编号（adoptable_pet_id）、宠物名称（pet_name）、宠物种类（pet_type）、品种（breed）、颜色（color）、性别（gender）、月龄（age_months）、照片地址（photo_urls）、描述信息（description）、健康状况（health_status）、是否已接种疫苗（is_vaccinated）、是否已驱虫（is_dewormed）、是否已绝育（is_sterilized）、领养状态（adoption_status）、救助站（rescue_station）、入站日期（intake_date）、创建时间（created_at）、更新时间（updated_at）等属性。可领养宠物实体属性图如图2.4所示。
 
 图2.4 可领养宠物实体属性图
 
@@ -376,7 +376,7 @@ This system solves the problems of information asymmetry and irregular processes
                     │    可领养宠物        │
                     │  (AdoptablePet)      │
                     ├─────────────────────┤
-                    │ id (PK)             │
+                    │ adoptable_pet_id(PK)│
                     │ pet_name             │
                     │ pet_type             │
                     │ breed                │
@@ -397,7 +397,7 @@ This system solves the problems of information asymmetry and irregular processes
                     └─────────────────────┘
 ```
 
-（5）领养申请实体（AdoptionApplication）包含申请编号（id）、宠物编号（pet_id）、申请人编号（applicant_id）、申请人姓名（applicant_name）、申请人电话（applicant_phone）、申请人地址（applicant_address）、申请人身份证号（applicant_id_number）、住房类型（housing_type）、是否饲养其他宠物（has_other_pets）、领养原因（adoption_reason）、养宠经验描述（experience_description）、状态（status）、创建时间（created_at）、更新时间（updated_at）等属性。领养申请实体属性图如图2.5所示。
+（5）领养申请实体（AdoptionApplication）包含申请编号（application_id）、可领养宠物编号（adoptable_pet_id）、申请人编号（applicant_id）、申请人姓名（applicant_name）、申请人电话（applicant_phone）、申请人地址（applicant_address）、申请人身份证号（applicant_id_number）、住房类型（housing_type）、是否饲养其他宠物（has_other_pets）、领养原因（adoption_reason）、养宠经验描述（experience_description）、状态（status）、创建时间（created_at）、更新时间（updated_at）等属性。领养申请实体属性图如图2.5所示。
 
 图2.5 领养申请实体属性图
 
@@ -406,8 +406,8 @@ This system solves the problems of information asymmetry and irregular processes
                     │     领养申请         │
                     │(AdoptionApplication) │
                     ├─────────────────────┤
-                    │ id (PK)             │
-                    │ pet_id (FK)         │
+                    │ application_id (PK) │
+                    │ adoptable_pet_id(FK)│
                     │ applicant_id (FK)   │
                     │ applicant_name       │
                     │ applicant_phone      │
@@ -423,9 +423,9 @@ This system solves the problems of information asymmetry and irregular processes
                     └─────────────────────┘
 ```
 
-（6）审核记录实体（ReviewRecord）包含记录编号（id）、申请编号（application_id）、审核人编号（reviewer_id）、审核决定（decision）、审核备注（review_notes）、审核时间（reviewed_at）等属性。
+（6）审核记录实体（ReviewRecord）包含记录编号（review_record_id）、申请编号（application_id）、审核人编号（reviewer_id）、审核决定（decision）、审核备注（review_notes）、审核时间（reviewed_at）等属性。
 
-（7）回访提醒实体（VisitReminder）包含提醒编号（id）、申请编号（application_id）、领养人编号（adopter_id）、宠物编号（pet_id）、提醒日期（reminder_date）、回访日期（visit_date）、状态（status）、回访备注（visit_notes）、创建时间（created_at）等属性。
+（7）回访提醒实体（VisitReminder）包含提醒编号（reminder_id）、申请编号（application_id）、领养人编号（adopter_id）、可领养宠物编号（adoptable_pet_id）、提醒日期（reminder_date）、回访日期（visit_date）、状态（status）、回访备注（visit_notes）、创建时间（created_at）等属性。
 
 ### 2.2 确定联系集及属性
 
@@ -593,7 +593,7 @@ E-R模型向关系模型的转换遵循以下规则：
 
 | 字段 | 数据类型 | PK | FK | 是否为空 | 其他约束 | 说明 |
 |------|----------|----|----|----------|----------|------|
-| id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 用户编号 |
+| user_id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 用户编号 |
 | username | VARCHAR(50) |  |  | 否 | UNIQUE | 用户名 |
 | email | VARCHAR(100) |  |  | 否 | UNIQUE | 邮箱 |
 | hashed_password | VARCHAR(255) |  |  | 否 |  | 密码哈希值 |
@@ -610,8 +610,8 @@ E-R模型向关系模型的转换遵循以下规则：
 
 | 字段 | 数据类型 | PK | FK | 是否为空 | 其他约束 | 说明 |
 |------|----------|----|----|----------|----------|------|
-| id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 宠物编号 |
-| user_id | UUID |  | users.id | 否 |  | 发布用户编号 |
+| lost_pet_id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 宠物编号 |
+| user_id | UUID |  | users.user_id | 否 |  | 发布用户编号 |
 | pet_name | VARCHAR(50) |  |  | 否 |  | 宠物名称 |
 | pet_type | VARCHAR(20) |  |  | 否 |  | 宠物种类 |
 | breed | VARCHAR(50) |  |  | 是 |  | 品种 |
@@ -637,9 +637,9 @@ E-R模型向关系模型的转换遵循以下规则：
 
 | 字段 | 数据类型 | PK | FK | 是否为空 | 其他约束 | 说明 |
 |------|----------|----|----|----------|----------|------|
-| id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 线索编号 |
-| lost_pet_id | UUID |  | lost_pets.id | 否 |  | 关联宠物编号 |
-| reporter_id | UUID |  | users.id | 否 |  | 上报用户编号 |
+| found_clue_id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 线索编号 |
+| lost_pet_id | UUID |  | lost_pets.lost_pet_id | 否 |  | 关联宠物编号 |
+| reporter_id | UUID |  | users.user_id | 否 |  | 上报用户编号 |
 | photo_urls | VARCHAR[] |  |  | 是 |  | 照片地址（数组） |
 | description | TEXT |  |  | 否 |  | 描述信息 |
 | found_location | VARCHAR(255) |  |  | 否 |  | 发现地点 |
@@ -649,7 +649,7 @@ E-R模型向关系模型的转换遵循以下规则：
 | contact_info | VARCHAR(100) |  |  | 否 |  | 联系方式 |
 | status | VARCHAR(20) |  |  | 否 | 默认'pending' | 状态 |
 | admin_notes | TEXT |  |  | 是 |  | 管理员备注 |
-| reviewed_by | UUID |  | users.id | 是 |  | 审核人编号 |
+| reviewed_by | UUID |  | users.user_id | 是 |  | 审核人编号 |
 | reviewed_at | TIMESTAMPTZ |  |  | 是 |  | 审核时间 |
 | created_at | TIMESTAMPTZ |  |  | 否 | 默认now() | 创建时间 |
 
@@ -659,7 +659,7 @@ E-R模型向关系模型的转换遵循以下规则：
 
 | 字段 | 数据类型 | PK | FK | 是否为空 | 其他约束 | 说明 |
 |------|----------|----|----|----------|----------|------|
-| id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 宠物编号 |
+| adoptable_pet_id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 宠物编号 |
 | pet_name | VARCHAR(50) |  |  | 否 |  | 宠物名称 |
 | pet_type | VARCHAR(20) |  |  | 否 |  | 宠物种类 |
 | breed | VARCHAR(50) |  |  | 是 |  | 品种 |
@@ -684,9 +684,9 @@ E-R模型向关系模型的转换遵循以下规则：
 
 | 字段 | 数据类型 | PK | FK | 是否为空 | 其他约束 | 说明 |
 |------|----------|----|----|----------|----------|------|
-| id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 申请编号 |
-| pet_id | UUID |  | adoptable_pets.id | 否 |  | 宠物编号 |
-| applicant_id | UUID |  | users.id | 否 |  | 申请人编号 |
+| application_id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 申请编号 |
+| adoptable_pet_id | UUID |  | adoptable_pets.adoptable_pet_id | 否 |  | 可领养宠物编号 |
+| applicant_id | UUID |  | users.user_id | 否 |  | 申请人编号 |
 | applicant_name | VARCHAR(50) |  |  | 否 |  | 申请人姓名 |
 | applicant_phone | VARCHAR(20) |  |  | 否 |  | 申请人电话 |
 | applicant_address | VARCHAR(255) |  |  | 否 |  | 申请人地址 |
@@ -705,9 +705,9 @@ E-R模型向关系模型的转换遵循以下规则：
 
 | 字段 | 数据类型 | PK | FK | 是否为空 | 其他约束 | 说明 |
 |------|----------|----|----|----------|----------|------|
-| id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 记录编号 |
-| application_id | UUID |  | adoption_applications.id | 否 |  | 申请编号 |
-| reviewer_id | UUID |  | users.id | 否 |  | 审核人编号 |
+| review_record_id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 记录编号 |
+| application_id | UUID |  | adoption_applications.application_id | 否 |  | 申请编号 |
+| reviewer_id | UUID |  | users.user_id | 否 |  | 审核人编号 |
 | decision | VARCHAR(20) |  |  | 否 |  | 审核决定 |
 | review_notes | TEXT |  |  | 是 |  | 审核备注 |
 | reviewed_at | TIMESTAMPTZ |  |  | 否 | 默认now() | 审核时间 |
@@ -718,10 +718,10 @@ E-R模型向关系模型的转换遵循以下规则：
 
 | 字段 | 数据类型 | PK | FK | 是否为空 | 其他约束 | 说明 |
 |------|----------|----|----|----------|----------|------|
-| id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 提醒编号 |
-| application_id | UUID |  | adoption_applications.id | 否 |  | 申请编号 |
-| adopter_id | UUID |  | users.id | 否 |  | 领养人编号 |
-| pet_id | UUID |  | adoptable_pets.id | 否 |  | 宠物编号 |
+| reminder_id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 提醒编号 |
+| application_id | UUID |  | adoption_applications.application_id | 否 |  | 申请编号 |
+| adopter_id | UUID |  | users.user_id | 否 |  | 领养人编号 |
+| adoptable_pet_id | UUID |  | adoptable_pets.adoptable_pet_id | 否 |  | 可领养宠物编号 |
 | reminder_date | DATE |  |  | 否 |  | 提醒日期 |
 | visit_date | DATE |  |  | 是 |  | 回访日期 |
 | status | VARCHAR(20) |  |  | 否 | 默认'pending' | 状态 |
@@ -733,7 +733,7 @@ E-R模型向关系模型的转换遵循以下规则：
 - lost_pets表：user_id、status、lost_date、rescue_station
 - found_clues表：lost_pet_id、reporter_id
 - adoptable_pets表：pet_type、adoption_status、rescue_station
-- adoption_applications表：pet_id、applicant_id、status
+- adoption_applications表：adoptable_pet_id、applicant_id、status
 - visit_reminders表：reminder_date、status
 
 ---
@@ -765,7 +765,7 @@ CREATE DATABASE lost_pet_db
 
 ```sql
 CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     hashed_password VARCHAR(255) NOT NULL,
@@ -782,8 +782,8 @@ CREATE TABLE users (
 
 ```sql
 CREATE TABLE lost_pets (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES users(id),
+    lost_pet_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(user_id),
     pet_name VARCHAR(50) NOT NULL,
     pet_type VARCHAR(20) NOT NULL,
     breed VARCHAR(50),
@@ -809,9 +809,9 @@ CREATE TABLE lost_pets (
 
 ```sql
 CREATE TABLE found_clues (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    lost_pet_id UUID NOT NULL REFERENCES lost_pets(id),
-    reporter_id UUID NOT NULL REFERENCES users(id),
+    found_clue_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    lost_pet_id UUID NOT NULL REFERENCES lost_pets(lost_pet_id),
+    reporter_id UUID NOT NULL REFERENCES users(user_id),
     photo_urls VARCHAR[],
     description TEXT NOT NULL,
     found_location VARCHAR(255) NOT NULL,
@@ -821,7 +821,7 @@ CREATE TABLE found_clues (
     contact_info VARCHAR(100) NOT NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'pending',
     admin_notes TEXT,
-    reviewed_by UUID REFERENCES users(id),
+    reviewed_by UUID REFERENCES users(user_id),
     reviewed_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -831,7 +831,7 @@ CREATE TABLE found_clues (
 
 ```sql
 CREATE TABLE adoptable_pets (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    adoptable_pet_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     pet_name VARCHAR(50) NOT NULL,
     pet_type VARCHAR(20) NOT NULL,
     breed VARCHAR(50),
@@ -856,9 +856,9 @@ CREATE TABLE adoptable_pets (
 
 ```sql
 CREATE TABLE adoption_applications (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    pet_id UUID NOT NULL REFERENCES adoptable_pets(id),
-    applicant_id UUID NOT NULL REFERENCES users(id),
+    application_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    adoptable_pet_id UUID NOT NULL REFERENCES adoptable_pets(adoptable_pet_id),
+    applicant_id UUID NOT NULL REFERENCES users(user_id),
     applicant_name VARCHAR(50) NOT NULL,
     applicant_phone VARCHAR(20) NOT NULL,
     applicant_address VARCHAR(255) NOT NULL,
@@ -870,7 +870,7 @@ CREATE TABLE adoption_applications (
     status VARCHAR(20) NOT NULL DEFAULT 'pending',
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    UNIQUE (pet_id, applicant_id)
+    UNIQUE (adoptable_pet_id, applicant_id)
 );
 ```
 
@@ -878,9 +878,9 @@ CREATE TABLE adoption_applications (
 
 ```sql
 CREATE TABLE review_records (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    application_id UUID NOT NULL REFERENCES adoption_applications(id),
-    reviewer_id UUID NOT NULL REFERENCES users(id),
+    review_record_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    application_id UUID NOT NULL REFERENCES adoption_applications(application_id),
+    reviewer_id UUID NOT NULL REFERENCES users(user_id),
     decision VARCHAR(20) NOT NULL,
     review_notes TEXT,
     reviewed_at TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -891,10 +891,10 @@ CREATE TABLE review_records (
 
 ```sql
 CREATE TABLE visit_reminders (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    application_id UUID NOT NULL REFERENCES adoption_applications(id),
-    adopter_id UUID NOT NULL REFERENCES users(id),
-    pet_id UUID NOT NULL REFERENCES adoptable_pets(id),
+    reminder_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    application_id UUID NOT NULL REFERENCES adoption_applications(application_id),
+    adopter_id UUID NOT NULL REFERENCES users(user_id),
+    adoptable_pet_id UUID NOT NULL REFERENCES adoptable_pets(adoptable_pet_id),
     reminder_date DATE NOT NULL,
     visit_date DATE,
     status VARCHAR(20) NOT NULL DEFAULT 'pending',
@@ -918,7 +918,7 @@ CREATE INDEX idx_adoptable_pets_type ON adoptable_pets(pet_type);
 CREATE INDEX idx_adoptable_pets_status ON adoptable_pets(adoption_status);
 CREATE INDEX idx_adoptable_pets_rescue_station ON adoptable_pets(rescue_station);
 
-CREATE INDEX idx_adoption_applications_pet_id ON adoption_applications(pet_id);
+CREATE INDEX idx_adoption_applications_adoptable_pet_id ON adoption_applications(adoptable_pet_id);
 CREATE INDEX idx_adoption_applications_applicant_id ON adoption_applications(applicant_id);
 CREATE INDEX idx_adoption_applications_status ON adoption_applications(status);
 
@@ -950,28 +950,28 @@ INSERT INTO users (username, email, hashed_password, phone, role) VALUES
 
 ```sql
 INSERT INTO lost_pets (user_id, pet_name, pet_type, breed, color, gender, age_description, description, lost_date, lost_location, contact_info, status) VALUES
-((SELECT id FROM users WHERE username='zhangsan'), '豆豆', 'dog', '金毛寻回犬', '金色', 'male', '3岁', '性格温顺，走失时佩戴蓝色项圈', '2026-05-01', '广州市天河区体育中心附近', '13800000002', 'active'),
-((SELECT id FROM users WHERE username='lisi'), '咪咪', 'cat', '英国短毛猫', '灰色', 'female', '2岁', '比较怕生，左耳有缺口', '2026-05-05', '深圳市南山区科技园', '13800000003', 'active'),
-((SELECT id FROM users WHERE username='wangwu'), '小白', 'dog', '萨摩耶', '白色', 'male', '1岁', '非常活泼，右前腿有白色标记', '2026-05-10', '佛山市禅城区祖庙', '13800000004', 'found'),
-((SELECT id FROM users WHERE username='zhangsan'), '花花', 'cat', '中华田园猫', '黑白花', 'female', '4岁', '已绝育，佩戴红色铃铛', '2026-05-12', '广州市越秀区北京路', '13800000002', 'active'),
-((SELECT id FROM users WHERE username='zhaoliu'), '旺财', 'dog', '拉布拉多', '黑色', 'male', '5岁', '会握手，走失时穿橙色衣服', '2026-05-15', '东莞市东城区万达广场', '13800000005', 'active'),
-((SELECT id FROM users WHERE username='sunqi'), '小黄', 'bird', '虎皮鹦鹉', '黄绿色', 'unknown', '1岁', '会说"你好"，脚上有编号环', '2026-05-18', '珠海市香洲区情侣路', '13800000006', 'active'),
-((SELECT id FROM users WHERE username='lisi'), '球球', 'dog', '柯基', '黄白色', 'female', '2岁', '短腿，尾巴很短', '2026-05-20', '广州市番禺区大学城', '13800000003', 'closed'),
-((SELECT id FROM users WHERE username='wangwu'), '大橘', 'cat', '中华田园猫', '橘色', 'male', '6岁', '体型较大，非常亲人', '2026-05-22', '深圳市福田区莲花山公园', '13800000004', 'active');
+((SELECT user_id FROM users WHERE username='zhangsan'), '豆豆', 'dog', '金毛寻回犬', '金色', 'male', '3岁', '性格温顺，走失时佩戴蓝色项圈', '2026-05-01', '广州市天河区体育中心附近', '13800000002', 'active'),
+((SELECT user_id FROM users WHERE username='lisi'), '咪咪', 'cat', '英国短毛猫', '灰色', 'female', '2岁', '比较怕生，左耳有缺口', '2026-05-05', '深圳市南山区科技园', '13800000003', 'active'),
+((SELECT user_id FROM users WHERE username='wangwu'), '小白', 'dog', '萨摩耶', '白色', 'male', '1岁', '非常活泼，右前腿有白色标记', '2026-05-10', '佛山市禅城区祖庙', '13800000004', 'found'),
+((SELECT user_id FROM users WHERE username='zhangsan'), '花花', 'cat', '中华田园猫', '黑白花', 'female', '4岁', '已绝育，佩戴红色铃铛', '2026-05-12', '广州市越秀区北京路', '13800000002', 'active'),
+((SELECT user_id FROM users WHERE username='zhaoliu'), '旺财', 'dog', '拉布拉多', '黑色', 'male', '5岁', '会握手，走失时穿橙色衣服', '2026-05-15', '东莞市东城区万达广场', '13800000005', 'active'),
+((SELECT user_id FROM users WHERE username='sunqi'), '小黄', 'bird', '虎皮鹦鹉', '黄绿色', 'unknown', '1岁', '会说"你好"，脚上有编号环', '2026-05-18', '珠海市香洲区情侣路', '13800000006', 'active'),
+((SELECT user_id FROM users WHERE username='lisi'), '球球', 'dog', '柯基', '黄白色', 'female', '2岁', '短腿，尾巴很短', '2026-05-20', '广州市番禺区大学城', '13800000003', 'closed'),
+((SELECT user_id FROM users WHERE username='wangwu'), '大橘', 'cat', '中华田园猫', '橘色', 'male', '6岁', '体型较大，非常亲人', '2026-05-22', '深圳市福田区莲花山公园', '13800000004', 'active');
 ```
 
 （3）发现线索表数据插入：
 
 ```sql
 INSERT INTO found_clues (lost_pet_id, reporter_id, description, found_location, found_date, contact_info, status) VALUES
-((SELECT id FROM lost_pets WHERE pet_name='豆豆'), (SELECT id FROM users WHERE username='lisi'), '在天河公园看到一只金色大狗，与描述相似', '广州市天河区天河公园东门', '2026-05-03', '13800000003', 'confirmed'),
-((SELECT id FROM lost_pets WHERE pet_name='豆豆'), (SELECT id FROM users WHERE username='wangwu'), '体育西路地铁站附近看到类似狗狗', '广州市天河区体育西路', '2026-05-04', '13800000004', 'rejected'),
-((SELECT id FROM lost_pets WHERE pet_name='咪咪'), (SELECT id FROM users WHERE username='zhangsan'), '科技园B栋楼下有一只灰色猫', '深圳市南山区科技园B栋', '2026-05-07', '13800000002', 'pending'),
-((SELECT id FROM lost_pets WHERE pet_name='小白'), (SELECT id FROM users WHERE username='zhaoliu'), '在祖庙附近的宠物店看到一只白色萨摩耶', '佛山市禅城区祖庙路宠物店', '2026-05-11', '13800000005', 'confirmed'),
-((SELECT id FROM lost_pets WHERE pet_name='花花'), (SELECT id FROM users WHERE username='sunqi'), '北京路步行街有一只黑白花猫在觅食', '广州市越秀区北京路步行街', '2026-05-14', '13800000006', 'pending'),
-((SELECT id FROM lost_pets WHERE pet_name='旺财'), (SELECT id FROM users WHERE username='zhouba'), '万达广场停车场看到一只黑色拉布拉多', '东莞市东城区万达广场B2停车场', '2026-05-16', '13800000007', 'pending'),
-((SELECT id FROM lost_pets WHERE pet_name='小黄'), (SELECT id FROM users WHERE username='wujiu'), '情侣路海边有一只黄绿色鹦鹉在树上', '珠海市香洲区情侣路海边', '2026-05-19', '13800000008', 'confirmed'),
-((SELECT id FROM lost_pets WHERE pet_name='大橘'), (SELECT id FROM users WHERE username='zhangsan'), '莲花山公园草坪上有一只大橘猫', '深圳市福田区莲花山公园草坪', '2026-05-23', '13800000002', 'pending');
+((SELECT lost_pet_id FROM lost_pets WHERE pet_name='豆豆'), (SELECT user_id FROM users WHERE username='lisi'), '在天河公园看到一只金色大狗，与描述相似', '广州市天河区天河公园东门', '2026-05-03', '13800000003', 'confirmed'),
+((SELECT lost_pet_id FROM lost_pets WHERE pet_name='豆豆'), (SELECT user_id FROM users WHERE username='wangwu'), '体育西路地铁站附近看到类似狗狗', '广州市天河区体育西路', '2026-05-04', '13800000004', 'rejected'),
+((SELECT lost_pet_id FROM lost_pets WHERE pet_name='咪咪'), (SELECT user_id FROM users WHERE username='zhangsan'), '科技园B栋楼下有一只灰色猫', '深圳市南山区科技园B栋', '2026-05-07', '13800000002', 'pending'),
+((SELECT lost_pet_id FROM lost_pets WHERE pet_name='小白'), (SELECT user_id FROM users WHERE username='zhaoliu'), '在祖庙附近的宠物店看到一只白色萨摩耶', '佛山市禅城区祖庙路宠物店', '2026-05-11', '13800000005', 'confirmed'),
+((SELECT lost_pet_id FROM lost_pets WHERE pet_name='花花'), (SELECT user_id FROM users WHERE username='sunqi'), '北京路步行街有一只黑白花猫在觅食', '广州市越秀区北京路步行街', '2026-05-14', '13800000006', 'pending'),
+((SELECT lost_pet_id FROM lost_pets WHERE pet_name='旺财'), (SELECT user_id FROM users WHERE username='zhouba'), '万达广场停车场看到一只黑色拉布拉多', '东莞市东城区万达广场B2停车场', '2026-05-16', '13800000007', 'pending'),
+((SELECT lost_pet_id FROM lost_pets WHERE pet_name='小黄'), (SELECT user_id FROM users WHERE username='wujiu'), '情侣路海边有一只黄绿色鹦鹉在树上', '珠海市香洲区情侣路海边', '2026-05-19', '13800000008', 'confirmed'),
+((SELECT lost_pet_id FROM lost_pets WHERE pet_name='大橘'), (SELECT user_id FROM users WHERE username='zhangsan'), '莲花山公园草坪上有一只大橘猫', '深圳市福田区莲花山公园草坪', '2026-05-23', '13800000002', 'pending');
 ```
 
 （4）可领养宠物表数据插入：
@@ -991,15 +991,15 @@ INSERT INTO adoptable_pets (pet_name, pet_type, breed, color, gender, age_months
 （5）领养申请表数据插入：
 
 ```sql
-INSERT INTO adoption_applications (pet_id, applicant_id, applicant_name, applicant_phone, applicant_address, applicant_id_number, housing_type, has_other_pets, adoption_reason, experience_description, status) VALUES
-((SELECT id FROM adoptable_pets WHERE pet_name='团团'), (SELECT id FROM users WHERE username='zhangsan'), '张三', '13800000002', '广州市天河区XX路XX号', '440100199001011234', 'apartment', false, '非常喜欢布偶猫，家里环境适合养猫', '之前养过一只英短，有3年养猫经验', 'pending'),
-((SELECT id FROM adoptable_pets WHERE pet_name='团团'), (SELECT id FROM users WHERE username='lisi'), '李四', '13800000003', '广州市番禺区XX路XX号', '440100199002022345', 'house', true, '想给家里的猫咪找个伴', '有5年养猫经验，家中目前有一只橘猫', 'pending'),
-((SELECT id FROM adoptable_pets WHERE pet_name='圆圆'), (SELECT id FROM users WHERE username='wangwu'), '王五', '13800000004', '佛山市禅城区XX路XX号', '440100199003033456', 'house', false, '一直想养一只比熊，家里有院子', '之前养过金毛，熟悉犬类护理', 'pending'),
-((SELECT id FROM adoptable_pets WHERE pet_name='小花'), (SELECT id FROM users WHERE username='zhaoliu'), '赵六', '13800000005', '东莞市XX区XX路XX号', '440100199004044567', 'apartment', false, '喜欢中华田园猫，想给流浪猫一个家', '无养宠经验，但已学习相关知识', 'pending'),
-((SELECT id FROM adoptable_pets WHERE pet_name='小花'), (SELECT id FROM users WHERE username='sunqi'), '孙七', '13800000006', '珠海市XX区XX路XX号', '440100199005055678', 'apartment', true, '想给家里增加一个新成员', '养过两只猫，有丰富经验', 'rejected'),
-((SELECT id FROM adoptable_pets WHERE pet_name='雪球'), (SELECT id FROM users WHERE username='zhouba'), '周八', '13800000007', '广州市XX区XX路XX号', '440100199006066789', 'apartment', false, '一直很喜欢波斯猫', '有2年养猫经验', 'pending'),
-((SELECT id FROM adoptable_pets WHERE pet_name='黑豆'), (SELECT id FROM users WHERE username='wujiu'), '吴九', '13800000008', '深圳市XX区XX路XX号', '440100199007077890', 'house', false, '家里空间大，适合养大型犬', '有8年养犬经验', 'pending'),
-((SELECT id FROM adoptable_pets WHERE pet_name='奶茶'), (SELECT id FROM users WHERE username='zhangsan'), '张三', '13800000002', '广州市天河区XX路XX号', '440100199001011234', 'apartment', false, '英短很适合公寓饲养', '之前养过英短，有经验', 'pending');
+INSERT INTO adoption_applications (adoptable_pet_id, applicant_id, applicant_name, applicant_phone, applicant_address, applicant_id_number, housing_type, has_other_pets, adoption_reason, experience_description, status) VALUES
+((SELECT adoptable_pet_id FROM adoptable_pets WHERE pet_name='团团'), (SELECT user_id FROM users WHERE username='zhangsan'), '张三', '13800000002', '广州市天河区XX路XX号', '440100199001011234', 'apartment', false, '非常喜欢布偶猫，家里环境适合养猫', '之前养过一只英短，有3年养猫经验', 'pending'),
+((SELECT adoptable_pet_id FROM adoptable_pets WHERE pet_name='团团'), (SELECT user_id FROM users WHERE username='lisi'), '李四', '13800000003', '广州市番禺区XX路XX号', '440100199002022345', 'house', true, '想给家里的猫咪找个伴', '有5年养猫经验，家中目前有一只橘猫', 'pending'),
+((SELECT adoptable_pet_id FROM adoptable_pets WHERE pet_name='圆圆'), (SELECT user_id FROM users WHERE username='wangwu'), '王五', '13800000004', '佛山市禅城区XX路XX号', '440100199003033456', 'house', false, '一直想养一只比熊，家里有院子', '之前养过金毛，熟悉犬类护理', 'pending'),
+((SELECT adoptable_pet_id FROM adoptable_pets WHERE pet_name='小花'), (SELECT user_id FROM users WHERE username='zhaoliu'), '赵六', '13800000005', '东莞市XX区XX路XX号', '440100199004044567', 'apartment', false, '喜欢中华田园猫，想给流浪猫一个家', '无养宠经验，但已学习相关知识', 'pending'),
+((SELECT adoptable_pet_id FROM adoptable_pets WHERE pet_name='小花'), (SELECT user_id FROM users WHERE username='sunqi'), '孙七', '13800000006', '珠海市XX区XX路XX号', '440100199005055678', 'apartment', true, '想给家里增加一个新成员', '养过两只猫，有丰富经验', 'rejected'),
+((SELECT adoptable_pet_id FROM adoptable_pets WHERE pet_name='雪球'), (SELECT user_id FROM users WHERE username='zhouba'), '周八', '13800000007', '广州市XX区XX路XX号', '440100199006066789', 'apartment', false, '一直很喜欢波斯猫', '有2年养猫经验', 'pending'),
+((SELECT adoptable_pet_id FROM adoptable_pets WHERE pet_name='黑豆'), (SELECT user_id FROM users WHERE username='wujiu'), '吴九', '13800000008', '深圳市XX区XX路XX号', '440100199007077890', 'house', false, '家里空间大，适合养大型犬', '有8年养犬经验', 'pending'),
+((SELECT adoptable_pet_id FROM adoptable_pets WHERE pet_name='奶茶'), (SELECT user_id FROM users WHERE username='zhangsan'), '张三', '13800000002', '广州市天河区XX路XX号', '440100199001011234', 'apartment', false, '英短很适合公寓饲养', '之前养过英短，有经验', 'pending');
 ```
 
 #### 5.2.2 修改数据
@@ -1028,8 +1028,8 @@ UPDATE users SET phone = '13900000002' WHERE username = 'zhangsan';
 
 ```sql
 DELETE FROM found_clues
-WHERE id = (
-    SELECT id FROM found_clues WHERE status = 'rejected' LIMIT 1
+WHERE found_clue_id = (
+    SELECT found_clue_id FROM found_clues WHERE status = 'rejected' LIMIT 1
 );
 ```
 
@@ -1064,10 +1064,10 @@ ORDER BY created_at DESC;
 
 ```sql
 SELECT lp.pet_name, lp.pet_type, lp.lost_location, lp.status,
-       COUNT(fc.id) AS clue_count
+       COUNT(fc.found_clue_id) AS clue_count
 FROM lost_pets lp
-LEFT JOIN found_clues fc ON lp.id = fc.lost_pet_id
-GROUP BY lp.id, lp.pet_name, lp.pet_type, lp.lost_location, lp.status
+LEFT JOIN found_clues fc ON lp.lost_pet_id = fc.lost_pet_id
+GROUP BY lp.lost_pet_id, lp.pet_name, lp.pet_type, lp.lost_location, lp.status
 ORDER BY clue_count DESC;
 ```
 
@@ -1088,8 +1088,8 @@ ORDER BY clue_count DESC;
 ```sql
 SELECT pet_name, pet_type, breed, health_status, rescue_station
 FROM adoptable_pets
-WHERE id IN (
-    SELECT pet_id FROM adoption_applications WHERE status = 'pending'
+WHERE adoptable_pet_id IN (
+    SELECT adoptable_pet_id FROM adoption_applications WHERE status = 'pending'
 )
 ORDER BY pet_name;
 ```
@@ -1131,18 +1131,18 @@ ORDER BY total_count DESC;
 ```sql
 CREATE OR REPLACE VIEW v_adoptable_pets AS
 SELECT
-    ap.id, ap.pet_name, ap.pet_type, ap.breed, ap.color, ap.gender,
+    ap.adoptable_pet_id, ap.pet_name, ap.pet_type, ap.breed, ap.color, ap.gender,
     ap.age_months, ap.photo_urls, ap.description, ap.health_status,
     ap.is_vaccinated, ap.is_dewormed, ap.is_sterilized,
     ap.rescue_station, ap.intake_date,
     COALESCE(app_count.application_count, 0) AS application_count
 FROM adoptable_pets ap
 LEFT JOIN (
-    SELECT pet_id, COUNT(*) AS application_count
+    SELECT adoptable_pet_id, COUNT(*) AS application_count
     FROM adoption_applications
     WHERE status = 'pending'
-    GROUP BY pet_id
-) app_count ON ap.id = app_count.pet_id
+    GROUP BY adoptable_pet_id
+) app_count ON ap.adoptable_pet_id = app_count.adoptable_pet_id
 WHERE ap.adoption_status = 'available'
   AND ap.is_vaccinated = true
   AND ap.is_dewormed = true;
@@ -1216,42 +1216,42 @@ BEGIN
                    AND (p_rescue_station IS NULL OR rescue_station = p_rescue_station)) * 100, 2)
         END AS recovery_rate,
         (SELECT COUNT(*) FROM adoption_applications aa
-         JOIN adoptable_pets ap ON ap.id = aa.pet_id
+         JOIN adoptable_pets ap ON ap.adoptable_pet_id = aa.adoptable_pet_id
          WHERE aa.created_at >= v_month_start
            AND aa.created_at < v_next_month_start
            AND (p_rescue_station IS NULL OR ap.rescue_station = p_rescue_station)) AS total_adoption_applications,
         (SELECT COUNT(*) FROM adoption_applications aa
-         JOIN adoptable_pets ap ON ap.id = aa.pet_id
+         JOIN adoptable_pets ap ON ap.adoptable_pet_id = aa.adoptable_pet_id
          WHERE aa.created_at >= v_month_start
            AND aa.created_at < v_next_month_start
            AND (p_rescue_station IS NULL OR ap.rescue_station = p_rescue_station)
            AND aa.status = 'approved') AS approved_adoptions,
         CASE
             WHEN (SELECT COUNT(*) FROM adoption_applications aa
-                  JOIN adoptable_pets ap ON ap.id = aa.pet_id
+                  JOIN adoptable_pets ap ON ap.adoptable_pet_id = aa.adoptable_pet_id
                   WHERE aa.created_at >= v_month_start
                     AND aa.created_at < v_next_month_start
                     AND (p_rescue_station IS NULL OR ap.rescue_station = p_rescue_station)) = 0 THEN 0
             ELSE ROUND(
                 (SELECT COUNT(*)::NUMERIC FROM adoption_applications aa
-                 JOIN adoptable_pets ap ON ap.id = aa.pet_id
+                 JOIN adoptable_pets ap ON ap.adoptable_pet_id = aa.adoptable_pet_id
                  WHERE aa.created_at >= v_month_start
                    AND aa.created_at < v_next_month_start
                    AND (p_rescue_station IS NULL OR ap.rescue_station = p_rescue_station)
                    AND aa.status = 'approved') /
                 (SELECT COUNT(*)::NUMERIC FROM adoption_applications aa
-                 JOIN adoptable_pets ap ON ap.id = aa.pet_id
+                 JOIN adoptable_pets ap ON ap.adoptable_pet_id = aa.adoptable_pet_id
                  WHERE aa.created_at >= v_month_start
                    AND aa.created_at < v_next_month_start
                    AND (p_rescue_station IS NULL OR ap.rescue_station = p_rescue_station)) * 100, 2)
         END AS adoption_success_rate,
         (SELECT COUNT(*) FROM found_clues fc
-         JOIN lost_pets lp ON lp.id = fc.lost_pet_id
+         JOIN lost_pets lp ON lp.lost_pet_id = fc.lost_pet_id
          WHERE fc.created_at >= v_month_start
            AND fc.created_at < v_next_month_start
            AND (p_rescue_station IS NULL OR lp.rescue_station = p_rescue_station)) AS total_found_clues,
         (SELECT COUNT(*) FROM found_clues fc
-         JOIN lost_pets lp ON lp.id = fc.lost_pet_id
+         JOIN lost_pets lp ON lp.lost_pet_id = fc.lost_pet_id
          WHERE fc.created_at >= v_month_start
            AND fc.created_at < v_next_month_start
            AND (p_rescue_station IS NULL OR lp.rescue_station = p_rescue_station)
@@ -1314,9 +1314,11 @@ RETURNS TRIGGER AS $$
 BEGIN
     IF NEW.status = 'approved' AND (OLD.status IS NULL OR OLD.status != 'approved') THEN
         UPDATE adoptable_pets SET adoption_status = 'adopted', updated_at = now()
-        WHERE id = NEW.pet_id;
+        WHERE adoptable_pet_id = NEW.adoptable_pet_id;
         UPDATE adoption_applications SET status = 'rejected', updated_at = now()
-        WHERE pet_id = NEW.pet_id AND id != NEW.id AND status = 'pending';
+        WHERE adoptable_pet_id = NEW.adoptable_pet_id
+          AND application_id != NEW.application_id
+          AND status = 'pending';
     END IF;
     RETURN NEW;
 END;
@@ -1337,7 +1339,7 @@ RETURNS TRIGGER AS $$
 BEGIN
     IF NOT EXISTS (
         SELECT 1 FROM adoptable_pets
-        WHERE id = NEW.pet_id
+        WHERE adoptable_pet_id = NEW.adoptable_pet_id
           AND adoption_status = 'available'
     ) THEN
         RAISE EXCEPTION 'Pet is not available for adoption'
@@ -1346,7 +1348,7 @@ BEGIN
 
     IF EXISTS (
         SELECT 1 FROM adoption_applications
-        WHERE pet_id = NEW.pet_id
+        WHERE adoptable_pet_id = NEW.adoptable_pet_id
           AND applicant_id = NEW.applicant_id
           AND status IN ('pending', 'approved')
     ) THEN
@@ -1371,8 +1373,8 @@ CREATE OR REPLACE FUNCTION fn_generate_visit_reminders()
 RETURNS TRIGGER AS $$
 BEGIN
     IF NEW.status = 'approved' AND (OLD.status IS NULL OR OLD.status != 'approved') THEN
-        INSERT INTO visit_reminders (application_id, adopter_id, pet_id, reminder_date, status)
-        VALUES (NEW.id, NEW.applicant_id, NEW.pet_id, CURRENT_DATE + INTERVAL '30 days', 'pending');
+        INSERT INTO visit_reminders (application_id, adopter_id, adoptable_pet_id, reminder_date, status)
+        VALUES (NEW.application_id, NEW.applicant_id, NEW.adoptable_pet_id, CURRENT_DATE + INTERVAL '30 days', 'pending');
     END IF;
     RETURN NEW;
 END;
@@ -1389,8 +1391,8 @@ FOR EACH ROW EXECUTE FUNCTION fn_generate_visit_reminders();
 -- 审批通过王五对圆圆的领养申请
 UPDATE adoption_applications
 SET status = 'approved'
-WHERE pet_id = (SELECT id FROM adoptable_pets WHERE pet_name = '圆圆')
-  AND applicant_id = (SELECT id FROM users WHERE username = 'wangwu');
+WHERE adoptable_pet_id = (SELECT adoptable_pet_id FROM adoptable_pets WHERE pet_name = '圆圆')
+  AND applicant_id = (SELECT user_id FROM users WHERE username = 'wangwu');
 
 -- 验证宠物状态已更新为已领养
 SELECT pet_name, adoption_status FROM adoptable_pets WHERE pet_name = '圆圆';
@@ -1398,7 +1400,7 @@ SELECT pet_name, adoption_status FROM adoptable_pets WHERE pet_name = '圆圆';
 
 -- 验证自动生成了回访提醒
 SELECT * FROM visit_reminders
-WHERE pet_id = (SELECT id FROM adoptable_pets WHERE pet_name = '圆圆');
+WHERE adoptable_pet_id = (SELECT adoptable_pet_id FROM adoptable_pets WHERE pet_name = '圆圆');
 -- 结果：自动生成了一条reminder_date为30天后的提醒记录
 ```
 
@@ -1472,20 +1474,20 @@ export const lostPetsApi = {
   list(params: Record<string, any>) {
     return api.get<PaginatedResponse<LostPet>>('/lost-pets', { params })
   },
-  getDetail(id: string) {
-    return api.get<LostPet>(`/lost-pets/${id}`)
+  getDetail(lostPetId: string) {
+    return api.get<LostPet>(`/lost-pets/${lostPetId}`)
   },
   create(data: Partial<LostPet>) {
     return api.post<LostPet>('/lost-pets', data)
   },
-  update(id: string, data: Partial<LostPet>) {
-    return api.put<LostPet>(`/lost-pets/${id}`, data)
+  update(lostPetId: string, data: Partial<LostPet>) {
+    return api.put<LostPet>(`/lost-pets/${lostPetId}`, data)
   },
-  delete(id: string) {
-    return api.delete(`/lost-pets/${id}`)
+  delete(lostPetId: string) {
+    return api.delete(`/lost-pets/${lostPetId}`)
   },
-  updateStatus(id: string, status: string) {
-    return api.patch(`/lost-pets/${id}/status`, { status })
+  updateStatus(lostPetId: string, status: string) {
+    return api.patch(`/lost-pets/${lostPetId}/status`, { status })
   },
   getMy() {
     return api.get<LostPet[]>('/lost-pets/my')
@@ -1517,7 +1519,7 @@ async def create_lost_pet(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    pet = await crud_lost_pet.create(db, obj_in=obj_in, user_id=current_user.id)
+    pet = await crud_lost_pet.create(db, obj_in=obj_in, user_id=current_user.user_id)
     return pet
 
 @router.get("", response_model=dict)
@@ -1582,9 +1584,9 @@ export const useAdoptionApplicationsStore = defineStore('adoptionApplications', 
     return res.data
   }
 
-  async function cancelApplication(id: string) {
-    await adoptionApplicationsApi.cancel(id)
-    const app = applications.value.find((a) => a.id === id)
+  async function cancelApplication(applicationId: string) {
+    await adoptionApplicationsApi.cancel(applicationId)
+    const app = applications.value.find((a) => a.application_id === applicationId)
     if (app) app.status = 'cancelled'
   }
 
@@ -1612,9 +1614,9 @@ class CRUDAdoptionApplication:
         db_obj = AdoptionApplication(**obj_in.model_dump(), applicant_id=applicant_id)
         db.add(db_obj)
         await db.flush()
-        application_id = db_obj.id
+        application_id = db_obj.application_id
         await db.commit()
-        created = await self.get(db, id=application_id)
+        created = await self.get(db, application_id=application_id)
         if created is None:
             raise RuntimeError("Created adoption application not found")
         return created

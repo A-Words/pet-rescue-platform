@@ -5,10 +5,10 @@ from pydantic import BaseModel
 
 
 class VisitReminderResponse(BaseModel):
-    id: UUID
+    reminder_id: UUID
     application_id: UUID
     adopter_id: UUID
-    pet_id: UUID
+    adoptable_pet_id: UUID
     reminder_date: date
     visit_date: date | None = None
     status: str

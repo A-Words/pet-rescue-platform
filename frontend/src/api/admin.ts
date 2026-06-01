@@ -13,8 +13,8 @@ export const adminApi = {
   getApplications(params: Record<string, any>) {
     return api.get<PaginatedResponse<AdoptionApplication>>('/admin/applications', { params })
   },
-  reviewApplication(id: string, decision: string, notes?: string) {
-    return api.post(`/admin/applications/${id}/review`, { decision, review_notes: notes })
+  reviewApplication(applicationId: string, decision: string, notes?: string) {
+    return api.post(`/admin/applications/${applicationId}/review`, { decision, review_notes: notes })
   },
 
   // Statistics
@@ -31,15 +31,15 @@ export const adminApi = {
   getReminders(params: Record<string, any>) {
     return api.get<PaginatedResponse<VisitReminder>>('/admin/visit-reminders', { params })
   },
-  updateReminder(id: string, data: Partial<VisitReminder>) {
-    return api.patch(`/admin/visit-reminders/${id}`, data)
+  updateReminder(reminderId: string, data: Partial<VisitReminder>) {
+    return api.patch(`/admin/visit-reminders/${reminderId}`, data)
   },
 
   // Clues
   getClues(params: Record<string, any>) {
     return api.get<PaginatedResponse<FoundClue>>('/admin/clues', { params })
   },
-  reviewClue(id: string, status: string, notes?: string) {
-    return api.patch(`/found-clues/${id}/status`, { status, admin_notes: notes })
+  reviewClue(foundClueId: string, status: string, notes?: string) {
+    return api.patch(`/found-clues/${foundClueId}/status`, { status, admin_notes: notes })
   },
 }

@@ -2,17 +2,17 @@ import api from './index'
 import type { FoundClue } from '@/types/models'
 
 export const foundCluesApi = {
-  submit(petId: string, data: Partial<FoundClue>) {
-    return api.post<FoundClue>(`/found-clues/lost-pets/${petId}/clues`, data)
+  submit(lostPetId: string, data: Partial<FoundClue>) {
+    return api.post<FoundClue>(`/found-clues/lost-pets/${lostPetId}/clues`, data)
   },
-  listForPet(petId: string) {
-    return api.get<FoundClue[]>(`/found-clues/lost-pets/${petId}/clues`)
+  listForPet(lostPetId: string) {
+    return api.get<FoundClue[]>(`/found-clues/lost-pets/${lostPetId}/clues`)
   },
-  getDetail(id: string) {
-    return api.get<FoundClue>(`/found-clues/${id}`)
+  getDetail(foundClueId: string) {
+    return api.get<FoundClue>(`/found-clues/${foundClueId}`)
   },
-  updateStatus(id: string, status: string, notes?: string) {
-    return api.patch(`/found-clues/${id}/status`, { status, admin_notes: notes })
+  updateStatus(foundClueId: string, status: string, notes?: string) {
+    return api.patch(`/found-clues/${foundClueId}/status`, { status, admin_notes: notes })
   },
   getMy() {
     return api.get<FoundClue[]>('/found-clues/my')

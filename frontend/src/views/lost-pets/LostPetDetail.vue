@@ -14,7 +14,7 @@ const userStore = useUserStore()
 
 const pet = computed(() => petStore.currentPet)
 const clues = ref<FoundClue[]>([])
-const isOwner = computed(() => userStore.user?.id === pet.value?.user_id)
+const isOwner = computed(() => userStore.user?.user_id === pet.value?.user_id)
 const descriptionColumns = ref(2)
 
 let detailMediaQuery: MediaQueryList | undefined
@@ -28,11 +28,11 @@ onMounted(async () => {
   updateDescriptionColumns()
   detailMediaQuery.addEventListener('change', updateDescriptionColumns)
 
-  const id = route.params.id as string
-  await petStore.fetchPetDetail(id)
+  const lostPetId = route.params.lostPetId as string
+  await petStore.fetchPetDetail(lostPetId)
   if (isOwner.value || userStore.isAdmin) {
     try {
-      const res = await foundCluesApi.listForPet(id)
+      const res = await foundCluesApi.listForPet(lostPetId)
       clues.value = res.data
     } catch {}
   }
@@ -44,9 +44,9 @@ onBeforeUnmount(() => {
 
 async function updateStatus(status: string) {
   try {
-    await petStore.updateStatus(route.params.id as string, status)
+    await petStore.updateStatus(route.params.lostPetId as string, status)
     ElMessage.success('状态更新成功')
-    petStore.fetchPetDetail(route.params.id as string)
+    petStore.fetchPetDetail(route.params.lostPetId as string)
   } catch {
     ElMessage.error('状态更新失败')
   }
@@ -98,7 +98,7 @@ async function updateStatus(status: string) {
             <el-button
               v-if="userStore.isLoggedIn && !isOwner && pet.status === 'active'"
               type="warning"
-              @click="router.push(`/lost-pets/${pet.id}/clue`)"
+              @click="router.push(`/lost-pets/${pet.lost_pet_id}/clue`)"
             >
               提交发现线索
             </el-button>

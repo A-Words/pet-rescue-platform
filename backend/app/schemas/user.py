@@ -23,7 +23,7 @@ class UserUpdate(BaseModel):
 
 
 class UserResponse(BaseModel):
-    id: UUID
+    user_id: UUID
     username: str
     email: str
     phone: str | None = None

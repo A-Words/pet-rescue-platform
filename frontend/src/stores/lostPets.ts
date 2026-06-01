@@ -20,10 +20,10 @@ export const useLostPetsStore = defineStore('lostPets', () => {
     }
   }
 
-  async function fetchPetDetail(id: string) {
+  async function fetchPetDetail(lostPetId: string) {
     loading.value = true
     try {
-      const res = await lostPetsApi.getDetail(id)
+      const res = await lostPetsApi.getDetail(lostPetId)
       currentPet.value = res.data
       return res.data
     } finally {
@@ -36,18 +36,18 @@ export const useLostPetsStore = defineStore('lostPets', () => {
     return res.data
   }
 
-  async function updatePet(id: string, data: Partial<LostPet>) {
-    const res = await lostPetsApi.update(id, data)
+  async function updatePet(lostPetId: string, data: Partial<LostPet>) {
+    const res = await lostPetsApi.update(lostPetId, data)
     return res.data
   }
 
-  async function deletePet(id: string) {
-    await lostPetsApi.delete(id)
-    pets.value = pets.value.filter((p) => p.id !== id)
+  async function deletePet(lostPetId: string) {
+    await lostPetsApi.delete(lostPetId)
+    pets.value = pets.value.filter((p) => p.lost_pet_id !== lostPetId)
   }
 
-  async function updateStatus(id: string, status: string) {
-    await lostPetsApi.updateStatus(id, status)
+  async function updateStatus(lostPetId: string, status: string) {
+    await lostPetsApi.updateStatus(lostPetId, status)
   }
 
   return { pets, total, loading, currentPet, fetchPets, fetchPetDetail, publishPet, updatePet, deletePet, updateStatus }

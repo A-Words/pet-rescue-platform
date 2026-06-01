@@ -12,7 +12,7 @@ const appStore = useAdoptionApplicationsStore()
 
 const pet = ref<AdoptablePet | null>(null)
 const form = ref({
-  pet_id: '',
+  adoptable_pet_id: '',
   applicant_name: '',
   applicant_phone: '',
   applicant_address: '',
@@ -35,9 +35,9 @@ const rules: FormRules<AdoptionApplicationForm> = {
 const loading = ref(false)
 
 onMounted(async () => {
-  const id = route.params.id as string
-  form.value.pet_id = id
-  const res = await adoptablePetsApi.getDetail(id)
+  const adoptablePetId = route.params.adoptablePetId as string
+  form.value.adoptable_pet_id = adoptablePetId
+  const res = await adoptablePetsApi.getDetail(adoptablePetId)
   pet.value = res.data
 })
 

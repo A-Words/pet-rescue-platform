@@ -22,9 +22,9 @@ export const useAdoptionApplicationsStore = defineStore('adoptionApplications', 
     return res.data
   }
 
-  async function cancelApplication(id: string) {
-    await adoptionApplicationsApi.cancel(id)
-    const app = applications.value.find((a) => a.id === id)
+  async function cancelApplication(applicationId: string) {
+    await adoptionApplicationsApi.cancel(applicationId)
+    const app = applications.value.find((a) => a.application_id === applicationId)
     if (app) app.status = 'cancelled'
   }
 

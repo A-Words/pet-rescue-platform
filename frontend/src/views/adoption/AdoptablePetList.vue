@@ -65,10 +65,10 @@ function handlePageChange(page: number) {
     <div v-loading="store.loading" class="card-grid">
       <el-card
         v-for="pet in store.pets"
-        :key="pet.id"
+        :key="pet.adoptable_pet_id"
         class="pet-card"
         shadow="hover"
-        @click="router.push(`/adoption/${pet.id}`)"
+        @click="router.push(`/adoption/${pet.adoptable_pet_id}`)"
       >
         <div class="pet-photo">
           <img v-if="pet.photo_urls?.length" :src="pet.photo_urls[0]" :alt="pet.pet_name" />

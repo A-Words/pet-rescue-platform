@@ -16,9 +16,9 @@ class CRUDLostPet:
         await db.refresh(db_obj)
         return db_obj
 
-    async def get(self, db: AsyncSession, *, id: UUID) -> LostPet | None:
+    async def get(self, db: AsyncSession, *, lost_pet_id: UUID) -> LostPet | None:
         result = await db.execute(
-            select(LostPet).where(LostPet.id == id).options(selectinload(LostPet.user))
+            select(LostPet).where(LostPet.lost_pet_id == lost_pet_id).options(selectinload(LostPet.user))
         )
         return result.scalar_one_or_none()
 
@@ -33,7 +33,7 @@ class CRUDLostPet:
         keyword: str | None = None,
     ) -> tuple[list[LostPet], int]:
         query = select(LostPet).options(selectinload(LostPet.user))
-        count_query = select(func.count(LostPet.id))
+        count_query = select(func.count(LostPet.lost_pet_id))
 
         if pet_type:
             query = query.where(LostPet.pet_type == pet_type)
@@ -62,8 +62,8 @@ class CRUDLostPet:
         await db.refresh(db_obj)
         return db_obj
 
-    async def remove(self, db: AsyncSession, *, id: UUID) -> None:
-        result = await db.execute(select(LostPet).where(LostPet.id == id))
+    async def remove(self, db: AsyncSession, *, lost_pet_id: UUID) -> None:
+        result = await db.execute(select(LostPet).where(LostPet.lost_pet_id == lost_pet_id))
         obj = result.scalar_one_or_none()
         if obj:
             await db.delete(obj)

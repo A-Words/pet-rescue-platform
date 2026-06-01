@@ -8,10 +8,10 @@ export const adoptionApplicationsApi = {
   getMy() {
     return api.get<AdoptionApplication[]>('/adoption-applications/my')
   },
-  getDetail(id: string) {
-    return api.get<AdoptionApplication>(`/adoption-applications/${id}`)
+  getDetail(applicationId: string) {
+    return api.get<AdoptionApplication>(`/adoption-applications/${applicationId}`)
   },
-  cancel(id: string) {
-    return api.patch(`/adoption-applications/${id}/cancel`)
+  cancel(applicationId: string) {
+    return api.patch(`/adoption-applications/${applicationId}/cancel`)
   },
 }

@@ -19,8 +19,8 @@ onMounted(() => {
   store.fetchApplications({ page: 1, page_size: 20 })
 })
 
-function openReview(id: string) {
-  reviewingAppId.value = id
+function openReview(applicationId: string) {
+  reviewingAppId.value = applicationId
   reviewForm.value = { decision: 'approved', review_notes: '' }
   reviewDialogVisible.value = true
 }
@@ -74,7 +74,7 @@ async function handleReview() {
         </el-table-column>
         <el-table-column label="操作" width="120">
           <template #default="{ row }">
-            <el-button v-if="row.status === 'pending'" size="small" type="primary" @click="openReview(row.id)">
+            <el-button v-if="row.status === 'pending'" size="small" type="primary" @click="openReview(row.application_id)">
               审核
             </el-button>
           </template>

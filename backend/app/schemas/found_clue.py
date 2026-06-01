@@ -23,7 +23,7 @@ class FoundClueUpdate(BaseModel):
 
 
 class FoundClueResponse(BaseModel):
-    id: UUID
+    found_clue_id: UUID
     lost_pet_id: UUID
     reporter_id: UUID
     photo_urls: list[str] | None = None

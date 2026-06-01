@@ -5,19 +5,19 @@ export const adoptablePetsApi = {
   list(params: Record<string, any>) {
     return api.get<PaginatedResponse<AdoptablePet>>('/adoptable-pets', { params })
   },
-  getDetail(id: string) {
-    return api.get<AdoptablePet>(`/adoptable-pets/${id}`)
+  getDetail(adoptablePetId: string) {
+    return api.get<AdoptablePet>(`/adoptable-pets/${adoptablePetId}`)
   },
   create(data: Partial<AdoptablePet>) {
     return api.post<AdoptablePet>('/adoptable-pets', data)
   },
-  update(id: string, data: Partial<AdoptablePet>) {
-    return api.put<AdoptablePet>(`/adoptable-pets/${id}`, data)
+  update(adoptablePetId: string, data: Partial<AdoptablePet>) {
+    return api.put<AdoptablePet>(`/adoptable-pets/${adoptablePetId}`, data)
   },
-  delete(id: string) {
-    return api.delete(`/adoptable-pets/${id}`)
+  delete(adoptablePetId: string) {
+    return api.delete(`/adoptable-pets/${adoptablePetId}`)
   },
-  updateStatus(id: string, status: string) {
-    return api.patch(`/adoptable-pets/${id}/status`, { status })
+  updateStatus(adoptablePetId: string, status: string) {
+    return api.patch(`/adoptable-pets/${adoptablePetId}/status`, { status })
   },
 }

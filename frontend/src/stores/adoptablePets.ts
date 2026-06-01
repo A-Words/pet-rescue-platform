@@ -20,10 +20,10 @@ export const useAdoptablePetsStore = defineStore('adoptablePets', () => {
     }
   }
 
-  async function fetchPetDetail(id: string) {
+  async function fetchPetDetail(adoptablePetId: string) {
     loading.value = true
     try {
-      const res = await adoptablePetsApi.getDetail(id)
+      const res = await adoptablePetsApi.getDetail(adoptablePetId)
       currentPet.value = res.data
       return res.data
     } finally {

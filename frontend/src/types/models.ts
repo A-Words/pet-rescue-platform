@@ -1,5 +1,5 @@
 export interface User {
-  id: string
+  user_id: string
   username: string
   email: string
   phone?: string
@@ -10,7 +10,7 @@ export interface User {
 }
 
 export interface LostPet {
-  id: string
+  lost_pet_id: string
   user_id: string
   user?: User
   pet_name: string
@@ -35,7 +35,7 @@ export interface LostPet {
 }
 
 export interface FoundClue {
-  id: string
+  found_clue_id: string
   lost_pet_id: string
   reporter_id: string
   reporter?: User
@@ -50,7 +50,7 @@ export interface FoundClue {
 }
 
 export interface AdoptablePet {
-  id: string
+  adoptable_pet_id: string
   pet_name: string
   pet_type: 'dog' | 'cat' | 'bird' | 'other'
   breed?: string
@@ -70,8 +70,8 @@ export interface AdoptablePet {
 }
 
 export interface AdoptionApplication {
-  id: string
-  pet_id: string
+  application_id: string
+  adoptable_pet_id: string
   pet?: AdoptablePet
   applicant_id: string
   applicant?: User
@@ -90,7 +90,7 @@ export interface AdoptionApplication {
 }
 
 export interface ReviewRecord {
-  id: string
+  review_record_id: string
   application_id: string
   reviewer_id: string
   decision: 'approved' | 'rejected'
@@ -99,10 +99,10 @@ export interface ReviewRecord {
 }
 
 export interface VisitReminder {
-  id: string
+  reminder_id: string
   application_id: string
   adopter_id: string
-  pet_id: string
+  adoptable_pet_id: string
   reminder_date: string
   visit_date?: string
   status: 'pending' | 'completed' | 'overdue'

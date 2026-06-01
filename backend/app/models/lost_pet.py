@@ -10,8 +10,8 @@ from app.database import Base
 class LostPet(Base):
     __tablename__ = "lost_pets"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    lost_pet_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"), nullable=False)
     pet_name = Column(String(50), nullable=False)
     pet_type = Column(String(20), nullable=False)
     breed = Column(String(50))

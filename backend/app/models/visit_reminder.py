@@ -10,10 +10,10 @@ from app.database import Base
 class VisitReminder(Base):
     __tablename__ = "visit_reminders"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    application_id = Column(UUID(as_uuid=True), ForeignKey("adoption_applications.id"), nullable=False)
-    adopter_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
-    pet_id = Column(UUID(as_uuid=True), ForeignKey("adoptable_pets.id"), nullable=False)
+    reminder_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    application_id = Column(UUID(as_uuid=True), ForeignKey("adoption_applications.application_id"), nullable=False)
+    adopter_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"), nullable=False)
+    adoptable_pet_id = Column(UUID(as_uuid=True), ForeignKey("adoptable_pets.adoptable_pet_id"), nullable=False)
     reminder_date = Column(Date, nullable=False)
     visit_date = Column(Date)
     status = Column(String(20), nullable=False, default="pending")

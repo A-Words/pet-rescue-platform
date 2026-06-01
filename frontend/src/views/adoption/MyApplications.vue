@@ -9,10 +9,10 @@ onMounted(() => {
   store.fetchMyApplications()
 })
 
-async function handleCancel(id: string) {
+async function handleCancel(applicationId: string) {
   try {
     await ElMessageBox.confirm('确定要取消此申请吗？', '确认')
-    await store.cancelApplication(id)
+    await store.cancelApplication(applicationId)
     ElMessage.success('申请已取消')
   } catch {}
 }
@@ -45,7 +45,7 @@ async function handleCancel(id: string) {
               v-if="row.status === 'pending'"
               type="danger"
               size="small"
-              @click="handleCancel(row.id)"
+              @click="handleCancel(row.application_id)"
             >
               取消
             </el-button>

@@ -21,8 +21,8 @@ class CRUDUser:
         await db.refresh(db_obj)
         return db_obj
 
-    async def get(self, db: AsyncSession, *, id: UUID) -> User | None:
-        result = await db.execute(select(User).where(User.id == id))
+    async def get(self, db: AsyncSession, *, user_id: UUID) -> User | None:
+        result = await db.execute(select(User).where(User.user_id == user_id))
         return result.scalar_one_or_none()
 
     async def get_by_username(self, db: AsyncSession, *, username: str) -> User | None:

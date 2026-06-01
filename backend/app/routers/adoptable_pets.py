@@ -37,7 +37,7 @@ async def list_adoptable_pets(
     result_items = []
     for row in items:
         result_items.append({
-            "id": row.id,
+            "adoptable_pet_id": row.adoptable_pet_id,
             "pet_name": row.pet_name,
             "pet_type": row.pet_type,
             "breed": row.breed,
@@ -60,47 +60,47 @@ async def list_adoptable_pets(
     return {"items": result_items, "total": total, "page": page, "page_size": page_size}
 
 
-@router.get("/{pet_id}", response_model=AdoptablePetResponse)
-async def get_adoptable_pet(pet_id: UUID, db: Annotated[AsyncSession, Depends(get_db)]):
-    pet = await crud_adoptable_pet.get(db, id=pet_id)
+@router.get("/{adoptable_pet_id}", response_model=AdoptablePetResponse)
+async def get_adoptable_pet(adoptable_pet_id: UUID, db: Annotated[AsyncSession, Depends(get_db)]):
+    pet = await crud_adoptable_pet.get(db, adoptable_pet_id=adoptable_pet_id)
     if not pet:
         raise HTTPException(status_code=404, detail="Pet not found")
     return pet
 
 
-@router.put("/{pet_id}", response_model=AdoptablePetResponse)
+@router.put("/{adoptable_pet_id}", response_model=AdoptablePetResponse)
 async def update_adoptable_pet(
-    pet_id: UUID,
+    adoptable_pet_id: UUID,
     obj_in: AdoptablePetUpdate,
     admin: Annotated[User, Depends(require_admin)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    pet = await crud_adoptable_pet.get(db, id=pet_id)
+    pet = await crud_adoptable_pet.get(db, adoptable_pet_id=adoptable_pet_id)
     if not pet:
         raise HTTPException(status_code=404, detail="Pet not found")
     return await crud_adoptable_pet.update(db, db_obj=pet, obj_in=obj_in)
 
 
-@router.delete("/{pet_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{adoptable_pet_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_adoptable_pet(
-    pet_id: UUID,
+    adoptable_pet_id: UUID,
     admin: Annotated[User, Depends(require_admin)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    pet = await crud_adoptable_pet.get(db, id=pet_id)
+    pet = await crud_adoptable_pet.get(db, adoptable_pet_id=adoptable_pet_id)
     if not pet:
         raise HTTPException(status_code=404, detail="Pet not found")
-    await crud_adoptable_pet.remove(db, id=pet_id)
+    await crud_adoptable_pet.remove(db, adoptable_pet_id=adoptable_pet_id)
 
 
-@router.patch("/{pet_id}/status", response_model=AdoptablePetResponse)
+@router.patch("/{adoptable_pet_id}/status", response_model=AdoptablePetResponse)
 async def update_adoption_status(
-    pet_id: UUID,
+    adoptable_pet_id: UUID,
     body: dict,
     admin: Annotated[User, Depends(require_admin)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    pet = await crud_adoptable_pet.get(db, id=pet_id)
+    pet = await crud_adoptable_pet.get(db, adoptable_pet_id=adoptable_pet_id)
     if not pet:
         raise HTTPException(status_code=404, detail="Pet not found")
     new_status = body.get("status")

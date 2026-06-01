@@ -13,17 +13,17 @@ class CRUDAdoptionApplication:
         db_obj = AdoptionApplication(**obj_in.model_dump(), applicant_id=applicant_id)
         db.add(db_obj)
         await db.flush()
-        application_id = db_obj.id
+        application_id = db_obj.application_id
         await db.commit()
-        created = await self.get(db, id=application_id)
+        created = await self.get(db, application_id=application_id)
         if created is None:
             raise RuntimeError("Created adoption application not found")
         return created
 
-    async def get(self, db: AsyncSession, *, id: UUID) -> AdoptionApplication | None:
+    async def get(self, db: AsyncSession, *, application_id: UUID) -> AdoptionApplication | None:
         result = await db.execute(
             select(AdoptionApplication)
-            .where(AdoptionApplication.id == id)
+            .where(AdoptionApplication.application_id == application_id)
             .options(
                 selectinload(AdoptionApplication.pet),
                 selectinload(AdoptionApplication.review_records),
@@ -55,7 +55,7 @@ class CRUDAdoptionApplication:
             selectinload(AdoptionApplication.pet),
             selectinload(AdoptionApplication.review_records),
         )
-        count_query = select(func.count(AdoptionApplication.id))
+        count_query = select(func.count(AdoptionApplication.application_id))
 
         if status:
             query = query.where(AdoptionApplication.status == status)
@@ -70,9 +70,9 @@ class CRUDAdoptionApplication:
 
     async def cancel(self, db: AsyncSession, *, db_obj: AdoptionApplication) -> AdoptionApplication:
         db_obj.status = "cancelled"
-        application_id = db_obj.id
+        application_id = db_obj.application_id
         await db.commit()
-        cancelled = await self.get(db, id=application_id)
+        cancelled = await self.get(db, application_id=application_id)
         if cancelled is None:
             raise RuntimeError("Cancelled adoption application not found")
         return cancelled

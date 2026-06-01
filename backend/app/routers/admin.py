@@ -52,7 +52,7 @@ async def review_application(
     admin: Annotated[User, Depends(require_admin)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    app = await crud_adoption_application.get(db, id=app_id)
+    app = await crud_adoption_application.get(db, application_id=app_id)
     if not app:
         raise HTTPException(status_code=404, detail="Application not found")
     if app.status != "pending":
@@ -62,7 +62,7 @@ async def review_application(
     await crud_review_record.create(
         db,
         application_id=app_id,
-        reviewer_id=admin.id,
+        reviewer_id=admin.user_id,
         decision=body.decision,
         review_notes=body.review_notes,
     )
@@ -70,7 +70,7 @@ async def review_application(
     # Update application status (triggers will fire automatically)
     app.status = body.decision
     await db.commit()
-    reviewed_app = await crud_adoption_application.get(db, id=app_id)
+    reviewed_app = await crud_adoption_application.get(db, application_id=app_id)
     if not reviewed_app:
         raise HTTPException(status_code=404, detail="Application not found")
     return reviewed_app
@@ -118,19 +118,19 @@ async def get_dashboard_overview(
     from datetime import date
 
     active_lost = (await db.execute(
-        select(func.count(LostPet.id)).where(LostPet.status == "active")
+        select(func.count(LostPet.lost_pet_id)).where(LostPet.status == "active")
     )).scalar() or 0
 
     available_adoptable = (await db.execute(
-        select(func.count(AdoptablePet.id)).where(AdoptablePet.adoption_status == "available")
+        select(func.count(AdoptablePet.adoptable_pet_id)).where(AdoptablePet.adoption_status == "available")
     )).scalar() or 0
 
     pending_apps = (await db.execute(
-        select(func.count(AdoptionApplication.id)).where(AdoptionApplication.status == "pending")
+        select(func.count(AdoptionApplication.application_id)).where(AdoptionApplication.status == "pending")
     )).scalar() or 0
 
     pending_clues = (await db.execute(
-        select(func.count(FoundClue.id)).where(FoundClue.status == "pending")
+        select(func.count(FoundClue.found_clue_id)).where(FoundClue.status == "pending")
     )).scalar() or 0
 
     overdue_reminders = await crud_visit_reminder.count_overdue(db)
@@ -172,7 +172,7 @@ async def update_reminder(
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
     from app.models.visit_reminder import VisitReminder
-    result = await db.execute(select(VisitReminder).where(VisitReminder.id == reminder_id))
+    result = await db.execute(select(VisitReminder).where(VisitReminder.reminder_id == reminder_id))
     reminder = result.scalar_one_or_none()
     if not reminder:
         raise HTTPException(status_code=404, detail="Reminder not found")

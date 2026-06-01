@@ -22,7 +22,7 @@ def upgrade() -> None:
 
     op.create_table(
         "users",
-        sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
+        sa.Column("user_id", postgresql.UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
         sa.Column("username", sa.String(50), unique=True, nullable=False),
         sa.Column("email", sa.String(100), unique=True, nullable=False),
         sa.Column("hashed_password", sa.String(255), nullable=False),
@@ -36,8 +36,8 @@ def upgrade() -> None:
 
     op.create_table(
         "lost_pets",
-        sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("user_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False),
+        sa.Column("lost_pet_id", postgresql.UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
+        sa.Column("user_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.user_id"), nullable=False),
         sa.Column("pet_name", sa.String(50), nullable=False),
         sa.Column("pet_type", sa.String(20), nullable=False),
         sa.Column("breed", sa.String(50)),
@@ -60,9 +60,9 @@ def upgrade() -> None:
 
     op.create_table(
         "found_clues",
-        sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("lost_pet_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("lost_pets.id"), nullable=False),
-        sa.Column("reporter_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False),
+        sa.Column("found_clue_id", postgresql.UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
+        sa.Column("lost_pet_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("lost_pets.lost_pet_id"), nullable=False),
+        sa.Column("reporter_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.user_id"), nullable=False),
         sa.Column("photo_urls", postgresql.ARRAY(sa.String)),
         sa.Column("description", sa.Text, nullable=False),
         sa.Column("found_location", sa.String(255), nullable=False),
@@ -72,14 +72,14 @@ def upgrade() -> None:
         sa.Column("contact_info", sa.String(100), nullable=False),
         sa.Column("status", sa.String(20), nullable=False, server_default="pending"),
         sa.Column("admin_notes", sa.Text),
-        sa.Column("reviewed_by", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id")),
+        sa.Column("reviewed_by", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.user_id")),
         sa.Column("reviewed_at", sa.DateTime(timezone=True)),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.func.now()),
     )
 
     op.create_table(
         "adoptable_pets",
-        sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
+        sa.Column("adoptable_pet_id", postgresql.UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
         sa.Column("pet_name", sa.String(50), nullable=False),
         sa.Column("pet_type", sa.String(20), nullable=False),
         sa.Column("breed", sa.String(50)),
@@ -101,9 +101,9 @@ def upgrade() -> None:
 
     op.create_table(
         "adoption_applications",
-        sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("pet_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("adoptable_pets.id"), nullable=False),
-        sa.Column("applicant_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False),
+        sa.Column("application_id", postgresql.UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
+        sa.Column("adoptable_pet_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("adoptable_pets.adoptable_pet_id"), nullable=False),
+        sa.Column("applicant_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.user_id"), nullable=False),
         sa.Column("applicant_name", sa.String(50), nullable=False),
         sa.Column("applicant_phone", sa.String(20), nullable=False),
         sa.Column("applicant_address", sa.String(255), nullable=False),
@@ -115,14 +115,14 @@ def upgrade() -> None:
         sa.Column("status", sa.String(20), nullable=False, server_default="pending"),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.func.now()),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.func.now()),
-        sa.UniqueConstraint("pet_id", "applicant_id", name="uq_pet_applicant"),
+        sa.UniqueConstraint("adoptable_pet_id", "applicant_id", name="uq_adoptable_pet_applicant"),
     )
 
     op.create_table(
         "review_records",
-        sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("application_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("adoption_applications.id"), nullable=False),
-        sa.Column("reviewer_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False),
+        sa.Column("review_record_id", postgresql.UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
+        sa.Column("application_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("adoption_applications.application_id"), nullable=False),
+        sa.Column("reviewer_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.user_id"), nullable=False),
         sa.Column("decision", sa.String(20), nullable=False),
         sa.Column("review_notes", sa.Text),
         sa.Column("reviewed_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.func.now()),
@@ -130,10 +130,10 @@ def upgrade() -> None:
 
     op.create_table(
         "visit_reminders",
-        sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("application_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("adoption_applications.id"), nullable=False),
-        sa.Column("adopter_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False),
-        sa.Column("pet_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("adoptable_pets.id"), nullable=False),
+        sa.Column("reminder_id", postgresql.UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
+        sa.Column("application_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("adoption_applications.application_id"), nullable=False),
+        sa.Column("adopter_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.user_id"), nullable=False),
+        sa.Column("adoptable_pet_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("adoptable_pets.adoptable_pet_id"), nullable=False),
         sa.Column("reminder_date", sa.Date, nullable=False),
         sa.Column("visit_date", sa.Date),
         sa.Column("status", sa.String(20), nullable=False, server_default="pending"),
@@ -151,7 +151,7 @@ def upgrade() -> None:
     op.create_index("idx_adoptable_pets_type", "adoptable_pets", ["pet_type"])
     op.create_index("idx_adoptable_pets_status", "adoptable_pets", ["adoption_status"])
     op.create_index("idx_adoptable_pets_rescue_station", "adoptable_pets", ["rescue_station"])
-    op.create_index("idx_adoption_applications_pet_id", "adoption_applications", ["pet_id"])
+    op.create_index("idx_adoption_applications_adoptable_pet_id", "adoption_applications", ["adoptable_pet_id"])
     op.create_index("idx_adoption_applications_applicant_id", "adoption_applications", ["applicant_id"])
     op.create_index("idx_adoption_applications_status", "adoption_applications", ["status"])
     op.create_index("idx_visit_reminders_reminder_date", "visit_reminders", ["reminder_date"])
@@ -161,18 +161,18 @@ def upgrade() -> None:
     op.execute("""
         CREATE OR REPLACE VIEW v_adoptable_pets AS
         SELECT
-            ap.id, ap.pet_name, ap.pet_type, ap.breed, ap.color, ap.gender,
+            ap.adoptable_pet_id, ap.pet_name, ap.pet_type, ap.breed, ap.color, ap.gender,
             ap.age_months, ap.photo_urls, ap.description, ap.health_status,
             ap.is_vaccinated, ap.is_dewormed, ap.is_sterilized,
             ap.rescue_station, ap.intake_date,
             COALESCE(app_count.application_count, 0) AS application_count
         FROM adoptable_pets ap
         LEFT JOIN (
-            SELECT pet_id, COUNT(*) AS application_count
+            SELECT adoptable_pet_id, COUNT(*) AS application_count
             FROM adoption_applications
             WHERE status = 'pending'
-            GROUP BY pet_id
-        ) app_count ON ap.id = app_count.pet_id
+            GROUP BY adoptable_pet_id
+        ) app_count ON ap.adoptable_pet_id = app_count.adoptable_pet_id
         WHERE ap.adoption_status = 'available'
           AND ap.is_vaccinated = true
           AND ap.is_dewormed = true;
@@ -232,42 +232,42 @@ def upgrade() -> None:
                            AND (p_rescue_station IS NULL OR rescue_station = p_rescue_station)) * 100, 2)
                 END AS recovery_rate,
                 (SELECT COUNT(*) FROM adoption_applications aa
-                 JOIN adoptable_pets ap ON ap.id = aa.pet_id
+                 JOIN adoptable_pets ap ON ap.adoptable_pet_id = aa.adoptable_pet_id
                  WHERE aa.created_at >= v_month_start
                    AND aa.created_at < v_next_month_start
                    AND (p_rescue_station IS NULL OR ap.rescue_station = p_rescue_station)) AS total_adoption_applications,
                 (SELECT COUNT(*) FROM adoption_applications aa
-                 JOIN adoptable_pets ap ON ap.id = aa.pet_id
+                 JOIN adoptable_pets ap ON ap.adoptable_pet_id = aa.adoptable_pet_id
                  WHERE aa.created_at >= v_month_start
                    AND aa.created_at < v_next_month_start
                    AND (p_rescue_station IS NULL OR ap.rescue_station = p_rescue_station)
                    AND aa.status = 'approved') AS approved_adoptions,
                 CASE
                     WHEN (SELECT COUNT(*) FROM adoption_applications aa
-                          JOIN adoptable_pets ap ON ap.id = aa.pet_id
+                          JOIN adoptable_pets ap ON ap.adoptable_pet_id = aa.adoptable_pet_id
                           WHERE aa.created_at >= v_month_start
                             AND aa.created_at < v_next_month_start
                             AND (p_rescue_station IS NULL OR ap.rescue_station = p_rescue_station)) = 0 THEN 0
                     ELSE ROUND(
                         (SELECT COUNT(*)::NUMERIC FROM adoption_applications aa
-                         JOIN adoptable_pets ap ON ap.id = aa.pet_id
+                         JOIN adoptable_pets ap ON ap.adoptable_pet_id = aa.adoptable_pet_id
                          WHERE aa.created_at >= v_month_start
                            AND aa.created_at < v_next_month_start
                            AND (p_rescue_station IS NULL OR ap.rescue_station = p_rescue_station)
                            AND aa.status = 'approved') /
                         (SELECT COUNT(*)::NUMERIC FROM adoption_applications aa
-                         JOIN adoptable_pets ap ON ap.id = aa.pet_id
+                         JOIN adoptable_pets ap ON ap.adoptable_pet_id = aa.adoptable_pet_id
                          WHERE aa.created_at >= v_month_start
                            AND aa.created_at < v_next_month_start
                            AND (p_rescue_station IS NULL OR ap.rescue_station = p_rescue_station)) * 100, 2)
                 END AS adoption_success_rate,
                 (SELECT COUNT(*) FROM found_clues fc
-                 JOIN lost_pets lp ON lp.id = fc.lost_pet_id
+                 JOIN lost_pets lp ON lp.lost_pet_id = fc.lost_pet_id
                  WHERE fc.created_at >= v_month_start
                    AND fc.created_at < v_next_month_start
                    AND (p_rescue_station IS NULL OR lp.rescue_station = p_rescue_station)) AS total_found_clues,
                 (SELECT COUNT(*) FROM found_clues fc
-                 JOIN lost_pets lp ON lp.id = fc.lost_pet_id
+                 JOIN lost_pets lp ON lp.lost_pet_id = fc.lost_pet_id
                  WHERE fc.created_at >= v_month_start
                    AND fc.created_at < v_next_month_start
                    AND (p_rescue_station IS NULL OR lp.rescue_station = p_rescue_station)
@@ -303,9 +303,9 @@ def upgrade() -> None:
         BEGIN
             IF NEW.status = 'approved' AND (OLD.status IS NULL OR OLD.status != 'approved') THEN
                 UPDATE adoptable_pets SET adoption_status = 'adopted', updated_at = now()
-                WHERE id = NEW.pet_id;
+                WHERE adoptable_pet_id = NEW.adoptable_pet_id;
                 UPDATE adoption_applications SET status = 'rejected', updated_at = now()
-                WHERE pet_id = NEW.pet_id AND id != NEW.id AND status = 'pending';
+                WHERE adoptable_pet_id = NEW.adoptable_pet_id AND application_id != NEW.application_id AND status = 'pending';
             END IF;
             RETURN NEW;
         END;
@@ -325,7 +325,7 @@ def upgrade() -> None:
         BEGIN
             IF NOT EXISTS (
                 SELECT 1 FROM adoptable_pets
-                WHERE id = NEW.pet_id
+                WHERE adoptable_pet_id = NEW.adoptable_pet_id
                   AND adoption_status = 'available'
             ) THEN
                 RAISE EXCEPTION 'Pet is not available for adoption'
@@ -334,7 +334,7 @@ def upgrade() -> None:
 
             IF EXISTS (
                 SELECT 1 FROM adoption_applications
-                WHERE pet_id = NEW.pet_id
+                WHERE adoptable_pet_id = NEW.adoptable_pet_id
                   AND applicant_id = NEW.applicant_id
                   AND status IN ('pending', 'approved')
             ) THEN
@@ -358,8 +358,8 @@ def upgrade() -> None:
         RETURNS TRIGGER AS $$
         BEGIN
             IF NEW.status = 'approved' AND (OLD.status IS NULL OR OLD.status != 'approved') THEN
-                INSERT INTO visit_reminders (application_id, adopter_id, pet_id, reminder_date, status)
-                VALUES (NEW.id, NEW.applicant_id, NEW.pet_id, CURRENT_DATE + INTERVAL '30 days', 'pending');
+                INSERT INTO visit_reminders (application_id, adopter_id, adoptable_pet_id, reminder_date, status)
+                VALUES (NEW.application_id, NEW.applicant_id, NEW.adoptable_pet_id, CURRENT_DATE + INTERVAL '30 days', 'pending');
             END IF;
             RETURN NEW;
         END;
@@ -399,7 +399,7 @@ def downgrade() -> None:
     op.drop_index("idx_visit_reminders_reminder_date")
     op.drop_index("idx_adoption_applications_status")
     op.drop_index("idx_adoption_applications_applicant_id")
-    op.drop_index("idx_adoption_applications_pet_id")
+    op.drop_index("idx_adoption_applications_adoptable_pet_id")
     op.drop_index("idx_adoptable_pets_rescue_station")
     op.drop_index("idx_adoptable_pets_status")
     op.drop_index("idx_adoptable_pets_type")

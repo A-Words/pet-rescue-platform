@@ -30,8 +30,8 @@ const rules: FormRules<FoundClueForm> = {
 const loading = ref(false)
 
 onMounted(async () => {
-  const id = route.params.id as string
-  const res = await lostPetsApi.getDetail(id)
+  const lostPetId = route.params.lostPetId as string
+  const res = await lostPetsApi.getDetail(lostPetId)
   pet.value = res.data
 })
 
@@ -42,9 +42,9 @@ async function handleSubmit() {
   }
   loading.value = true
   try {
-    await foundCluesApi.submit(route.params.id as string, form.value)
+    await foundCluesApi.submit(route.params.lostPetId as string, form.value)
     ElMessage.success('线索提交成功')
-    router.push(`/lost-pets/${route.params.id}`)
+    router.push(`/lost-pets/${route.params.lostPetId}`)
   } catch (err: any) {
     ElMessage.error(err.response?.data?.detail || '提交失败')
   } finally {

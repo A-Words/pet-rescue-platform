@@ -19,8 +19,8 @@ onMounted(() => {
   store.fetchClues({ page: 1, page_size: 20 })
 })
 
-function openReview(id: string) {
-  reviewingClueId.value = id
+function openReview(foundClueId: string) {
+  reviewingClueId.value = foundClueId
   reviewForm.value = { status: 'confirmed', admin_notes: '' }
   reviewDialogVisible.value = true
 }
@@ -64,7 +64,7 @@ async function handleReview() {
         </el-table-column>
         <el-table-column label="操作" width="120">
           <template #default="{ row }">
-            <el-button v-if="row.status === 'pending'" size="small" type="primary" @click="openReview(row.id)">
+            <el-button v-if="row.status === 'pending'" size="small" type="primary" @click="openReview(row.found_clue_id)">
               审核
             </el-button>
           </template>

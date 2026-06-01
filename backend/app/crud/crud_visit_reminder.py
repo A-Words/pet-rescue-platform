@@ -17,7 +17,7 @@ class CRUDVisitReminder:
         status: str | None = None,
     ) -> tuple[list[VisitReminder], int]:
         query = select(VisitReminder)
-        count_query = select(func.count(VisitReminder.id))
+        count_query = select(func.count(VisitReminder.reminder_id))
 
         if status:
             query = query.where(VisitReminder.status == status)
@@ -41,7 +41,7 @@ class CRUDVisitReminder:
     async def count_overdue(self, db: AsyncSession) -> int:
         from datetime import date
         result = await db.execute(
-            select(func.count(VisitReminder.id)).where(
+            select(func.count(VisitReminder.reminder_id)).where(
                 VisitReminder.status == "pending",
                 VisitReminder.reminder_date < date.today(),
             )
