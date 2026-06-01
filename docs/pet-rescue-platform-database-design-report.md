@@ -10,7 +10,7 @@
 
 设计这个系统解决了传统宠物救助方式信息不对称、流程不规范的弊端，能够实现走失宠物信息发布与线索上报、可领养宠物信息管理、领养申请与审核、领养后回访提醒以及运营数据统计等功能，为宠物救助站提供了完整的信息化管理方案。
 
-**关键词：** PostgreSQL；数据库设计；宠物救助；领养管理；触发器
+**关键词：** PostgreSQL；数据库设计；宠物救助；领养管理
 
 ---
 
@@ -22,7 +22,7 @@ The system mainly completed the following work: First, requirements analysis was
 
 This system solves the problems of information asymmetry and irregular processes in traditional pet rescue methods, and can realize functions such as lost pet information publishing and clue reporting, adoptable pet information management, adoption application and review, post-adoption visit reminders, and operational data statistics, providing a complete information management solution for pet rescue stations.
 
-**Key words:** PostgreSQL; Database Design; Pet Rescue; Adoption Management; Trigger
+**Key words:** PostgreSQL; Database Design; Pet Rescue; Adoption Management
 
 ---
 
