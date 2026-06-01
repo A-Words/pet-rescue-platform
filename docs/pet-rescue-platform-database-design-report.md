@@ -581,16 +581,16 @@ E-R模型向关系模型的转换遵循以下规则：
 
 | 字段 | 数据类型 | PK | FK | 是否为空 | 其他约束 | 说明 |
 |------|----------|----|----|----------|----------|------|
-| user_id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 用户编号 |
-| username | VARCHAR(50) |  |  | 否 | UNIQUE | 用户名 |
-| email | VARCHAR(100) |  |  | 否 | UNIQUE | 邮箱 |
-| hashed_password | VARCHAR(255) |  |  | 否 |  | 密码哈希值 |
-| phone | VARCHAR(20) |  |  | 是 |  | 手机号 |
-| avatar_url | VARCHAR(500) |  |  | 是 |  | 头像地址 |
-| role | VARCHAR(20) |  |  | 否 | 默认'user' | 角色 |
-| is_active | BOOLEAN |  |  | 否 | 默认true | 是否激活 |
-| created_at | TIMESTAMPTZ |  |  | 否 | 默认now() | 创建时间 |
-| updated_at | TIMESTAMPTZ |  |  | 否 | 默认now() | 更新时间 |
+| user_id | UUID | Y |  | N | 默认gen_random_uuid() | 用户编号 |
+| username | VARCHAR(50) |  |  | N | UNIQUE | 用户名 |
+| email | VARCHAR(100) |  |  | N | UNIQUE | 邮箱 |
+| hashed_password | VARCHAR(255) |  |  | N |  | 密码哈希值 |
+| phone | VARCHAR(20) |  |  | Y |  | 手机号 |
+| avatar_url | VARCHAR(500) |  |  | Y |  | 头像地址 |
+| role | VARCHAR(20) |  |  | N | 默认'user' | 角色 |
+| is_active | BOOLEAN |  |  | N | 默认true | 是否激活 |
+| created_at | TIMESTAMPTZ |  |  | N | 默认now() | 创建时间 |
+| updated_at | TIMESTAMPTZ |  |  | N | 默认now() | 更新时间 |
 
 （2）走失宠物表（lost_pets）的表结构如表4.2所示：
 
@@ -598,26 +598,26 @@ E-R模型向关系模型的转换遵循以下规则：
 
 | 字段 | 数据类型 | PK | FK | 是否为空 | 其他约束 | 说明 |
 |------|----------|----|----|----------|----------|------|
-| lost_pet_id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 宠物编号 |
-| user_id | UUID |  | users.user_id | 否 |  | 发布用户编号 |
-| pet_name | VARCHAR(50) |  |  | 否 |  | 宠物名称 |
-| pet_type | VARCHAR(20) |  |  | 否 |  | 宠物种类 |
-| breed | VARCHAR(50) |  |  | 是 |  | 品种 |
-| color | VARCHAR(30) |  |  | 是 |  | 颜色 |
-| gender | VARCHAR(10) |  |  | 是 |  | 性别 |
-| age_description | VARCHAR(50) |  |  | 是 |  | 年龄描述 |
-| photo_urls | VARCHAR[] |  |  | 是 |  | 照片地址（数组） |
-| description | TEXT |  |  | 否 |  | 描述信息 |
-| lost_date | DATE |  |  | 否 |  | 走失日期 |
-| lost_location | VARCHAR(255) |  |  | 否 |  | 走失地点 |
-| rescue_station | VARCHAR(100) |  |  | 是 |  | 救助站 |
-| latitude | NUMERIC(10,7) |  |  | 是 |  | 纬度 |
-| longitude | NUMERIC(10,7) |  |  | 是 |  | 经度 |
-| contact_info | VARCHAR(100) |  |  | 否 |  | 联系方式 |
-| reward_amount | NUMERIC(10,2) |  |  | 是 | 默认0 | 悬赏金额 |
-| status | VARCHAR(20) |  |  | 否 | 默认'active' | 状态 |
-| created_at | TIMESTAMPTZ |  |  | 否 | 默认now() | 创建时间 |
-| updated_at | TIMESTAMPTZ |  |  | 否 | 默认now() | 更新时间 |
+| lost_pet_id | UUID | Y |  | N | 默认gen_random_uuid() | 宠物编号 |
+| user_id | UUID |  | Y | N |  | 发布用户编号 |
+| pet_name | VARCHAR(50) |  |  | N |  | 宠物名称 |
+| pet_type | VARCHAR(20) |  |  | N |  | 宠物种类 |
+| breed | VARCHAR(50) |  |  | Y |  | 品种 |
+| color | VARCHAR(30) |  |  | Y |  | 颜色 |
+| gender | VARCHAR(10) |  |  | Y |  | 性别 |
+| age_description | VARCHAR(50) |  |  | Y |  | 年龄描述 |
+| photo_urls | VARCHAR[] |  |  | Y |  | 照片地址（数组） |
+| description | TEXT |  |  | N |  | 描述信息 |
+| lost_date | DATE |  |  | N |  | 走失日期 |
+| lost_location | VARCHAR(255) |  |  | N |  | 走失地点 |
+| rescue_station | VARCHAR(100) |  |  | Y |  | 救助站 |
+| latitude | NUMERIC(10,7) |  |  | Y |  | 纬度 |
+| longitude | NUMERIC(10,7) |  |  | Y |  | 经度 |
+| contact_info | VARCHAR(100) |  |  | N |  | 联系方式 |
+| reward_amount | NUMERIC(10,2) |  |  | Y | 默认0 | 悬赏金额 |
+| status | VARCHAR(20) |  |  | N | 默认'active' | 状态 |
+| created_at | TIMESTAMPTZ |  |  | N | 默认now() | 创建时间 |
+| updated_at | TIMESTAMPTZ |  |  | N | 默认now() | 更新时间 |
 
 （3）发现线索表（found_clues）的表结构如表4.3所示：
 
@@ -625,21 +625,21 @@ E-R模型向关系模型的转换遵循以下规则：
 
 | 字段 | 数据类型 | PK | FK | 是否为空 | 其他约束 | 说明 |
 |------|----------|----|----|----------|----------|------|
-| found_clue_id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 线索编号 |
-| lost_pet_id | UUID |  | lost_pets.lost_pet_id | 否 |  | 关联宠物编号 |
-| reporter_id | UUID |  | users.user_id | 否 |  | 上报用户编号 |
-| photo_urls | VARCHAR[] |  |  | 是 |  | 照片地址（数组） |
-| description | TEXT |  |  | 否 |  | 描述信息 |
-| found_location | VARCHAR(255) |  |  | 否 |  | 发现地点 |
-| latitude | NUMERIC(10,7) |  |  | 是 |  | 纬度 |
-| longitude | NUMERIC(10,7) |  |  | 是 |  | 经度 |
-| found_date | DATE |  |  | 否 |  | 发现日期 |
-| contact_info | VARCHAR(100) |  |  | 否 |  | 联系方式 |
-| status | VARCHAR(20) |  |  | 否 | 默认'pending' | 状态 |
-| admin_notes | TEXT |  |  | 是 |  | 管理员备注 |
-| reviewed_by | UUID |  | users.user_id | 是 |  | 审核人编号 |
-| reviewed_at | TIMESTAMPTZ |  |  | 是 |  | 审核时间 |
-| created_at | TIMESTAMPTZ |  |  | 否 | 默认now() | 创建时间 |
+| found_clue_id | UUID | Y |  | N | 默认gen_random_uuid() | 线索编号 |
+| lost_pet_id | UUID |  | Y | N |  | 关联宠物编号 |
+| reporter_id | UUID |  | Y | N |  | 上报用户编号 |
+| photo_urls | VARCHAR[] |  |  | Y |  | 照片地址（数组） |
+| description | TEXT |  |  | N |  | 描述信息 |
+| found_location | VARCHAR(255) |  |  | N |  | 发现地点 |
+| latitude | NUMERIC(10,7) |  |  | Y |  | 纬度 |
+| longitude | NUMERIC(10,7) |  |  | Y |  | 经度 |
+| found_date | DATE |  |  | N |  | 发现日期 |
+| contact_info | VARCHAR(100) |  |  | N |  | 联系方式 |
+| status | VARCHAR(20) |  |  | N | 默认'pending' | 状态 |
+| admin_notes | TEXT |  |  | Y |  | 管理员备注 |
+| reviewed_by | UUID |  | Y | Y |  | 审核人编号 |
+| reviewed_at | TIMESTAMPTZ |  |  | Y |  | 审核时间 |
+| created_at | TIMESTAMPTZ |  |  | N | 默认now() | 创建时间 |
 
 （4）可领养宠物表（adoptable_pets）的表结构如表4.4所示：
 
@@ -647,24 +647,24 @@ E-R模型向关系模型的转换遵循以下规则：
 
 | 字段 | 数据类型 | PK | FK | 是否为空 | 其他约束 | 说明 |
 |------|----------|----|----|----------|----------|------|
-| adoptable_pet_id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 宠物编号 |
-| pet_name | VARCHAR(50) |  |  | 否 |  | 宠物名称 |
-| pet_type | VARCHAR(20) |  |  | 否 |  | 宠物种类 |
-| breed | VARCHAR(50) |  |  | 是 |  | 品种 |
-| color | VARCHAR(30) |  |  | 是 |  | 颜色 |
-| gender | VARCHAR(10) |  |  | 是 |  | 性别 |
-| age_months | INTEGER |  |  | 是 |  | 月龄 |
-| photo_urls | VARCHAR[] |  |  | 是 |  | 照片地址（数组） |
-| description | TEXT |  |  | 是 |  | 描述信息 |
-| health_status | VARCHAR(20) |  |  | 否 | 默认'healthy' | 健康状况 |
-| is_vaccinated | BOOLEAN |  |  | 否 | 默认false | 是否已接种疫苗 |
-| is_dewormed | BOOLEAN |  |  | 否 | 默认false | 是否已驱虫 |
-| is_sterilized | BOOLEAN |  |  | 否 | 默认false | 是否已绝育 |
-| adoption_status | VARCHAR(20) |  |  | 否 | 默认'available' | 领养状态 |
-| rescue_station | VARCHAR(100) |  |  | 是 |  | 救助站 |
-| intake_date | DATE |  |  | 否 |  | 入站日期 |
-| created_at | TIMESTAMPTZ |  |  | 否 | 默认now() | 创建时间 |
-| updated_at | TIMESTAMPTZ |  |  | 否 | 默认now() | 更新时间 |
+| adoptable_pet_id | UUID | Y |  | N | 默认gen_random_uuid() | 宠物编号 |
+| pet_name | VARCHAR(50) |  |  | N |  | 宠物名称 |
+| pet_type | VARCHAR(20) |  |  | N |  | 宠物种类 |
+| breed | VARCHAR(50) |  |  | Y |  | 品种 |
+| color | VARCHAR(30) |  |  | Y |  | 颜色 |
+| gender | VARCHAR(10) |  |  | Y |  | 性别 |
+| age_months | INTEGER |  |  | Y |  | 月龄 |
+| photo_urls | VARCHAR[] |  |  | Y |  | 照片地址（数组） |
+| description | TEXT |  |  | Y |  | 描述信息 |
+| health_status | VARCHAR(20) |  |  | N | 默认'healthy' | 健康状况 |
+| is_vaccinated | BOOLEAN |  |  | N | 默认false | 是否已接种疫苗 |
+| is_dewormed | BOOLEAN |  |  | N | 默认false | 是否已驱虫 |
+| is_sterilized | BOOLEAN |  |  | N | 默认false | 是否已绝育 |
+| adoption_status | VARCHAR(20) |  |  | N | 默认'available' | 领养状态 |
+| rescue_station | VARCHAR(100) |  |  | Y |  | 救助站 |
+| intake_date | DATE |  |  | N |  | 入站日期 |
+| created_at | TIMESTAMPTZ |  |  | N | 默认now() | 创建时间 |
+| updated_at | TIMESTAMPTZ |  |  | N | 默认now() | 更新时间 |
 
 （5）领养申请表（adoption_applications）的表结构如表4.5所示：
 
@@ -672,20 +672,20 @@ E-R模型向关系模型的转换遵循以下规则：
 
 | 字段 | 数据类型 | PK | FK | 是否为空 | 其他约束 | 说明 |
 |------|----------|----|----|----------|----------|------|
-| application_id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 申请编号 |
-| adoptable_pet_id | UUID |  | adoptable_pets.adoptable_pet_id | 否 |  | 可领养宠物编号 |
-| applicant_id | UUID |  | users.user_id | 否 |  | 申请人编号 |
-| applicant_name | VARCHAR(50) |  |  | 否 |  | 申请人姓名 |
-| applicant_phone | VARCHAR(20) |  |  | 否 |  | 申请人电话 |
-| applicant_address | VARCHAR(255) |  |  | 否 |  | 申请人地址 |
-| applicant_id_number | VARCHAR(20) |  |  | 否 |  | 身份证号 |
-| housing_type | VARCHAR(20) |  |  | 是 |  | 住房类型 |
-| has_other_pets | BOOLEAN |  |  | 是 | 默认false | 是否有其他宠物 |
-| adoption_reason | TEXT |  |  | 否 |  | 领养原因 |
-| experience_description | TEXT |  |  | 是 |  | 养宠经验 |
-| status | VARCHAR(20) |  |  | 否 | 默认'pending' | 状态 |
-| created_at | TIMESTAMPTZ |  |  | 否 | 默认now() | 创建时间 |
-| updated_at | TIMESTAMPTZ |  |  | 否 | 默认now() | 更新时间 |
+| application_id | UUID | Y |  | N | 默认gen_random_uuid() | 申请编号 |
+| adoptable_pet_id | UUID |  | Y | N |  | 可领养宠物编号 |
+| applicant_id | UUID |  | Y | N |  | 申请人编号 |
+| applicant_name | VARCHAR(50) |  |  | N |  | 申请人姓名 |
+| applicant_phone | VARCHAR(20) |  |  | N |  | 申请人电话 |
+| applicant_address | VARCHAR(255) |  |  | N |  | 申请人地址 |
+| applicant_id_number | VARCHAR(20) |  |  | N |  | 身份证号 |
+| housing_type | VARCHAR(20) |  |  | Y |  | 住房类型 |
+| has_other_pets | BOOLEAN |  |  | Y | 默认false | 是否有其他宠物 |
+| adoption_reason | TEXT |  |  | N |  | 领养原因 |
+| experience_description | TEXT |  |  | Y |  | 养宠经验 |
+| status | VARCHAR(20) |  |  | N | 默认'pending' | 状态 |
+| created_at | TIMESTAMPTZ |  |  | N | 默认now() | 创建时间 |
+| updated_at | TIMESTAMPTZ |  |  | N | 默认now() | 更新时间 |
 
 （6）审核记录表（review_records）的表结构如表4.6所示：
 
@@ -693,12 +693,12 @@ E-R模型向关系模型的转换遵循以下规则：
 
 | 字段 | 数据类型 | PK | FK | 是否为空 | 其他约束 | 说明 |
 |------|----------|----|----|----------|----------|------|
-| review_record_id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 记录编号 |
-| application_id | UUID |  | adoption_applications.application_id | 否 |  | 申请编号 |
-| reviewer_id | UUID |  | users.user_id | 否 |  | 审核人编号 |
-| decision | VARCHAR(20) |  |  | 否 |  | 审核决定 |
-| review_notes | TEXT |  |  | 是 |  | 审核备注 |
-| reviewed_at | TIMESTAMPTZ |  |  | 否 | 默认now() | 审核时间 |
+| review_record_id | UUID | Y |  | N | 默认gen_random_uuid() | 记录编号 |
+| application_id | UUID |  | Y | N |  | 申请编号 |
+| reviewer_id | UUID |  | Y | N |  | 审核人编号 |
+| decision | VARCHAR(20) |  |  | N |  | 审核决定 |
+| review_notes | TEXT |  |  | Y |  | 审核备注 |
+| reviewed_at | TIMESTAMPTZ |  |  | N | 默认now() | 审核时间 |
 
 （7）回访提醒表（visit_reminders）的表结构如表4.7所示：
 
@@ -706,15 +706,15 @@ E-R模型向关系模型的转换遵循以下规则：
 
 | 字段 | 数据类型 | PK | FK | 是否为空 | 其他约束 | 说明 |
 |------|----------|----|----|----------|----------|------|
-| reminder_id | UUID | 是 |  | 否 | 默认gen_random_uuid() | 提醒编号 |
-| application_id | UUID |  | adoption_applications.application_id | 否 |  | 申请编号 |
-| adopter_id | UUID |  | users.user_id | 否 |  | 领养人编号 |
-| adoptable_pet_id | UUID |  | adoptable_pets.adoptable_pet_id | 否 |  | 可领养宠物编号 |
-| reminder_date | DATE |  |  | 否 |  | 提醒日期 |
-| visit_date | DATE |  |  | 是 |  | 回访日期 |
-| status | VARCHAR(20) |  |  | 否 | 默认'pending' | 状态 |
-| visit_notes | TEXT |  |  | 是 |  | 回访备注 |
-| created_at | TIMESTAMPTZ |  |  | 否 | 默认now() | 创建时间 |
+| reminder_id | UUID | Y |  | N | 默认gen_random_uuid() | 提醒编号 |
+| application_id | UUID |  | Y | N |  | 申请编号 |
+| adopter_id | UUID |  | Y | N |  | 领养人编号 |
+| adoptable_pet_id | UUID |  | Y | N |  | 可领养宠物编号 |
+| reminder_date | DATE |  |  | N |  | 提醒日期 |
+| visit_date | DATE |  |  | Y |  | 回访日期 |
+| status | VARCHAR(20) |  |  | N | 默认'pending' | 状态 |
+| visit_notes | TEXT |  |  | Y |  | 回访备注 |
+| created_at | TIMESTAMPTZ |  |  | N | 默认now() | 创建时间 |
 
 索引设计策略：为提高查询性能，在以下字段上创建了索引：
 
