@@ -282,150 +282,145 @@ This system solves the problems of information asymmetry and irregular processes
 
 ### 2.1 确定实体集及属性
 
-本系统一共包含7个实体，分别是用户（User）、走失宠物（LostPet）、发现线索（FoundClue）、可领养宠物（AdoptablePet）、领养申请（AdoptionApplication）、审核记录（ReviewRecord）和回访提醒（VisitReminder）。
+本系统一共包含7个实体，分别是用户、走失宠物、发现线索、可领养宠物、领养申请、审核记录和回访提醒。
 
 各实体及其属性描述如下：
 
-（1）用户实体（User）包含用户编号（user_id）、用户名（username）、邮箱（email）、密码哈希值（hashed_password）、手机号（phone）、头像地址（avatar_url）、角色（role）、是否激活（is_active）、创建时间（created_at）、更新时间（updated_at）等属性。用户实体属性图如图2.1所示。
+（1）用户实体包含用户编号、用户名、邮箱、密码哈希值、手机号、头像地址、角色、是否激活、创建时间、更新时间等属性。用户实体属性图如图2.1所示。
 
 图2.1 用户实体属性图
 
 ```
                     ┌─────────────────────┐
                     │       用户           │
-                    │      (User)          │
                     ├─────────────────────┤
-                    │ user_id (PK)        │
-                    │ username (UNIQUE)    │
-                    │ email (UNIQUE)       │
-                    │ hashed_password      │
-                    │ phone                │
-                    │ avatar_url           │
-                    │ role                 │
-                    │ is_active            │
-                    │ created_at           │
-                    │ updated_at           │
+                    │ 用户编号（主键）      │
+                    │ 用户名（唯一）        │
+                    │ 邮箱（唯一）          │
+                    │ 密码哈希值            │
+                    │ 手机号                │
+                    │ 头像地址              │
+                    │ 角色                  │
+                    │ 是否激活              │
+                    │ 创建时间              │
+                    │ 更新时间              │
                     └─────────────────────┘
 ```
 
-（2）走失宠物实体（LostPet）包含宠物编号（lost_pet_id）、发布用户编号（user_id）、宠物名称（pet_name）、宠物种类（pet_type）、品种（breed）、颜色（color）、性别（gender）、年龄描述（age_description）、照片地址（photo_urls）、描述信息（description）、走失日期（lost_date）、走失地点（lost_location）、救助站（rescue_station）、纬度（latitude）、经度（longitude）、联系方式（contact_info）、悬赏金额（reward_amount）、状态（status）、创建时间（created_at）、更新时间（updated_at）等属性。走失宠物实体属性图如图2.2所示。
+（2）走失宠物实体包含宠物编号、发布用户编号、宠物名称、宠物种类、品种、颜色、性别、年龄描述、照片地址、描述信息、走失日期、走失地点、救助站、纬度、经度、联系方式、悬赏金额、状态、创建时间、更新时间等属性。走失宠物实体属性图如图2.2所示。
 
 图2.2 走失宠物实体属性图
 
 ```
                     ┌─────────────────────┐
                     │     走失宠物         │
-                    │    (LostPet)         │
                     ├─────────────────────┤
-                    │ lost_pet_id (PK)    │
-                    │ user_id (FK)        │
-                    │ pet_name             │
-                    │ pet_type             │
-                    │ breed                │
-                    │ color                │
-                    │ gender               │
-                    │ age_description      │
-                    │ photo_urls[]         │
-                    │ description          │
-                    │ lost_date            │
-                    │ lost_location        │
-                    │ rescue_station       │
-                    │ latitude             │
-                    │ longitude            │
-                    │ contact_info         │
-                    │ reward_amount        │
-                    │ status               │
-                    │ created_at           │
-                    │ updated_at           │
+                    │ 宠物编号（主键）      │
+                    │ 发布用户编号（外键）  │
+                    │ 宠物名称              │
+                    │ 宠物种类              │
+                    │ 品种                  │
+                    │ 颜色                  │
+                    │ 性别                  │
+                    │ 年龄描述              │
+                    │ 照片地址列表          │
+                    │ 描述信息              │
+                    │ 走失日期              │
+                    │ 走失地点              │
+                    │ 救助站                │
+                    │ 纬度                  │
+                    │ 经度                  │
+                    │ 联系方式              │
+                    │ 悬赏金额              │
+                    │ 状态                  │
+                    │ 创建时间              │
+                    │ 更新时间              │
                     └─────────────────────┘
 ```
 
-（3）发现线索实体（FoundClue）包含线索编号（found_clue_id）、关联走失宠物编号（lost_pet_id）、上报用户编号（reporter_id）、照片地址（photo_urls）、描述信息（description）、发现地点（found_location）、纬度（latitude）、经度（longitude）、发现日期（found_date）、联系方式（contact_info）、状态（status）、管理员备注（admin_notes）、审核人编号（reviewed_by）、审核时间（reviewed_at）、创建时间（created_at）等属性。发现线索实体属性图如图2.3所示。
+（3）发现线索实体包含线索编号、关联走失宠物编号、上报用户编号、照片地址、描述信息、发现地点、纬度、经度、发现日期、联系方式、状态、管理员备注、审核人编号、审核时间、创建时间等属性。发现线索实体属性图如图2.3所示。
 
 图2.3 发现线索实体属性图
 
 ```
                     ┌─────────────────────┐
                     │     发现线索         │
-                    │   (FoundClue)        │
                     ├─────────────────────┤
-                    │ found_clue_id (PK)  │
-                    │ lost_pet_id (FK)    │
-                    │ reporter_id (FK)    │
-                    │ photo_urls[]         │
-                    │ description          │
-                    │ found_location       │
-                    │ latitude             │
-                    │ longitude            │
-                    │ found_date           │
-                    │ contact_info         │
-                    │ status               │
-                    │ admin_notes          │
-                    │ reviewed_by (FK)     │
-                    │ reviewed_at          │
-                    │ created_at           │
+                    │ 线索编号（主键）      │
+                    │ 关联走失宠物编号（外键）│
+                    │ 上报用户编号（外键）  │
+                    │ 照片地址列表          │
+                    │ 描述信息              │
+                    │ 发现地点              │
+                    │ 纬度                  │
+                    │ 经度                  │
+                    │ 发现日期              │
+                    │ 联系方式              │
+                    │ 状态                  │
+                    │ 管理员备注            │
+                    │ 审核人编号（外键）    │
+                    │ 审核时间              │
+                    │ 创建时间              │
                     └─────────────────────┘
 ```
 
-（4）可领养宠物实体（AdoptablePet）包含宠物编号（adoptable_pet_id）、宠物名称（pet_name）、宠物种类（pet_type）、品种（breed）、颜色（color）、性别（gender）、月龄（age_months）、照片地址（photo_urls）、描述信息（description）、健康状况（health_status）、是否已接种疫苗（is_vaccinated）、是否已驱虫（is_dewormed）、是否已绝育（is_sterilized）、领养状态（adoption_status）、救助站（rescue_station）、入站日期（intake_date）、创建时间（created_at）、更新时间（updated_at）等属性。可领养宠物实体属性图如图2.4所示。
+（4）可领养宠物实体包含宠物编号、宠物名称、宠物种类、品种、颜色、性别、月龄、照片地址、描述信息、健康状况、是否已接种疫苗、是否已驱虫、是否已绝育、领养状态、救助站、入站日期、创建时间、更新时间等属性。可领养宠物实体属性图如图2.4所示。
 
 图2.4 可领养宠物实体属性图
 
 ```
                     ┌─────────────────────┐
                     │    可领养宠物        │
-                    │  (AdoptablePet)      │
                     ├─────────────────────┤
-                    │ adoptable_pet_id(PK)│
-                    │ pet_name             │
-                    │ pet_type             │
-                    │ breed                │
-                    │ color                │
-                    │ gender               │
-                    │ age_months           │
-                    │ photo_urls[]         │
-                    │ description          │
-                    │ health_status        │
-                    │ is_vaccinated        │
-                    │ is_dewormed          │
-                    │ is_sterilized        │
-                    │ adoption_status      │
-                    │ rescue_station       │
-                    │ intake_date          │
-                    │ created_at           │
-                    │ updated_at           │
+                    │ 宠物编号（主键）      │
+                    │ 宠物名称              │
+                    │ 宠物种类              │
+                    │ 品种                  │
+                    │ 颜色                  │
+                    │ 性别                  │
+                    │ 月龄                  │
+                    │ 照片地址列表          │
+                    │ 描述信息              │
+                    │ 健康状况              │
+                    │ 是否已接种疫苗        │
+                    │ 是否已驱虫            │
+                    │ 是否已绝育            │
+                    │ 领养状态              │
+                    │ 救助站                │
+                    │ 入站日期              │
+                    │ 创建时间              │
+                    │ 更新时间              │
                     └─────────────────────┘
 ```
 
-（5）领养申请实体（AdoptionApplication）包含申请编号（application_id）、可领养宠物编号（adoptable_pet_id）、申请人编号（applicant_id）、申请人姓名（applicant_name）、申请人电话（applicant_phone）、申请人地址（applicant_address）、申请人身份证号（applicant_id_number）、住房类型（housing_type）、是否饲养其他宠物（has_other_pets）、领养原因（adoption_reason）、养宠经验描述（experience_description）、状态（status）、创建时间（created_at）、更新时间（updated_at）等属性。领养申请实体属性图如图2.5所示。
+（5）领养申请实体包含申请编号、可领养宠物编号、申请人编号、申请人姓名、申请人电话、申请人地址、申请人身份证号、住房类型、是否饲养其他宠物、领养原因、养宠经验描述、状态、创建时间、更新时间等属性。领养申请实体属性图如图2.5所示。
 
 图2.5 领养申请实体属性图
 
 ```
                     ┌─────────────────────┐
                     │     领养申请         │
-                    │(AdoptionApplication) │
                     ├─────────────────────┤
-                    │ application_id (PK) │
-                    │ adoptable_pet_id(FK)│
-                    │ applicant_id (FK)   │
-                    │ applicant_name       │
-                    │ applicant_phone      │
-                    │ applicant_address    │
-                    │ applicant_id_number  │
-                    │ housing_type         │
-                    │ has_other_pets       │
-                    │ adoption_reason      │
-                    │ experience_description│
-                    │ status               │
-                    │ created_at           │
-                    │ updated_at           │
+                    │ 申请编号（主键）      │
+                    │ 可领养宠物编号（外键）│
+                    │ 申请人编号（外键）    │
+                    │ 申请人姓名            │
+                    │ 申请人电话            │
+                    │ 申请人地址            │
+                    │ 申请人身份证号        │
+                    │ 住房类型              │
+                    │ 是否饲养其他宠物      │
+                    │ 领养原因              │
+                    │ 养宠经验描述          │
+                    │ 状态                  │
+                    │ 创建时间              │
+                    │ 更新时间              │
                     └─────────────────────┘
 ```
 
-（6）审核记录实体（ReviewRecord）包含记录编号（review_record_id）、申请编号（application_id）、审核人编号（reviewer_id）、审核决定（decision）、审核备注（review_notes）、审核时间（reviewed_at）等属性。
+（6）审核记录实体包含记录编号、申请编号、审核人编号、审核决定、审核备注、审核时间等属性。
 
-（7）回访提醒实体（VisitReminder）包含提醒编号（reminder_id）、申请编号（application_id）、领养人编号（adopter_id）、可领养宠物编号（adoptable_pet_id）、提醒日期（reminder_date）、回访日期（visit_date）、状态（status）、回访备注（visit_notes）、创建时间（created_at）等属性。
+（7）回访提醒实体包含提醒编号、申请编号、领养人编号、可领养宠物编号、提醒日期、回访日期、状态、回访备注、创建时间等属性。
 
 ### 2.2 确定联系集及属性
 
