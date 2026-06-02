@@ -683,38 +683,68 @@ flowchart TB
 
 图2.6 走失宠物管理模块局部E-R图
 
-```
-    ┌────────┐   发布（1:N）    ┌────────────┐   关联（1:N）    ┌────────────┐
-    │  用户   │────────────────▶│  走失宠物   │◀────────────────│  发现线索   │
-    └───┬────┘                  └────────────┘                  └─────┬──────┘
-        │                         上报（1:N）                          │
-        └───────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    %% 实体 (矩形)
+    User[用户]
+    Pet[走失宠物]
+    Clue[发现线索]
+
+    %% 关系 (菱形)
+    Publish{"发布"}
+    Associate{"关联"}
+    Report{"上报"}
+
+    %% 关系连接与基数 (1:N)
+    User -- "1" --- Publish
+    Publish -- "N" --- Pet
+
+    Pet -- "1" --- Associate
+    Associate -- "N" --- Clue
+
+    User -- "1" --- Report
+    Report -- "N" --- Clue
 ```
 
 领养管理模块的局部E-R图如图2.7所示。
 
 图2.7 领养管理模块局部E-R图
 
-```
-    ┌────────┐  提交申请（1:N）   ┌────────────┐   针对（N:1）   ┌────────────┐
-    │  用户   │──────────────────▶│  领养申请   │────────────────▶│ 可领养宠物  │
-    └────────┘                    └──────┬─────┘                  └────────────┘
-                                          │
-                            ┌─────────────┴─────────────┐
-                            │                           │
-                     产生审核记录（1:N）         设置回访提醒（1:N）
-                            │                           │
-                            ▼                           ▼
-                     ┌────────────┐              ┌────────────┐
-                     │  审核记录   │              │  回访提醒   │
-                     └─────┬──────┘              └────────────┘
-                           │
-                    审核人（N:1）
-                           │
-                           ▼
-                     ┌────────────┐
-                     │   用户      │
-                     └────────────┘
+```mermaid
+    flowchart TB
+    %% 实体 (矩形)
+    User[用户]
+    AdoptionApp[领养申请]
+    Pet[可领养宠物]
+    AuditRecord[审核记录]
+    CallbackReminder[回访提醒]
+
+    %% 关系 (菱形)
+    Submit{"提交申请"}
+    Target{"针对"}
+    GenerateAudit{"产生审核记录"}
+    SetReminder{"设置回访提醒"}
+    Auditor{"审核人"}
+
+    %% 1. 用户 与 领养申请 的 提交申请 关系 (1:N)
+    User -- "1" --- Submit
+    Submit -- "N" --- AdoptionApp
+
+    %% 2. 领养申请 与 可领养宠物 的 针对 关系 (N:1)
+    AdoptionApp -- "N" --- Target
+    Target -- "1" --- Pet
+
+    %% 3. 领养申请 与 审核记录 的 产生审核记录 关系 (1:N)
+    AdoptionApp -- "1" --- GenerateAudit
+    GenerateAudit -- "N" --- AuditRecord
+
+    %% 4. 领养申请 与 回访提醒 的 设置回访提醒 关系 (1:N)
+    AdoptionApp -- "1" --- SetReminder
+    SetReminder -- "N" --- CallbackReminder
+
+    %% 5. 审核记录 与 用户 的 审核人 关系 (N:1)
+    AuditRecord -- "N" --- Auditor
+    Auditor -- "1" --- User
 ```
 
 ### 2.4 绘制全局E-R图
@@ -723,28 +753,52 @@ flowchart TB
 
 图2.8 全局E-R图
 
-``` 
-                              ┌────────────┐
-                              │   用户      │
-                              └──┬──┬──┬───┘
-                 ┌───────────────┘  │  └───────────────┐
-                 │ 发布（1:N）     │ 上报（1:N）       │ 审核（1:N）
-                 ▼                  ▼                   ▼
-          ┌────────────┐    ┌────────────┐      ┌────────────┐
-          │  走失宠物   │    │  发现线索   │      │  审核记录   │
-          └────────────┘◀───└────────────┘      └─────┬──────┘
-                 ▲  关联（1:N）                         │
-                                                 N:1│关联
-                                                       ▼
-                               ┌────────────┐    ┌────────────┐
-                               │ 可领养宠物  │    │  领养申请   │
-                               └────────────┘◀───└──────┬─────┘
-                                                         │
-                                                   1:N│关联
-                                                         ▼
-                                                  ┌────────────┐
-                                                  │  回访提醒   │
-                                                  └────────────┘
+``` mermaid
+                    flowchart TB
+    %% 实体 (矩形)
+    User[用户]
+    LostPet[走失宠物]
+    FoundClue[发现线索]
+    AuditRecord[审核记录]
+    AdoptablePet[可领养宠物]
+    AdoptionApp[领养申请]
+    CallbackReminder[回访提醒]
+
+    %% 关系 (菱形)
+    Publish{"发布"}
+    Report{"上报"}
+    Audit{"审核"}
+    Assoc_Pet_Clue{"关联"}
+    Assoc_App_Audit{"关联"}
+    Target{"针对"}
+    Assoc_App_Remind{"关联"}
+
+    %% 1. 用户相关的 1:N 关系
+    User -- "1" --- Publish
+    Publish -- "N" --- LostPet
+
+    User -- "1" --- Report
+    Report -- "N" --- FoundClue
+
+    User -- "1" --- Audit
+    Audit -- "N" --- AuditRecord
+
+    %% 2. 走失宠物与发现线索的 1:N 关系
+    LostPet -- "1" --- Assoc_Pet_Clue
+    Assoc_Pet_Clue -- "N" --- FoundClue
+
+    %% 3. 领养申请相关的关系
+    %% 审核记录 与 领养申请 (N:1)
+    AuditRecord -- "N" --- Assoc_App_Audit
+    Assoc_App_Audit -- "1" --- AdoptionApp
+
+    %% 领养申请 与 可领养宠物 (N:1)
+    AdoptionApp -- "N" --- Target
+    Target -- "1" --- AdoptablePet
+
+    %% 领养申请 与 回访提醒 (1:N)
+    AdoptionApp -- "1" --- Assoc_App_Remind
+    Assoc_App_Remind -- "N" --- CallbackReminder
 ```
 
 ---
