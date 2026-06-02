@@ -394,80 +394,160 @@ flowchart TB
 
 图2.3 发现线索实体属性图
 
-```
-                    ┌─────────────────────┐
-                    │     发现线索         │
-                    ├─────────────────────┤
-                    │ 线索编号（主键）      │
-                    │ 关联走失宠物编号（外键）│
-                    │ 上报用户编号（外键）  │
-                    │ 照片地址列表          │
-                    │ 描述信息              │
-                    │ 发现地点              │
-                    │ 纬度                  │
-                    │ 经度                  │
-                    │ 发现日期              │
-                    │ 联系方式              │
-                    │ 状态                  │
-                    │ 管理员备注            │
-                    │ 审核人编号（外键）    │
-                    │ 审核时间              │
-                    │ 创建时间              │
-                    └─────────────────────┘
+```mermaid
+flowchart TB
+    subgraph TopRow[" "]
+        direction LR
+        A(["<u>线索编号</u>"])
+        B(["<u style='text-decoration-style:wavy'>关联走失宠物编号</u>"])
+        C(["<u style='text-decoration-style:wavy'>上报用户编号</u>"])
+        D(["照片地址列表"])
+        E(["描述信息"])
+        F(["发现地点"])
+        G(["纬度"])
+        H(["经度"])
+    end
+
+    Clue[发现线索]
+
+    subgraph BottomRow[" "]
+        direction LR
+        I(["发现日期"])
+        J(["联系方式"])
+        K(["状态"])
+        L(["管理员备注"])
+        M(["<u style='text-decoration-style:wavy'>审核人编号</u>"])
+        N(["审核时间"])
+        O(["创建时间"])
+    end
+
+    A --- Clue
+    B --- Clue
+    C --- Clue
+    D --- Clue
+    E --- Clue
+    F --- Clue
+    G --- Clue
+    H --- Clue
+
+    Clue --- I
+    Clue --- J
+    Clue --- K
+    Clue --- L
+    Clue --- M
+    Clue --- N
+    Clue --- O
+
+    classDef invisible fill:transparent,stroke:transparent,color:transparent;
+    class TopRow,BottomRow invisible;
 ```
 
 （4）可领养宠物实体包含宠物编号、宠物名称、宠物种类、品种、颜色、性别、月龄、照片地址、描述信息、健康状况、是否已接种疫苗、是否已驱虫、是否已绝育、领养状态、救助站、入站日期、创建时间、更新时间等属性。可领养宠物实体属性图如图2.4所示。
 
 图2.4 可领养宠物实体属性图
 
-```
-                    ┌─────────────────────┐
-                    │    可领养宠物        │
-                    ├─────────────────────┤
-                    │ 宠物编号（主键）      │
-                    │ 宠物名称              │
-                    │ 宠物种类              │
-                    │ 品种                  │
-                    │ 颜色                  │
-                    │ 性别                  │
-                    │ 月龄                  │
-                    │ 照片地址列表          │
-                    │ 描述信息              │
-                    │ 健康状况              │
-                    │ 是否已接种疫苗        │
-                    │ 是否已驱虫            │
-                    │ 是否已绝育            │
-                    │ 领养状态              │
-                    │ 救助站                │
-                    │ 入站日期              │
-                    │ 创建时间              │
-                    │ 更新时间              │
-                    └─────────────────────┘
+```mermaid
+flowchart TB
+    subgraph TopRow[" "]
+        direction LR
+        A(["<u>宠物编号</u>"])
+        B(["宠物名称"])
+        C(["宠物种类"])
+        D(["品种"])
+        E(["颜色"])
+        F(["性别"])
+        G(["月龄"])
+        H(["照片地址列表"])
+        I(["描述信息"])
+    end
+
+    AdoptablePet[可领养宠物]
+
+    subgraph BottomRow[" "]
+        direction LR
+        J(["健康状况"])
+        K(["是否已接种疫苗"])
+        L(["是否已驱虫"])
+        M(["是否已绝育"])
+        N(["领养状态"])
+        O(["救助站"])
+        P(["入站日期"])
+        Q(["创建时间"])
+        R(["更新时间"])
+    end
+
+    A --- AdoptablePet
+    B --- AdoptablePet
+    C --- AdoptablePet
+    D --- AdoptablePet
+    E --- AdoptablePet
+    F --- AdoptablePet
+    G --- AdoptablePet
+    H --- AdoptablePet
+    I --- AdoptablePet
+
+    AdoptablePet --- J
+    AdoptablePet --- K
+    AdoptablePet --- L
+    AdoptablePet --- M
+    AdoptablePet --- N
+    AdoptablePet --- O
+    AdoptablePet --- P
+    AdoptablePet --- Q
+    AdoptablePet --- R
+
+    classDef invisible fill:transparent,stroke:transparent,color:transparent;
+    class TopRow,BottomRow invisible;
 ```
 
 （5）领养申请实体包含申请编号、可领养宠物编号、申请人编号、申请人姓名、申请人电话、申请人地址、申请人身份证号、住房类型、是否饲养其他宠物、领养原因、养宠经验描述、状态、创建时间、更新时间等属性。领养申请实体属性图如图2.5所示。
 
 图2.5 领养申请实体属性图
 
-```
-                    ┌─────────────────────┐
-                    │     领养申请         │
-                    ├─────────────────────┤
-                    │ 申请编号（主键）      │
-                    │ 可领养宠物编号（外键）│
-                    │ 申请人编号（外键）    │
-                    │ 申请人姓名            │
-                    │ 申请人电话            │
-                    │ 申请人地址            │
-                    │ 申请人身份证号        │
-                    │ 住房类型              │
-                    │ 是否饲养其他宠物      │
-                    │ 领养原因              │
-                    │ 养宠经验描述          │
-                    │ 状态                  │
-                    │ 创建时间              │
-                    │ 更新时间              │
-                    └─────────────────────┘
+```mermaid
+flowchart TB
+    subgraph TopRow[" "]
+        direction LR
+        A(["<u>申请编号</u>"])
+        B(["<u style='text-decoration-style:wavy'>可领养宠物编号</u>"])
+        C(["<u style='text-decoration-style:wavy'>申请人编号</u>"])
+        D(["申请人姓名"])
+        E(["申请人电话"])
+        F(["申请人地址"])
+        G(["申请人身份证号"])
+    end
+
+    Adoption[领养申请]
+
+    subgraph BottomRow[" "]
+        direction LR
+        H(["住房类型"])
+        I(["是否饲养其他宠物"])
+        J(["领养原因"])
+        K(["养宠经验描述"])
+        L(["状态"])
+        M(["创建时间"])
+        N(["更新时间"])
+    end
+
+    A --- Adoption
+    B --- Adoption
+    C --- Adoption
+    D --- Adoption
+    E --- Adoption
+    F --- Adoption
+    G --- Adoption
+
+    Adoption --- H
+    Adoption --- I
+    Adoption --- J
+    Adoption --- K
+    Adoption --- L
+    Adoption --- M
+    Adoption --- N
+
+    classDef invisible fill:transparent,stroke:transparent,color:transparent;
+    class TopRow,BottomRow invisible;
 ```
 
 （6）审核记录实体包含记录编号、申请编号、审核人编号、审核决定、审核备注、审核时间等属性。
