@@ -291,50 +291,103 @@ This system solves the problems of information asymmetry and irregular processes
 图2.1 用户实体属性图
 
 ```mermaid
-flowchart TD
+flowchart TB
+    subgraph TopRow[" "]
+        direction LR
+        A(["<u>用户编号</u>"])
+        B(["<u style='text-decoration-style:wavy'>用户名</u>"])
+        C(["<u style='text-decoration-style:wavy'>邮箱</u>"])
+        D(["密码哈希值"])
+        E(["手机号"])
+    end
+
     User[用户]
 
-    User --- A(["<u>用户编号</u>"])
-    User --- B(["<u style='text-decoration-style:wavy'>用户名</u>"])
-    User --- C(["<u style='text-decoration-style:wavy'>邮箱</u>"])
-    User --- D(["密码哈希值"])
-    User --- E(["手机号"])
-    User --- F(["头像地址"])
-    User --- G(["角色"])
-    User --- H(["是否激活"])
-    User --- I(["创建时间"])
-    User --- J(["更新时间"])
+    subgraph BottomRow[" "]
+        direction LR
+        F(["头像地址"])
+        G(["角色"])
+        H(["是否激活"])
+        I(["创建时间"])
+        J(["更新时间"])
+    end
+
+    A --- User
+    B --- User
+    C --- User
+    D --- User
+    E --- User
+
+    User --- F
+    User --- G
+    User --- H
+    User --- I
+    User --- J
+
+    classDef invisible fill:transparent,stroke:transparent,color:transparent;
+    class TopRow,BottomRow invisible;
 ```
 
 （2）走失宠物实体包含宠物编号、发布用户编号、宠物名称、宠物种类、品种、颜色、性别、年龄描述、照片地址、描述信息、走失日期、走失地点、救助站、纬度、经度、联系方式、悬赏金额、状态、创建时间、更新时间等属性。走失宠物实体属性图如图2.2所示。
 
 图2.2 走失宠物实体属性图
 
-```
-                    ┌─────────────────────┐
-                    │     走失宠物         │
-                    ├─────────────────────┤
-                    │ 宠物编号（主键）      │
-                    │ 发布用户编号（外键）  │
-                    │ 宠物名称              │
-                    │ 宠物种类              │
-                    │ 品种                  │
-                    │ 颜色                  │
-                    │ 性别                  │
-                    │ 年龄描述              │
-                    │ 照片地址列表          │
-                    │ 描述信息              │
-                    │ 走失日期              │
-                    │ 走失地点              │
-                    │ 救助站                │
-                    │ 纬度                  │
-                    │ 经度                  │
-                    │ 联系方式              │
-                    │ 悬赏金额              │
-                    │ 状态                  │
-                    │ 创建时间              │
-                    │ 更新时间              │
-                    └─────────────────────┘
+```mermaid
+flowchart TB
+    subgraph TopRow[" "]
+        direction LR
+        A(["<u>宠物编号</u>"])
+        B(["<u style='text-decoration-style:wavy'>发布用户编号</u>"])
+        C(["宠物名称"])
+        D(["宠物种类"])
+        E(["品种"])
+        F(["颜色"])
+        G(["性别"])
+        H(["年龄描述"])
+        I(["照片地址列表"])
+        J(["描述信息"])
+    end
+
+    LostPet[走失宠物]
+
+    subgraph BottomRow[" "]
+        direction LR
+        K(["走失日期"])
+        L(["走失地点"])
+        M(["救助站"])
+        N(["纬度"])
+        O(["经度"])
+        P(["联系方式"])
+        Q(["悬赏金额"])
+        R(["状态"])
+        S(["创建时间"])
+        T(["更新时间"])
+    end
+
+    A --- LostPet
+    B --- LostPet
+    C --- LostPet
+    D --- LostPet
+    E --- LostPet
+    F --- LostPet
+    G --- LostPet
+    H --- LostPet
+    I --- LostPet
+    J --- LostPet
+
+    LostPet --- K
+    LostPet --- L
+    LostPet --- M
+    LostPet --- N
+    LostPet --- O
+    LostPet --- P
+    LostPet --- Q
+    LostPet --- R
+    LostPet --- S
+    LostPet --- T
+
+    classDef invisible fill:transparent,stroke:transparent,color:transparent;
+    class TopRow,BottomRow invisible;
 ```
 
 （3）发现线索实体包含线索编号、关联走失宠物编号、上报用户编号、照片地址、描述信息、发现地点、纬度、经度、发现日期、联系方式、状态、管理员备注、审核人编号、审核时间、创建时间等属性。发现线索实体属性图如图2.3所示。
