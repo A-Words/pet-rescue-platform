@@ -128,29 +128,40 @@ This system solves the problems of information asymmetry and irregular processes
 
 图1.2 业务流程图
 
-```
-用户注册/登录
-    │
-    ├──▶ 发布走失宠物信息 ──▶ 系统保存（状态：寻找中）
-    │                              │
-    │                              ▼
-    │                         其他用户提交线索
-    │                              │
-    │                              ▼
-    │                         管理员审核线索
-    │                         ├── 确认 ──▶ 标记宠物为"已找回"
-    │                         └── 拒绝
-    │
-    ├──▶ 浏览可领养宠物 ──▶ 提交领养申请
-    │                              │
-    │                              ▼
-    │                         管理员审批申请
-    │                         ├── 通过 ──▶ 宠物标记"已领养"
-    │                         │           ──▶ 拒绝其他申请
-    │                         │           ──▶ 生成回访提醒
-    │                         └── 拒绝
-    │
-    └──▶ 查看统计数据（管理员）
+```mermaid
+flowchart TD
+    %% 1. 开始与登录
+    Start([开始]) --> Login[用户注册/登录]
+
+    %% ================= 分支一：走失寻宠业务 =================
+    Login --> Publish[发布走失宠物信息]
+    Publish --> Save["系统保存（状态：寻找中）"]
+    Save --> SubmitClue[其他用户提交线索]
+    SubmitClue --> AuditClue{管理员审核线索？}
+    
+    AuditClue -->|确认| MarkFound["标记宠物为 '已找回'"]
+    AuditClue -->|拒绝| RejectClue[拒绝/忽略该线索]
+    
+    MarkFound --> End1([结束])
+    RejectClue --> End1
+
+    %% ================= 分支二：领养业务 =================
+    Login --> Browse[浏览可领养宠物]
+    Browse --> Apply[提交领养申请]
+    Apply --> ApproveApply{管理员审批申请？}
+    
+    ApproveApply -->|通过| Adopted["宠物标记 '已领养'"]
+    Adopted --> RejectOthers[拒绝该宠物的其他申请]
+    RejectOthers --> GenReminder[生成回访提醒]
+    
+    ApproveApply -->|拒绝| RejectApply[拒绝领养申请]
+    
+    GenReminder --> End2([结束])
+    RejectApply --> End2
+
+    %% ================= 分支三：管理员统计 =================
+    Login --> Stats["查看统计数据（管理员）"]
+    Stats --> End3([结束])
 ```
 
 ### 1.3 功能需求分析
