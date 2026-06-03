@@ -1030,9 +1030,16 @@ CREATE DATABASE lost_pet_db
     ENCODING = 'UTF8'
     LC_COLLATE = 'en_US.UTF-8'
     LC_CTYPE = 'en_US.UTF-8'
+    TEMPLATE = template0
     TABLESPACE = pg_default
     CONNECTION LIMIT = -1;
 ```
+
+执行结果如图5.1所示。
+
+![创建数据库执行结果](images/fig5-01-create-database.png)
+
+图5.1 创建数据库执行结果
 
 #### 5.1.2 定义数据表
 
@@ -1054,6 +1061,12 @@ CREATE TABLE users (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 ```
+
+执行结果如图5.2所示。
+
+![创建用户表执行结果](images/fig5-02-create-users-table.png)
+
+图5.2 创建用户表执行结果
 
 （2）走失宠物表（lost_pets）的创建代码如下：
 
@@ -1082,6 +1095,12 @@ CREATE TABLE lost_pets (
 );
 ```
 
+执行结果如图5.3所示。
+
+![创建走失宠物表执行结果](images/fig5-03-create-lost-pets-table.png)
+
+图5.3 创建走失宠物表执行结果
+
 （3）发现线索表（found_clues）的创建代码如下：
 
 ```sql
@@ -1103,6 +1122,12 @@ CREATE TABLE found_clues (
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 ```
+
+执行结果如图5.4所示。
+
+![创建发现线索表执行结果](images/fig5-04-create-found-clues-table.png)
+
+图5.4 创建发现线索表执行结果
 
 （4）可领养宠物表（adoptable_pets）的创建代码如下：
 
@@ -1129,6 +1154,12 @@ CREATE TABLE adoptable_pets (
 );
 ```
 
+执行结果如图5.5所示。
+
+![创建可领养宠物表执行结果](images/fig5-05-create-adoptable-pets-table.png)
+
+图5.5 创建可领养宠物表执行结果
+
 （5）领养申请表（adoption_applications）的创建代码如下：
 
 ```sql
@@ -1151,6 +1182,12 @@ CREATE TABLE adoption_applications (
 );
 ```
 
+执行结果如图5.6所示。
+
+![创建领养申请表执行结果](images/fig5-06-create-adoption-applications-table.png)
+
+图5.6 创建领养申请表执行结果
+
 （6）审核记录表（review_records）的创建代码如下：
 
 ```sql
@@ -1163,6 +1200,12 @@ CREATE TABLE review_records (
     reviewed_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 ```
+
+执行结果如图5.7所示。
+
+![创建审核记录表执行结果](images/fig5-07-create-review-records-table.png)
+
+图5.7 创建审核记录表执行结果
 
 （7）回访提醒表（visit_reminders）的创建代码如下：
 
@@ -1179,6 +1222,12 @@ CREATE TABLE visit_reminders (
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 ```
+
+执行结果如图5.8所示。
+
+![创建回访提醒表执行结果](images/fig5-08-create-visit-reminders-table.png)
+
+图5.8 创建回访提醒表执行结果
 
 除数据表以外，结合物理结构设计中的索引策略，创建以下索引以提高常用筛选、关联和统计查询的执行效率：
 
@@ -1203,6 +1252,12 @@ CREATE INDEX idx_visit_reminders_reminder_date ON visit_reminders(reminder_date)
 CREATE INDEX idx_visit_reminders_status ON visit_reminders(status);
 ```
 
+执行结果如图5.9所示。
+
+![创建索引执行结果](images/fig5-09-create-indexes.png)
+
+图5.9 创建索引执行结果
+
 ### 5.2 数据操作
 
 #### 5.2.1 插入数据
@@ -1223,6 +1278,12 @@ INSERT INTO users (username, email, hashed_password, phone, role) VALUES
 ('wujiu', 'wujiu@example.com', '$argon2id$v=19$m=65536,t=3,p=4$hash...', '13800000008', 'user');
 ```
 
+执行结果如图5.10所示。
+
+![插入用户数据执行结果](images/fig5-10-insert-users.png)
+
+图5.10 插入用户数据执行结果
+
 （2）走失宠物表数据插入：
 
 ```sql
@@ -1236,6 +1297,12 @@ INSERT INTO lost_pets (user_id, pet_name, pet_type, breed, color, gender, age_de
 ((SELECT user_id FROM users WHERE username='lisi'), '球球', 'dog', '柯基', '黄白色', 'female', '2岁', '短腿，尾巴很短', '2026-05-20', '广州市番禺区大学城', '13800000003', 'closed'),
 ((SELECT user_id FROM users WHERE username='wangwu'), '大橘', 'cat', '中华田园猫', '橘色', 'male', '6岁', '体型较大，非常亲人', '2026-05-22', '深圳市福田区莲花山公园', '13800000004', 'active');
 ```
+
+执行结果如图5.11所示。
+
+![插入走失宠物数据执行结果](images/fig5-11-insert-lost-pets.png)
+
+图5.11 插入走失宠物数据执行结果
 
 （3）发现线索表数据插入：
 
@@ -1251,6 +1318,12 @@ INSERT INTO found_clues (lost_pet_id, reporter_id, description, found_location, 
 ((SELECT lost_pet_id FROM lost_pets WHERE pet_name='大橘'), (SELECT user_id FROM users WHERE username='zhangsan'), '莲花山公园草坪上有一只大橘猫', '深圳市福田区莲花山公园草坪', '2026-05-23', '13800000002', 'pending');
 ```
 
+执行结果如图5.12所示。
+
+![插入发现线索数据执行结果](images/fig5-12-insert-found-clues.png)
+
+图5.12 插入发现线索数据执行结果
+
 （4）可领养宠物表数据插入：
 
 ```sql
@@ -1264,6 +1337,12 @@ INSERT INTO adoptable_pets (pet_name, pet_type, breed, color, gender, age_months
 ('奶茶', 'cat', '英国短毛猫', '乳白色', 'female', 15, '独立性强，不需要太多陪伴', 'healthy', true, true, false, '广州市小动物救助中心', '2026-04-01'),
 ('旺仔', 'dog', '泰迪', '棕色', 'male', 20, '聪明伶俐，学会了很多小把戏', 'chronic', true, true, true, '深圳市流浪动物救助站', '2026-04-10');
 ```
+
+执行结果如图5.13所示。
+
+![插入可领养宠物数据执行结果](images/fig5-13-insert-adoptable-pets.png)
+
+图5.13 插入可领养宠物数据执行结果
 
 （5）领养申请表数据插入：
 
@@ -1279,6 +1358,12 @@ INSERT INTO adoption_applications (adoptable_pet_id, applicant_id, applicant_nam
 ((SELECT adoptable_pet_id FROM adoptable_pets WHERE pet_name='奶茶'), (SELECT user_id FROM users WHERE username='zhangsan'), '张三', '13800000002', '广州市天河区XX路XX号', '440100199001011234', 'apartment', false, '英短很适合公寓饲养', '之前养过英短，有经验', 'pending');
 ```
 
+执行结果如图5.14所示。
+
+![插入领养申请数据执行结果](images/fig5-14-insert-adoption-applications.png)
+
+图5.14 插入领养申请数据执行结果
+
 #### 5.2.2 修改数据
 
 （1）将走失宠物"豆豆"的状态更新为"已找回"：
@@ -1287,17 +1372,35 @@ INSERT INTO adoption_applications (adoptable_pet_id, applicant_id, applicant_nam
 UPDATE lost_pets SET status = 'found' WHERE pet_name = '豆豆';
 ```
 
+执行结果如图5.15所示。
+
+![修改走失宠物状态执行结果](images/fig5-15-update-lost-pet-status.png)
+
+图5.15 修改走失宠物状态执行结果
+
 （2）将可领养宠物"团团"的领养状态更新为"已预留"：
 
 ```sql
 UPDATE adoptable_pets SET adoption_status = 'reserved' WHERE pet_name = '团团';
 ```
 
+执行结果如图5.16所示。
+
+![修改领养宠物状态执行结果](images/fig5-16-update-adoptable-pet-status.png)
+
+图5.16 修改领养宠物状态执行结果
+
 （3）更新用户的手机号：
 
 ```sql
 UPDATE users SET phone = '13900000002' WHERE username = 'zhangsan';
 ```
+
+执行结果如图5.17所示。
+
+![修改用户手机号执行结果](images/fig5-17-update-user-phone.png)
+
+图5.17 修改用户手机号执行结果
 
 #### 5.2.3 删除数据
 
@@ -1310,11 +1413,23 @@ WHERE found_clue_id = (
 );
 ```
 
+执行结果如图5.18所示。
+
+![删除被拒绝线索执行结果](images/fig5-18-delete-rejected-clue.png)
+
+图5.18 删除被拒绝线索执行结果
+
 （2）删除一条已关闭的走失宠物信息：
 
 ```sql
 DELETE FROM lost_pets WHERE pet_name = '球球' AND status = 'closed';
 ```
+
+执行结果如图5.19所示。
+
+![删除已关闭走失宠物执行结果](images/fig5-19-delete-closed-lost-pet.png)
+
+图5.19 删除已关闭走失宠物执行结果
 
 #### 5.2.4 查询数据
 
@@ -1326,6 +1441,12 @@ FROM lost_pets
 WHERE status = 'active'
 ORDER BY created_at DESC;
 ```
+
+执行结果如图5.20所示。
+
+![单表查询执行结果](images/fig5-20-single-table-query.png)
+
+图5.20 单表查询执行结果
 
 查询结果：
 
@@ -1347,6 +1468,12 @@ LEFT JOIN found_clues fc ON lp.lost_pet_id = fc.lost_pet_id
 GROUP BY lp.lost_pet_id, lp.pet_name, lp.pet_type, lp.lost_location, lp.status
 ORDER BY clue_count DESC;
 ```
+
+执行结果如图5.21所示。
+
+![多表查询执行结果](images/fig5-21-multi-table-query.png)
+
+图5.21 多表查询执行结果
 
 查询结果：
 
@@ -1371,6 +1498,12 @@ WHERE adoptable_pet_id IN (
 ORDER BY pet_name;
 ```
 
+执行结果如图5.22所示。
+
+![嵌套查询执行结果](images/fig5-22-nested-query.png)
+
+图5.22 嵌套查询执行结果
+
 查询结果：
 
 | pet_name | pet_type | breed | health_status | rescue_station |
@@ -1392,6 +1525,12 @@ FROM lost_pets
 GROUP BY pet_type
 ORDER BY total_count DESC;
 ```
+
+执行结果如图5.23所示。
+
+![聚合查询执行结果](images/fig5-23-aggregate-query.png)
+
+图5.23 聚合查询执行结果
 
 查询结果：
 
@@ -1425,6 +1564,12 @@ WHERE ap.adoption_status = 'available'
   AND ap.is_dewormed = true;
 ```
 
+执行结果如图5.24所示。
+
+![创建可领养宠物视图执行结果](images/fig5-24-create-adoptable-view.png)
+
+图5.24 创建可领养宠物视图执行结果
+
 该视图的作用：
 - 只展示领养状态为"可领养"、已完成疫苗接种和驱虫的宠物，确保展示的宠物满足基本领养条件。
 - 通过LEFT JOIN关联统计每个宠物的待审核申请数量，便于用户了解竞争情况。
@@ -1437,6 +1582,12 @@ SELECT pet_name, pet_type, breed, health_status, rescue_station, application_cou
 FROM v_adoptable_pets
 ORDER BY application_count DESC;
 ```
+
+执行结果如图5.25所示。
+
+![查询可领养宠物视图执行结果](images/fig5-25-query-adoptable-view.png)
+
+图5.25 查询可领养宠物视图执行结果
 
 ### 5.4 创建存储过程
 
@@ -1537,6 +1688,12 @@ END;
 $$ LANGUAGE plpgsql;
 ```
 
+执行结果如图5.26所示。
+
+![创建月度统计存储过程执行结果](images/fig5-26-create-monthly-statistics-function.png)
+
+图5.26 创建月度统计存储过程执行结果
+
 调用存储过程示例：
 
 ```sql
@@ -1546,6 +1703,12 @@ SELECT * FROM sp_monthly_statistics(NULL, 2026, 5);
 -- 查询广州市小动物救助中心2026年5月的统计数据
 SELECT * FROM sp_monthly_statistics('广州市小动物救助中心', 2026, 5);
 ```
+
+执行结果如图5.27所示。
+
+![调用月度统计存储过程执行结果](images/fig5-27-call-monthly-statistics-function.png)
+
+图5.27 调用月度统计存储过程执行结果
 
 ### 5.5 创建触发器
 
@@ -1581,6 +1744,12 @@ BEFORE UPDATE ON adoption_applications
 FOR EACH ROW EXECUTE FUNCTION fn_update_timestamp();
 ```
 
+执行结果如图5.28所示。
+
+![创建自动更新时间戳触发器执行结果](images/fig5-28-create-update-timestamp-trigger.png)
+
+图5.28 创建自动更新时间戳触发器执行结果
+
 （2）领养申请审批通过后自动处理触发器
 
 当领养申请状态被更新为"approved"时，自动将对应宠物的领养状态更新为"已领养"，并自动拒绝该宠物的其他待审核申请。
@@ -1605,6 +1774,12 @@ CREATE TRIGGER trg_adoption_approved
 AFTER UPDATE OF status ON adoption_applications
 FOR EACH ROW EXECUTE FUNCTION fn_on_adoption_approved();
 ```
+
+执行结果如图5.29所示。
+
+![创建领养审批处理触发器执行结果](images/fig5-29-create-adoption-approved-trigger.png)
+
+图5.29 创建领养审批处理触发器执行结果
 
 （3）领养申请重复检查触发器
 
@@ -1641,6 +1816,12 @@ BEFORE INSERT ON adoption_applications
 FOR EACH ROW EXECUTE FUNCTION fn_check_duplicate_application();
 ```
 
+执行结果如图5.30所示。
+
+![创建重复申请检查触发器执行结果](images/fig5-30-create-duplicate-application-trigger.png)
+
+图5.30 创建重复申请检查触发器执行结果
+
 （4）领养通过后自动生成回访提醒触发器
 
 当领养申请被批准时，自动创建一条30天后的回访提醒记录。
@@ -1662,6 +1843,12 @@ AFTER UPDATE OF status ON adoption_applications
 FOR EACH ROW EXECUTE FUNCTION fn_generate_visit_reminders();
 ```
 
+执行结果如图5.31所示。
+
+![创建回访提醒生成触发器执行结果](images/fig5-31-create-visit-reminder-trigger.png)
+
+图5.31 创建回访提醒生成触发器执行结果
+
 触发器验证示例：审批通过"圆圆"的领养申请后，观察触发器效果
 
 ```sql
@@ -1680,6 +1867,12 @@ SELECT * FROM visit_reminders
 WHERE adoptable_pet_id = (SELECT adoptable_pet_id FROM adoptable_pets WHERE pet_name = '圆圆');
 -- 结果：自动生成了一条reminder_date为30天后的提醒记录
 ```
+
+执行结果如图5.32所示。
+
+![验证触发器执行效果](images/fig5-32-verify-triggers.png)
+
+图5.32 验证触发器执行效果
 
 ---
 
