@@ -753,7 +753,7 @@ flowchart TB
 
 图2.8 全局E-R图
 
-``` mermaid
+```mermaid
                     flowchart TB
     %% 实体 (矩形)
     User[用户]
