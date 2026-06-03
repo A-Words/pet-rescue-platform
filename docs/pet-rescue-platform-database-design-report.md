@@ -60,10 +60,10 @@ This system solves the problems of information asymmetry and irregular processes
   - 5.3 创建视图
   - 5.4 创建存储过程
   - 5.5 创建触发器
-- 第6章 数据库的安全性（选做）
+- 第6章 数据库的安全性
   - 6.1 用户和权限管理
   - 6.2 数据库的备份与恢复
-- 第7章 系统实现（选做）
+- 第7章 系统实现
   - 7.1 走失宠物发布功能
     - 7.1.1 界面
     - 7.1.2 数据操作核心代码
@@ -1683,7 +1683,7 @@ WHERE adoptable_pet_id = (SELECT adoptable_pet_id FROM adoptable_pets WHERE pet_
 
 ---
 
-## 第6章 数据库的安全性（选做）
+## 第6章 数据库的安全性
 
 ### 6.1 用户和权限管理
 
@@ -1742,7 +1742,7 @@ docker run --rm -v pgdata:/data -v $(pwd):/backup alpine tar czf /backup/pgdata_
 
 ---
 
-## 第7章 系统实现（选做）
+## 第7章 系统实现
 
 ### 7.1 走失宠物发布功能
 
