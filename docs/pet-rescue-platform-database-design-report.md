@@ -100,14 +100,22 @@ This system solves the problems of information asymmetry and irregular processes
 
 图1.1 系统边界图
 
-```
-                    ┌─────────────────────────────┐
-                    │       宠物走失与领养         │
-    ┌──────┐        │         救助平台             │        ┌──────────┐
-    │普通用户│──────▶│  走失宠物管理  线索管理     │◀───────│  管理员   │
-    │      │──────▶│  领养管理      审核管理     │───────▶│          │
-    │      │◀──────│  统计分析                   │        │          │
-    └──────┘        └─────────────────────────────┘        └──────────┘
+```mermaid
+graph LR
+    L[普通用户]
+
+    subgraph S[宠物走失与领养救助平台]
+        M1[走失宠物管理]
+        M2[线索管理]
+        M3[领养管理]
+        M4[审核管理]
+        M5[统计分析]
+    end
+
+    R[管理员]
+
+    L <--> S
+    S <--> R
 ```
 
 ### 1.2 业务需求分析
@@ -128,29 +136,40 @@ This system solves the problems of information asymmetry and irregular processes
 
 图1.2 业务流程图
 
-```
-用户注册/登录
-    │
-    ├──▶ 发布走失宠物信息 ──▶ 系统保存（状态：寻找中）
-    │                              │
-    │                              ▼
-    │                         其他用户提交线索
-    │                              │
-    │                              ▼
-    │                         管理员审核线索
-    │                         ├── 确认 ──▶ 标记宠物为"已找回"
-    │                         └── 拒绝
-    │
-    ├──▶ 浏览可领养宠物 ──▶ 提交领养申请
-    │                              │
-    │                              ▼
-    │                         管理员审批申请
-    │                         ├── 通过 ──▶ 宠物标记"已领养"
-    │                         │           ──▶ 拒绝其他申请
-    │                         │           ──▶ 生成回访提醒
-    │                         └── 拒绝
-    │
-    └──▶ 查看统计数据（管理员）
+```mermaid
+flowchart TD
+    %% 1. 开始与登录
+    Start([开始]) --> Login[用户注册/登录]
+
+    %% ================= 分支一：走失寻宠业务 =================
+    Login --> Publish[发布走失宠物信息]
+    Publish --> Save["系统保存（状态：寻找中）"]
+    Save --> SubmitClue[其他用户提交线索]
+    SubmitClue --> AuditClue{管理员审核线索？}
+    
+    AuditClue -->|确认| MarkFound["标记宠物为 '已找回'"]
+    AuditClue -->|拒绝| RejectClue[拒绝/忽略该线索]
+    
+    MarkFound --> End1([结束])
+    RejectClue --> End1
+
+    %% ================= 分支二：领养业务 =================
+    Login --> Browse[浏览可领养宠物]
+    Browse --> Apply[提交领养申请]
+    Apply --> ApproveApply{管理员审批申请？}
+    
+    ApproveApply -->|通过| Adopted["宠物标记 '已领养'"]
+    Adopted --> RejectOthers[拒绝该宠物的其他申请]
+    RejectOthers --> GenReminder[生成回访提醒]
+    
+    ApproveApply -->|拒绝| RejectApply[拒绝领养申请]
+    
+    GenReminder --> End2([结束])
+    RejectApply --> End2
+
+    %% ================= 分支三：管理员统计 =================
+    Login --> Stats["查看统计数据（管理员）"]
+    Stats --> End3([结束])
 ```
 
 ### 1.3 功能需求分析
@@ -159,38 +178,112 @@ This system solves the problems of information asymmetry and irregular processes
 
 图1.3 功能模块结构图
 
-```
-宠物走失与领养救助平台
-├── 用户管理
-│   ├── 用户注册
-│   ├── 用户登录
-│   └── 个人信息管理
-├── 走失宠物管理
-│   ├── 发布走失信息
-│   ├── 查询走失宠物
-│   ├── 查看宠物详情
-│   ├── 修改走失信息
-│   └── 更新宠物状态
-├── 线索管理
-│   ├── 提交发现线索
-│   ├── 查看线索列表
-│   └── 管理员审核线索
-├── 领养宠物管理
-│   ├── 添加可领养宠物（管理员）
-│   ├── 浏览可领养宠物
-│   ├── 查看宠物详情
-│   └── 修改宠物信息（管理员）
-├── 领养申请管理
-│   ├── 提交领养申请
-│   ├── 查看申请记录
-│   ├── 撤回申请
-│   └── 管理员审批申请
-├── 回访提醒管理
-│   ├── 查看回访提醒列表
-│   └── 记录回访结果
-└── 统计分析
-    ├── 月度统计报表
-    └── 仪表盘概览
+```mermaid
+flowchart TB
+    %% 1. 最顶层：辅助模块的功能子项（叶子节点）
+    subgraph TopLeafs[" "]
+        direction LR
+        M1_1["用户注册"]
+        M1_2["用户登录"]
+        M1_3["个人信息管理"]
+        M6_1["查看回访列表"]
+        M6_2["记录回访结果"]
+        M7_1["月度统计报表"]
+        M7_2["仪表盘概览"]
+    end
+
+    %% 2. 次顶层：辅助模块
+    subgraph TopModules[" "]
+        direction LR
+        M1["用户管理"]
+        M6["回访提醒管理"]
+        M7["统计分析"]
+    end
+
+    %% 3. 中心节点
+    Platform["宠物走失与领养救助平台"]
+
+    %% 4. 次底层：核心业务模块
+    subgraph BottomModules[" "]
+        direction LR
+        M2["走失宠物管理"]
+        M3["线索管理"]
+        M4["领养宠物管理"]
+        M5["领养申请管理"]
+    end
+
+    %% 5. 最底层：核心业务的功能子项（叶子节点）
+    subgraph BottomLeafs[" "]
+        direction LR
+        M2_1["发布走失信息"]
+        M2_2["查询走失宠物"]
+        M2_3["查看宠物详情"]
+        M2_4["修改走失信息"]
+        M2_5["更新宠物状态"]
+        
+        M3_1["提交发现线索"]
+        M3_2["查看线索列表"]
+        M3_3["管理员审核线索"]
+        
+        M4_1["添加可领养(管理员)"]
+        M4_2["浏览可领养宠物"]
+        M4_3["查看宠物详情"]
+        M4_4["修改宠物(管理员)"]
+        
+        M5_1["提交领养申请"]
+        M5_2["查看申请记录"]
+        M5_3["撤回申请"]
+        M5_4["管理员审批申请"]
+    end
+
+    %% ================= 连线关系 =================
+    
+    %% 顶层叶子节点 连 次顶层模块
+    M1_1 --- M1
+    M1_2 --- M1
+    M1_3 --- M1
+    
+    M6_1 --- M6
+    M6_2 --- M6
+    
+    M7_1 --- M7
+    M7_2 --- M7
+
+    %% 辅助模块 连 中心平台
+    M1 --- Platform
+    M6 --- Platform
+    M7 --- Platform
+
+    %% 中心平台 连 核心业务模块
+    Platform --- M2
+    Platform --- M3
+    Platform --- M4
+    Platform --- M5
+
+    %% 核心业务模块 连 底层叶子节点
+    M2 --- M2_1
+    M2 --- M2_2
+    M2 --- M2_3
+    M2 --- M2_4
+    M2 --- M2_5
+
+    M3 --- M3_1
+    M3 --- M3_2
+    M3 --- M3_3
+
+    M4 --- M4_1
+    M4 --- M4_2
+    M4 --- M4_3
+    M4 --- M4_4
+
+    M5 --- M5_1
+    M5 --- M5_2
+    M5 --- M5_3
+    M5 --- M5_4
+
+    %% ================= 隐藏子图边框 =================
+    classDef invisible fill:transparent,stroke:transparent,color:transparent;
+    class TopLeafs,TopModules,BottomModules,BottomLeafs invisible;
 ```
 
 ### 1.4 数据需求分析
@@ -201,47 +294,57 @@ This system solves the problems of information asymmetry and irregular processes
 
 图1.4 顶层数据流图
 
-```
-    ┌──────┐                    ┌─────────────────────┐                    ┌──────────┐
-    │普通用户│──走失信息/线索/申请──▶│  宠物走失与领养救助平台 │──审核结果/统计──▶│  管理员   │
-    │      │◀──查询结果/状态────│                     │◀──审核操作──────│          │
-    └──────┘                    └─────────────────────┘                    └──────────┘
+```mermaid
+    flowchart LR
+    %% 外部实体（矩形）
+    User["普通用户"]
+    Admin["管理员"]
+
+    %% 系统核心（圆形）
+    System(("宠物走失与领养救助平台"))
+
+    %% 数据流（带箭头的双向流动关系）
+    User -->|走失信息/线索/申请| System
+    System -->|查询结果/状态| User
+    
+    System -->|审核结果/统计| Admin
+    Admin -->|审核操作| System
 ```
 
 宠物走失与领养救助平台的0层数据流图如图1.5所示。
 
 图1.5 0层数据流图
 
-```
-    ┌──────┐
-    │普通用户│
-    └──┬───┘
-       │走失信息         ┌──────────────┐
-       ├──────────────▶│ 1.0 走失宠物  │──▶ 走失宠物数据
-       │               │   信息管理    │
-       │线索信息         └──────────────┘
-       ├──────────────▶│ 2.0 线索管理  │──▶ 线索数据
-       │               └──────────────┘
-       │领养申请         ┌──────────────┐
-       ├──────────────▶│ 3.0 领养申请  │──▶ 申请数据
-       │               │   管理        │
-       │               └──────┬───────┘
-       │                      │审批操作
-       │                      ▼
-       │               ┌──────────────┐
-       │               │ 4.0 审核管理  │──▶ 审核记录
-       │               └──────────────┘
-       │
-       │查询请求         ┌──────────────┐
-       └──────────────▶│ 5.0 统计查询  │──▶ 统计结果
-                       └──────────────┘
+```mermaid
+flowchart LR
 
-    ┌──────┐
-    │ 管理员│
-    └──┬───┘
-       │审核操作 ───────▶ 4.0 审核管理
-       │宠物管理 ───────▶ 1.0 走失宠物信息管理
-       │统计查询 ───────▶ 5.0 统计查询
+    U[普通用户]
+    A[管理员]
+
+    S((宠物救助平台))
+
+    U -->|注册信息、登录信息| S
+    U -->|宠物发布信息| S
+    U -->|救助上报信息| S
+    U -->|领养申请信息| S
+    U -->|个人信息修改请求| S
+
+    S -->|注册结果、登录结果| U
+    S -->|宠物信息查询结果| U
+    S -->|救助处理结果| U
+    S -->|领养申请审核结果| U
+    S -->|个人信息数据| U
+
+    A -->|宠物审核指令| S
+    A -->|救助审核指令| S
+    A -->|用户管理指令| S
+    A -->|领养审核指令| S
+
+    S -->|用户信息数据| A
+    S -->|宠物信息数据| A
+    S -->|救助信息数据| A
+    S -->|领养申请数据| A
+    S -->|统计报表数据| A
 ```
 
 ### 1.5 业务规则分析
@@ -291,130 +394,263 @@ This system solves the problems of information asymmetry and irregular processes
 图2.1 用户实体属性图
 
 ```mermaid
-flowchart TD
+flowchart TB
+    subgraph TopRow[" "]
+        direction LR
+        A(["<u>用户编号</u>"])
+        B(["<u style='text-decoration-style:wavy'>用户名</u>"])
+        C(["<u style='text-decoration-style:wavy'>邮箱</u>"])
+        D(["密码哈希值"])
+        E(["手机号"])
+    end
+
     User[用户]
 
-    User --- A(["<u>用户编号</u>"])
-    User --- B(["<u style='text-decoration-style:wavy'>用户名</u>"])
-    User --- C(["<u style='text-decoration-style:wavy'>邮箱</u>"])
-    User --- D(["密码哈希值"])
-    User --- E(["手机号"])
-    User --- F(["头像地址"])
-    User --- G(["角色"])
-    User --- H(["是否激活"])
-    User --- I(["创建时间"])
-    User --- J(["更新时间"])
+    subgraph BottomRow[" "]
+        direction LR
+        F(["头像地址"])
+        G(["角色"])
+        H(["是否激活"])
+        I(["创建时间"])
+        J(["更新时间"])
+    end
+
+    A --- User
+    B --- User
+    C --- User
+    D --- User
+    E --- User
+
+    User --- F
+    User --- G
+    User --- H
+    User --- I
+    User --- J
+
+    classDef invisible fill:transparent,stroke:transparent,color:transparent;
+    class TopRow,BottomRow invisible;
 ```
 
 （2）走失宠物实体包含宠物编号、发布用户编号、宠物名称、宠物种类、品种、颜色、性别、年龄描述、照片地址、描述信息、走失日期、走失地点、救助站、纬度、经度、联系方式、悬赏金额、状态、创建时间、更新时间等属性。走失宠物实体属性图如图2.2所示。
 
 图2.2 走失宠物实体属性图
 
-```
-                    ┌─────────────────────┐
-                    │     走失宠物         │
-                    ├─────────────────────┤
-                    │ 宠物编号（主键）      │
-                    │ 发布用户编号（外键）  │
-                    │ 宠物名称              │
-                    │ 宠物种类              │
-                    │ 品种                  │
-                    │ 颜色                  │
-                    │ 性别                  │
-                    │ 年龄描述              │
-                    │ 照片地址列表          │
-                    │ 描述信息              │
-                    │ 走失日期              │
-                    │ 走失地点              │
-                    │ 救助站                │
-                    │ 纬度                  │
-                    │ 经度                  │
-                    │ 联系方式              │
-                    │ 悬赏金额              │
-                    │ 状态                  │
-                    │ 创建时间              │
-                    │ 更新时间              │
-                    └─────────────────────┘
+```mermaid
+flowchart TB
+    subgraph TopRow[" "]
+        direction LR
+        A(["<u>宠物编号</u>"])
+        B(["<u style='text-decoration-style:wavy'>发布用户编号</u>"])
+        C(["宠物名称"])
+        D(["宠物种类"])
+        E(["品种"])
+        F(["颜色"])
+        G(["性别"])
+        H(["年龄描述"])
+        I(["照片地址列表"])
+        J(["描述信息"])
+    end
+
+    LostPet[走失宠物]
+
+    subgraph BottomRow[" "]
+        direction LR
+        K(["走失日期"])
+        L(["走失地点"])
+        M(["救助站"])
+        N(["纬度"])
+        O(["经度"])
+        P(["联系方式"])
+        Q(["悬赏金额"])
+        R(["状态"])
+        S(["创建时间"])
+        T(["更新时间"])
+    end
+
+    A --- LostPet
+    B --- LostPet
+    C --- LostPet
+    D --- LostPet
+    E --- LostPet
+    F --- LostPet
+    G --- LostPet
+    H --- LostPet
+    I --- LostPet
+    J --- LostPet
+
+    LostPet --- K
+    LostPet --- L
+    LostPet --- M
+    LostPet --- N
+    LostPet --- O
+    LostPet --- P
+    LostPet --- Q
+    LostPet --- R
+    LostPet --- S
+    LostPet --- T
+
+    classDef invisible fill:transparent,stroke:transparent,color:transparent;
+    class TopRow,BottomRow invisible;
 ```
 
 （3）发现线索实体包含线索编号、关联走失宠物编号、上报用户编号、照片地址、描述信息、发现地点、纬度、经度、发现日期、联系方式、状态、管理员备注、审核人编号、审核时间、创建时间等属性。发现线索实体属性图如图2.3所示。
 
 图2.3 发现线索实体属性图
 
-```
-                    ┌─────────────────────┐
-                    │     发现线索         │
-                    ├─────────────────────┤
-                    │ 线索编号（主键）      │
-                    │ 关联走失宠物编号（外键）│
-                    │ 上报用户编号（外键）  │
-                    │ 照片地址列表          │
-                    │ 描述信息              │
-                    │ 发现地点              │
-                    │ 纬度                  │
-                    │ 经度                  │
-                    │ 发现日期              │
-                    │ 联系方式              │
-                    │ 状态                  │
-                    │ 管理员备注            │
-                    │ 审核人编号（外键）    │
-                    │ 审核时间              │
-                    │ 创建时间              │
-                    └─────────────────────┘
+```mermaid
+flowchart TB
+    subgraph TopRow[" "]
+        direction LR
+        A(["<u>线索编号</u>"])
+        B(["<u style='text-decoration-style:wavy'>关联走失宠物编号</u>"])
+        C(["<u style='text-decoration-style:wavy'>上报用户编号</u>"])
+        D(["照片地址列表"])
+        E(["描述信息"])
+        F(["发现地点"])
+        G(["纬度"])
+        H(["经度"])
+    end
+
+    Clue[发现线索]
+
+    subgraph BottomRow[" "]
+        direction LR
+        I(["发现日期"])
+        J(["联系方式"])
+        K(["状态"])
+        L(["管理员备注"])
+        M(["<u style='text-decoration-style:wavy'>审核人编号</u>"])
+        N(["审核时间"])
+        O(["创建时间"])
+    end
+
+    A --- Clue
+    B --- Clue
+    C --- Clue
+    D --- Clue
+    E --- Clue
+    F --- Clue
+    G --- Clue
+    H --- Clue
+
+    Clue --- I
+    Clue --- J
+    Clue --- K
+    Clue --- L
+    Clue --- M
+    Clue --- N
+    Clue --- O
+
+    classDef invisible fill:transparent,stroke:transparent,color:transparent;
+    class TopRow,BottomRow invisible;
 ```
 
 （4）可领养宠物实体包含宠物编号、宠物名称、宠物种类、品种、颜色、性别、月龄、照片地址、描述信息、健康状况、是否已接种疫苗、是否已驱虫、是否已绝育、领养状态、救助站、入站日期、创建时间、更新时间等属性。可领养宠物实体属性图如图2.4所示。
 
 图2.4 可领养宠物实体属性图
 
-```
-                    ┌─────────────────────┐
-                    │    可领养宠物        │
-                    ├─────────────────────┤
-                    │ 宠物编号（主键）      │
-                    │ 宠物名称              │
-                    │ 宠物种类              │
-                    │ 品种                  │
-                    │ 颜色                  │
-                    │ 性别                  │
-                    │ 月龄                  │
-                    │ 照片地址列表          │
-                    │ 描述信息              │
-                    │ 健康状况              │
-                    │ 是否已接种疫苗        │
-                    │ 是否已驱虫            │
-                    │ 是否已绝育            │
-                    │ 领养状态              │
-                    │ 救助站                │
-                    │ 入站日期              │
-                    │ 创建时间              │
-                    │ 更新时间              │
-                    └─────────────────────┘
+```mermaid
+flowchart TB
+    subgraph TopRow[" "]
+        direction LR
+        A(["<u>宠物编号</u>"])
+        B(["宠物名称"])
+        C(["宠物种类"])
+        D(["品种"])
+        E(["颜色"])
+        F(["性别"])
+        G(["月龄"])
+        H(["照片地址列表"])
+        I(["描述信息"])
+    end
+
+    AdoptablePet[可领养宠物]
+
+    subgraph BottomRow[" "]
+        direction LR
+        J(["健康状况"])
+        K(["是否已接种疫苗"])
+        L(["是否已驱虫"])
+        M(["是否已绝育"])
+        N(["领养状态"])
+        O(["救助站"])
+        P(["入站日期"])
+        Q(["创建时间"])
+        R(["更新时间"])
+    end
+
+    A --- AdoptablePet
+    B --- AdoptablePet
+    C --- AdoptablePet
+    D --- AdoptablePet
+    E --- AdoptablePet
+    F --- AdoptablePet
+    G --- AdoptablePet
+    H --- AdoptablePet
+    I --- AdoptablePet
+
+    AdoptablePet --- J
+    AdoptablePet --- K
+    AdoptablePet --- L
+    AdoptablePet --- M
+    AdoptablePet --- N
+    AdoptablePet --- O
+    AdoptablePet --- P
+    AdoptablePet --- Q
+    AdoptablePet --- R
+
+    classDef invisible fill:transparent,stroke:transparent,color:transparent;
+    class TopRow,BottomRow invisible;
 ```
 
 （5）领养申请实体包含申请编号、可领养宠物编号、申请人编号、申请人姓名、申请人电话、申请人地址、申请人身份证号、住房类型、是否饲养其他宠物、领养原因、养宠经验描述、状态、创建时间、更新时间等属性。领养申请实体属性图如图2.5所示。
 
 图2.5 领养申请实体属性图
 
-```
-                    ┌─────────────────────┐
-                    │     领养申请         │
-                    ├─────────────────────┤
-                    │ 申请编号（主键）      │
-                    │ 可领养宠物编号（外键）│
-                    │ 申请人编号（外键）    │
-                    │ 申请人姓名            │
-                    │ 申请人电话            │
-                    │ 申请人地址            │
-                    │ 申请人身份证号        │
-                    │ 住房类型              │
-                    │ 是否饲养其他宠物      │
-                    │ 领养原因              │
-                    │ 养宠经验描述          │
-                    │ 状态                  │
-                    │ 创建时间              │
-                    │ 更新时间              │
-                    └─────────────────────┘
+```mermaid
+flowchart TB
+    subgraph TopRow[" "]
+        direction LR
+        A(["<u>申请编号</u>"])
+        B(["<u style='text-decoration-style:wavy'>可领养宠物编号</u>"])
+        C(["<u style='text-decoration-style:wavy'>申请人编号</u>"])
+        D(["申请人姓名"])
+        E(["申请人电话"])
+        F(["申请人地址"])
+        G(["申请人身份证号"])
+    end
+
+    Adoption[领养申请]
+
+    subgraph BottomRow[" "]
+        direction LR
+        H(["住房类型"])
+        I(["是否饲养其他宠物"])
+        J(["领养原因"])
+        K(["养宠经验描述"])
+        L(["状态"])
+        M(["创建时间"])
+        N(["更新时间"])
+    end
+
+    A --- Adoption
+    B --- Adoption
+    C --- Adoption
+    D --- Adoption
+    E --- Adoption
+    F --- Adoption
+    G --- Adoption
+
+    Adoption --- H
+    Adoption --- I
+    Adoption --- J
+    Adoption --- K
+    Adoption --- L
+    Adoption --- M
+    Adoption --- N
+
+    classDef invisible fill:transparent,stroke:transparent,color:transparent;
+    class TopRow,BottomRow invisible;
 ```
 
 （6）审核记录实体包含记录编号、申请编号、审核人编号、审核决定、审核备注、审核时间等属性。
@@ -447,38 +683,68 @@ flowchart TD
 
 图2.6 走失宠物管理模块局部E-R图
 
-```
-    ┌────────┐   发布（1:N）    ┌────────────┐   关联（1:N）    ┌────────────┐
-    │  用户   │────────────────▶│  走失宠物   │◀────────────────│  发现线索   │
-    └───┬────┘                  └────────────┘                  └─────┬──────┘
-        │                         上报（1:N）                          │
-        └───────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    %% 实体 (矩形)
+    User[用户]
+    Pet[走失宠物]
+    Clue[发现线索]
+
+    %% 关系 (菱形)
+    Publish{"发布"}
+    Associate{"关联"}
+    Report{"上报"}
+
+    %% 关系连接与基数 (1:N)
+    User -- "1" --- Publish
+    Publish -- "N" --- Pet
+
+    Pet -- "1" --- Associate
+    Associate -- "N" --- Clue
+
+    User -- "1" --- Report
+    Report -- "N" --- Clue
 ```
 
 领养管理模块的局部E-R图如图2.7所示。
 
 图2.7 领养管理模块局部E-R图
 
-```
-    ┌────────┐  提交申请（1:N）   ┌────────────┐   针对（N:1）   ┌────────────┐
-    │  用户   │──────────────────▶│  领养申请   │────────────────▶│ 可领养宠物  │
-    └────────┘                    └──────┬─────┘                  └────────────┘
-                                          │
-                            ┌─────────────┴─────────────┐
-                            │                           │
-                     产生审核记录（1:N）         设置回访提醒（1:N）
-                            │                           │
-                            ▼                           ▼
-                     ┌────────────┐              ┌────────────┐
-                     │  审核记录   │              │  回访提醒   │
-                     └─────┬──────┘              └────────────┘
-                           │
-                    审核人（N:1）
-                           │
-                           ▼
-                     ┌────────────┐
-                     │   用户      │
-                     └────────────┘
+```mermaid
+    flowchart TB
+    %% 实体 (矩形)
+    User[用户]
+    AdoptionApp[领养申请]
+    Pet[可领养宠物]
+    AuditRecord[审核记录]
+    CallbackReminder[回访提醒]
+
+    %% 关系 (菱形)
+    Submit{"提交申请"}
+    Target{"针对"}
+    GenerateAudit{"产生审核记录"}
+    SetReminder{"设置回访提醒"}
+    Auditor{"审核人"}
+
+    %% 1. 用户 与 领养申请 的 提交申请 关系 (1:N)
+    User -- "1" --- Submit
+    Submit -- "N" --- AdoptionApp
+
+    %% 2. 领养申请 与 可领养宠物 的 针对 关系 (N:1)
+    AdoptionApp -- "N" --- Target
+    Target -- "1" --- Pet
+
+    %% 3. 领养申请 与 审核记录 的 产生审核记录 关系 (1:N)
+    AdoptionApp -- "1" --- GenerateAudit
+    GenerateAudit -- "N" --- AuditRecord
+
+    %% 4. 领养申请 与 回访提醒 的 设置回访提醒 关系 (1:N)
+    AdoptionApp -- "1" --- SetReminder
+    SetReminder -- "N" --- CallbackReminder
+
+    %% 5. 审核记录 与 用户 的 审核人 关系 (N:1)
+    AuditRecord -- "N" --- Auditor
+    Auditor -- "1" --- User
 ```
 
 ### 2.4 绘制全局E-R图
@@ -487,28 +753,52 @@ flowchart TD
 
 图2.8 全局E-R图
 
-``` 
-                              ┌────────────┐
-                              │   用户      │
-                              └──┬──┬──┬───┘
-                 ┌───────────────┘  │  └───────────────┐
-                 │ 发布（1:N）     │ 上报（1:N）       │ 审核（1:N）
-                 ▼                  ▼                   ▼
-          ┌────────────┐    ┌────────────┐      ┌────────────┐
-          │  走失宠物   │    │  发现线索   │      │  审核记录   │
-          └────────────┘◀───└────────────┘      └─────┬──────┘
-                 ▲  关联（1:N）                         │
-                                                 N:1│关联
-                                                       ▼
-                               ┌────────────┐    ┌────────────┐
-                               │ 可领养宠物  │    │  领养申请   │
-                               └────────────┘◀───└──────┬─────┘
-                                                         │
-                                                   1:N│关联
-                                                         ▼
-                                                  ┌────────────┐
-                                                  │  回访提醒   │
-                                                  └────────────┘
+```mermaid
+                    flowchart TB
+    %% 实体 (矩形)
+    User[用户]
+    LostPet[走失宠物]
+    FoundClue[发现线索]
+    AuditRecord[审核记录]
+    AdoptablePet[可领养宠物]
+    AdoptionApp[领养申请]
+    CallbackReminder[回访提醒]
+
+    %% 关系 (菱形)
+    Publish{"发布"}
+    Report{"上报"}
+    Audit{"审核"}
+    Assoc_Pet_Clue{"关联"}
+    Assoc_App_Audit{"关联"}
+    Target{"针对"}
+    Assoc_App_Remind{"关联"}
+
+    %% 1. 用户相关的 1:N 关系
+    User -- "1" --- Publish
+    Publish -- "N" --- LostPet
+
+    User -- "1" --- Report
+    Report -- "N" --- FoundClue
+
+    User -- "1" --- Audit
+    Audit -- "N" --- AuditRecord
+
+    %% 2. 走失宠物与发现线索的 1:N 关系
+    LostPet -- "1" --- Assoc_Pet_Clue
+    Assoc_Pet_Clue -- "N" --- FoundClue
+
+    %% 3. 领养申请相关的关系
+    %% 审核记录 与 领养申请 (N:1)
+    AuditRecord -- "N" --- Assoc_App_Audit
+    Assoc_App_Audit -- "1" --- AdoptionApp
+
+    %% 领养申请 与 可领养宠物 (N:1)
+    AdoptionApp -- "N" --- Target
+    Target -- "1" --- AdoptablePet
+
+    %% 领养申请 与 回访提醒 (1:N)
+    AdoptionApp -- "1" --- Assoc_App_Remind
+    Assoc_App_Remind -- "N" --- CallbackReminder
 ```
 
 ---
