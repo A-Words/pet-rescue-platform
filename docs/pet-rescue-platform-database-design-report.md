@@ -1687,40 +1687,58 @@ WHERE adoptable_pet_id = (SELECT adoptable_pet_id FROM adoptable_pets WHERE pet_
 
 ### 6.1 用户和权限管理
 
-本系统在应用层面实现了基于角色的访问控制（RBAC）机制：
+本系统在应用层面实现了基于角色的访问控制（RBAC）机制，并结合数据库表结构中的用户状态、外键约束和审核记录字段保证业务数据的访问安全。
 
-（1）用户角色划分：系统定义了两种角色——普通用户（user）和管理员（admin）。角色信息存储在users表的role字段中。
+（1）用户角色划分：系统定义了两种角色——普通用户（user）和管理员（admin）。角色信息存储在users表的role字段中，该字段默认值为user。users表还设置了is_active字段，用于标识账号是否处于启用状态。普通用户主要面向宠物走失信息发布、线索提交和领养申请等前台业务；管理员主要面向宠物信息维护、线索审核、领养申请审批、统计查询和回访提醒管理等后台业务。
 
-（2）认证机制：系统采用JWT（JSON Web Token）实现用户认证。用户登录时，服务端验证用户名和密码后生成JWT令牌，令牌中包含用户ID和角色信息。密码使用Argon2算法进行哈希存储，Argon2是目前公认最安全的密码哈希算法之一，能有效抵抗暴力破解和彩虹表攻击。
+（2）认证机制：系统采用JWT（JSON Web Token）实现用户认证。用户注册时，密码不会以明文形式保存，而是通过Argon2算法生成哈希值后写入users表的hashed_password字段。用户登录时，服务端根据用户名查询用户记录并校验密码，校验通过后生成访问令牌。令牌载荷中包含用户编号sub和角色role，其中sub对应users表的user_id。后续请求访问受保护接口时，需要在请求头中携带令牌，服务端使用SECRET_KEY和指定算法解析令牌，并根据sub查询当前用户。如果令牌无效、用户不存在或用户已停用，系统返回401未认证错误。
 
 （3）授权机制：系统在API层面实现了细粒度的权限控制：
-- 公开接口：走失宠物列表、宠物详情等无需认证即可访问。
-- 用户接口：发布走失信息、提交线索、提交领养申请等需要用户登录。
-- 管理员接口：宠物管理、线索审核、申请审批、统计查询等仅管理员可访问。
+- 公开接口：走失宠物列表、走失宠物详情、可领养宠物列表和可领养宠物详情等查询类接口无需认证即可访问，便于公众浏览救助信息。
+- 用户接口：发布走失宠物信息、查看自己的走失宠物记录、提交发现线索、提交领养申请、查看自己的领养申请等操作需要登录后才能访问。
+- 管理员接口：可领养宠物新增、修改、删除、状态维护，线索审核，领养申请审批，统计数据查询，回访提醒查询和更新等接口均依赖管理员权限校验。系统通过require_admin依赖判断当前用户role是否为admin，若不是管理员则返回403禁止访问错误。
 
-（4）数据隔离：普通用户只能查看和修改自己的数据，管理员可以查看和管理所有数据。例如，用户只能查看自己发布的走失宠物的线索详情，而管理员可以查看所有线索。
+（4）数据隔离：普通用户只能操作与自己相关的数据，管理员可以在后台统一管理业务数据。例如，走失宠物的修改、删除和状态更新接口会检查记录中的user_id是否等于当前登录用户的user_id；如果不相等且当前用户不是管理员，则拒绝操作。按走失宠物查询线索列表时，系统也会结合走失宠物的发布者进行判断，普通用户只能查看自己发布的走失宠物收到的线索，管理员可以查看全部线索；普通用户还可以通过“我的线索”接口查看自己提交过的线索。领养申请同样按照applicant_id隔离，普通用户只能查看自己的申请记录，管理员可以查看和审核所有申请。
+
+（5）审核留痕：系统对管理员审核行为进行记录，便于事后追溯。领养申请审核时，系统会在review_records表中写入application_id、reviewer_id、decision、review_notes和reviewed_at，记录被审核的申请、审核人、审核结果、审核备注和审核时间。线索审核时，found_clues表中的reviewed_by、reviewed_at和admin_notes字段会记录审核管理员、审核时间和管理员备注。通过这些字段，可以区分普通用户提交的数据和管理员后续处理行为。
+
+（6）数据库完整性保护：数据库层面通过主键、外键、唯一约束、视图、存储函数和触发器共同提高数据安全性。各业务表采用UUID作为主键，降低连续编号带来的枚举风险；lost_pets.user_id、found_clues.reporter_id、adoption_applications.applicant_id、review_records.reviewer_id等字段通过外键关联users表，保证业务记录必须对应真实用户；users表的username和email设置唯一约束，避免重复账号；adoption_applications表设置uq_adoptable_pet_applicant唯一约束，防止同一用户对同一只可领养宠物重复提交申请。触发器trg_check_duplicate_application会在插入领养申请前检查宠物是否仍处于available状态，并再次检查重复申请，从数据库层面补充应用层校验。
 
 ### 6.2 数据库的备份与恢复
 
-本系统使用Docker Compose部署PostgreSQL数据库，数据存储在命名卷pgdata中。数据库备份与恢复方案如下：
+本系统使用Docker Compose部署PostgreSQL 16数据库，数据库服务名为db，数据库名称为lost_pet_db，数据文件存储在Docker命名卷pgdata中。数据库备份与恢复方案如下：
 
-（1）备份策略：使用pg_dump工具进行定期全量备份，备份命令如下：
+（1）备份对象：系统需要备份两类数据。一类是PostgreSQL数据库中的结构和业务数据，包括users、lost_pets、found_clues、adoptable_pets、adoption_applications、review_records、visit_reminders等业务表，以及v_adoptable_pets视图、sp_monthly_statistics统计函数和trg_check_duplicate_application触发器等数据库对象。另一类是Docker命名卷pgdata中的数据库物理文件，用于在容器环境异常时进行整体恢复。
 
-```bash
-docker exec <db_container> pg_dump -U postgres lost_pet_db > backup_$(date +%Y%m%d).sql
-```
-
-（2）恢复策略：使用psql工具进行数据恢复：
+（2）逻辑备份策略：日常备份优先使用pg_dump进行逻辑备份。逻辑备份文件便于查看、迁移和按环境恢复，文件名按日期命名，便于归档管理。备份命令如下：
 
 ```bash
-docker exec -i <db_container> psql -U postgres lost_pet_db < backup_20260530.sql
+docker compose exec db pg_dump -U postgres lost_pet_db > backup_$(date +%Y%m%d).sql
 ```
 
-（3）Docker卷备份：定期备份Docker命名卷以确保数据安全：
+在Windows PowerShell环境中，也可以使用以下命令生成带日期的备份文件：
+
+```powershell
+docker compose exec db pg_dump -U postgres lost_pet_db > ("backup_{0}.sql" -f (Get-Date -Format "yyyyMMdd"))
+```
+
+（3）恢复策略：恢复前应先停止业务写入，确认目标数据库和备份文件版本，并在必要时先对当前数据库再做一次备份，避免误覆盖。逻辑备份可以使用psql恢复，命令如下：
+
+```bash
+docker compose exec -T db psql -U postgres lost_pet_db < backup_20260530.sql
+```
+
+恢复完成后，需要检查主要业务表是否存在，抽查用户、走失宠物、领养申请和回访提醒等核心数据，并确认视图v_adoptable_pets、统计函数sp_monthly_statistics和触发器trg_check_duplicate_application仍然可用。如果恢复后需要重新运行迁移，应通过Alembic确认数据库版本与001_initial_tables.py中的表结构、索引、视图、函数和触发器定义一致。
+
+（4）Docker卷备份：除逻辑备份外，还可以定期备份Docker命名卷pgdata，以保存数据库物理文件快照。卷备份命令如下：
 
 ```bash
 docker run --rm -v pgdata:/data -v $(pwd):/backup alpine tar czf /backup/pgdata_backup.tar.gz /data
 ```
+
+卷备份更适合在同一部署环境中进行整体恢复，但可读性和跨版本迁移能力不如pg_dump。因此，本系统以pg_dump逻辑备份作为主要备份方式，以pgdata卷备份作为补充。
+
+（5）备份管理要求：备份文件应按日期保存，并定期复制到服务器外部位置，防止服务器磁盘损坏导致业务库和备份同时丢失。对于课程设计和小型部署场景，可以采用每日一次逻辑备份、每周一次卷备份的方式；当系统进入实际运行后，应根据数据增长量和业务重要程度调整备份频率。管理员还应定期进行恢复演练，验证备份文件可以成功恢复到测试数据库，并检查核心查询、统计函数和后台审核流程是否正常。
 
 ---
 
