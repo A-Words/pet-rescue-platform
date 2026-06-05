@@ -4,7 +4,7 @@
 
 ## 摘  要
 
-随着城市宠物饲养数量的快速增长，宠物走失和流浪动物收容问题日益突出。传统的宠物寻找方式效率低下，信息传播范围有限，而领养救助流程也缺乏系统化的管理手段。为此，本文设计并实现了一个宠物走失与领养救助平台的数据库系统。
+随着城市宠物饲养数量的快速增长，宠物走失和流浪动物收容问题日益突出。传统的宠物寻找方式效率低下，信息传播范围有限，而领养救助流程也缺乏系统化的管理手段。为此，本文设计并实现了一个宠物走失与领养救助平台的数据库系统[1]。
 
 本系统主要完成了以下工作：第一步从需求概述和系统边界、业务需求分析、功能需求分析、数据需求分析和业务规则分析对系统进行了需求分析；第二步从概念结构设计、逻辑结构设计以及物理结构设计三个方面对系统进行了数据库设计，其中使用E-R图完成了概念结构设计，使用规范化理论对转换后的关系模式进行了规范化处理，使用PostgreSQL 16创建了名为lost_pet_db的数据库，并设计了7张数据表结构从而完成了物理结构的设计；第三步主要使用SQL语句创建数据库、创建数据表、创建索引、创建视图、创建存储过程以及创建触发器，并完成了表中数据的查询、插入、删除等操作。
 
@@ -16,7 +16,7 @@
 
 ## ABSTRACT
 
-With the rapid growth of urban pet ownership, the problems of lost pets and stray animal sheltering have become increasingly prominent. Traditional pet search methods are inefficient with limited information dissemination, while the adoption and rescue process lacks systematic management. To address these issues, this paper designs and implements a database system for a pet loss and adoption rescue platform.
+With the rapid growth of urban pet ownership, the problems of lost pets and stray animal sheltering have become increasingly prominent. Traditional pet search methods are inefficient with limited information dissemination, while the adoption and rescue process lacks systematic management. To address these issues, this paper designs and implements a database system for a pet loss and adoption rescue platform[1].
 
 The system mainly completed the following work: First, requirements analysis was conducted from the perspectives of system overview and boundary, business requirements, functional requirements, data requirements, and business rules. Second, database design was carried out from three aspects including conceptual structure design, logical structure design, and physical structure design, where E-R diagrams were used for conceptual design, normalization theory was applied to optimize the converted relational schemas, PostgreSQL 16 was used to create a database named lost_pet_db with 7 data tables to complete the physical structure design. Third, SQL statements were used to create the database, tables, indexes, views, stored procedures, and triggers, along with data query, insertion, and deletion operations.
 
@@ -86,7 +86,7 @@ This system solves the problems of information asymmetry and irregular processes
 
 传统的宠物寻找方式主要包括张贴寻宠启事、在社交媒体发布信息等，这些方式存在信息传播范围有限、信息真实性难以验证、匹配效率低下等问题。在领养方面，许多救助站缺乏系统化的管理工具，导致领养流程不规范、回访机制缺失、数据统计困难。
 
-因此，开发一个集宠物走失信息发布、线索收集、可领养宠物管理、领养申请审核、领养后回访提醒及运营统计于一体的综合性数据库系统具有重要的现实意义。
+因此，开发一个集宠物走失信息发布、线索收集、可领养宠物管理、领养申请审核、领养后回访提醒及运营统计于一体的综合性数据库系统具有重要的现实意义[2]。
 
 本系统主要包括以下用户角色：
 
@@ -96,7 +96,7 @@ This system solves the problems of information asymmetry and irregular processes
 
 #### 1.1.2 系统边界
 
-宠物走失与领养救助平台的系统边界如图1.1所示。系统外部实体包括普通用户和管理员，系统内部处理走失宠物管理、线索管理、领养管理、审核管理和统计分析等核心业务。
+宠物走失与领养救助平台的系统边界如图1.1所示。系统外部实体包括普通用户和管理员，系统内部处理走失宠物管理、线索管理、领养管理、审核管理和统计分析等核心业务[3]。
 
 ![系统边界图](images/fig1-1system_boundary_diagram.drawio.png)
 
@@ -148,7 +148,7 @@ This system solves the problems of information asymmetry and irregular processes
 
 ### 1.5 业务规则分析
 
-宠物走失与领养救助平台的业务规则主要包括以下几个方面：
+宠物走失与领养救助平台的业务规则主要包括以下几个方面[4]：
 
 （1）用户信息管理规则
 
@@ -277,7 +277,7 @@ This system solves the problems of information asymmetry and irregular processes
 
 ### 3.1 E-R模型转换为关系模型的转换方法
 
-E-R模型向关系模型的转换遵循以下规则：
+E-R模型向关系模型的转换遵循以下规则[5]：
 
 （1）实体的转换：每个实体转换为一个关系模式，实体的属性转换为关系的属性，实体的主键转换为关系的主键。
 
@@ -346,7 +346,7 @@ E-R模型向关系模型的转换遵循以下规则：
 
 ## 第4章 物理结构设计
 
-本系统使用PostgreSQL 16作为数据库管理系统，创建了名为lost_pet_db的数据库。PostgreSQL是一款功能强大的开源对象关系数据库系统，支持丰富的数据类型（如数组、JSON等）、高级SQL特性（如窗口函数、CTE等）以及存储过程和触发器等数据库对象，非常适合本系统的数据存储需求。
+本系统使用PostgreSQL 16作为数据库管理系统，创建了名为lost_pet_db的数据库。PostgreSQL是一款功能强大的开源对象关系数据库系统，支持丰富的数据类型（如数组、JSON等）、高级SQL特性（如窗口函数、CTE等）以及存储过程和触发器等数据库对象，非常适合本系统的数据存储需求[6]。
 
 在该数据库中计划创建7张数据表，每张表的表结构设计情况如下：
 
@@ -1077,7 +1077,7 @@ ORDER BY application_count DESC;
 
 ### 5.4 创建存储过程
 
-创建存储过程sp_monthly_statistics，统计某救助站本月的走失上报数量、成功匹配找回数量及宠物领养成功率：
+创建存储过程sp_monthly_statistics，统计某救助站本月的走失上报数量、成功匹配找回数量及宠物领养成功率[7]：
 
 ```sql
 CREATE OR REPLACE FUNCTION sp_monthly_statistics(
@@ -1366,7 +1366,7 @@ WHERE adoptable_pet_id = (SELECT adoptable_pet_id FROM adoptable_pets WHERE pet_
 
 ### 6.1 用户和权限管理
 
-本系统在应用层面实现了基于角色的访问控制（RBAC）机制，并结合数据库表结构中的用户状态、外键约束和审核记录字段保证业务数据的访问安全。
+本系统在应用层面实现了基于角色的访问控制（RBAC）机制，并结合数据库表结构中的用户状态、外键约束和审核记录字段保证业务数据的访问安全[8]。
 
 （1）用户角色划分：系统定义了两种角色——普通用户（user）和管理员（admin）。角色信息存储在users表的role字段中，该字段默认值为user。users表还设置了is_active字段，用于标识账号是否处于启用状态。普通用户主要面向宠物走失信息发布、线索提交和领养申请等前台业务；管理员主要面向宠物信息维护、线索审核、领养申请审批、统计查询和回访提醒管理等后台业务。
 
@@ -1389,7 +1389,7 @@ WHERE adoptable_pet_id = (SELECT adoptable_pet_id FROM adoptable_pets WHERE pet_
 
 （1）备份对象：系统需要备份两类数据。一类是PostgreSQL数据库中的结构和业务数据，包括users、lost_pets、found_clues、adoptable_pets、adoption_applications、review_records、visit_reminders等业务表，以及v_adoptable_pets视图、sp_monthly_statistics统计函数和trg_check_duplicate_application触发器等数据库对象。另一类是Docker命名卷pgdata中的数据库物理文件，用于在容器环境异常时进行整体恢复。
 
-（2）逻辑备份策略：日常备份优先使用pg_dump进行逻辑备份。逻辑备份文件便于查看、迁移和按环境恢复，文件名按日期命名，便于归档管理。备份命令如下：
+（2）逻辑备份策略：日常备份优先使用pg_dump进行逻辑备份。逻辑备份文件便于查看、迁移和按环境恢复，文件名按日期命名，便于归档管理。备份命令如下[9]：
 
 ```bash
 docker compose exec db pg_dump -U postgres lost_pet_db > backup_$(date +%Y%m%d).sql
@@ -1539,7 +1539,7 @@ async def list_lost_pets(
 
 图7.3 领养中心页面
 
-领养申请页面（AdoptionApplicationForm.vue）在用户选择心仪宠物后展示，包含以下信息填写区域：
+领养申请页面（AdoptionApplicationForm.vue）在用户选择心仪宠物后展示，包含以下信息填写区域[10]：
 
 - 个人信息区域：申请人姓名（输入框）、联系电话（输入框）、居住地址（输入框）、身份证号（输入框）
 - 住房信息区域：住房类型（下拉选择：自有住房/租房/其他）、是否饲养其他宠物（开关）
@@ -1636,29 +1636,29 @@ class CRUDAdoptionApplication:
 
 ## 参考文献
 
-[1] 胡致杰,胡羽沫,李代平.《数据库系统原理及应用课程设计与实验指导》(第2版).清华大学出版社,2023.
+[1] 万涛,吴杰,葛晶晶,等. 智能宠物管家系统的设计[J].现代电子技术,2023,46 (16):155-159.DOI:10.16652/j.issn.1004-373x.2023.16.027.
 
-[2] 胡致杰,梁玉英等.《数据库系统及应用》.北京工业大学出版社,2023.
+[2]庄帅. 宠物管理系统的设计及实现[J].福建电脑,2022,38 (5):68-72.DOI:10.16707/j.cnki.fjpc.2022.05.017.
 
-[3] 王珊,萨师煊.《数据库系统概论》(第5版).高等教育出版社,2014.
+[3]肖新凤. 基于FISCO BCOS宠物管理系统设计与实现[J].信息与电脑(理论版),2023,35 (16):133-135.
 
-[4] PostgreSQL Global Development Group. PostgreSQL 16 Documentation[EB/OL]. https://www.postgresql.org/docs/16/, 2023.
+[4]赵亚洲,杨晓冬. 动物领养管理系统的设计与实现[J].无线互联科技,2022,19 (18):61-65+72.
 
-[5] FastAPI Documentation[EB/OL]. https://fastapi.tiangolo.com/, 2024.
+[5] ELMASRI R, NAVATHE S B. Fundamentals of database systems [M]. 7th ed. Boston: Pearson, 2015: 112-145.
 
-[6] Vue.js 3 Documentation[EB/OL]. https://vuejs.org/guide/introduction.html, 2024.
+[6] 郭冰, 魏永波. 基于PostgreSQL的CRDM数据存档系统设计 [J]. 核技术, 2018, 41(2): 020602.
 
-[7] Ramalingam G, Vaswani A. Database-driven Web Application Development[J]. IEEE Software, 2020, 37(3): 45-52.
+[7] 朱骏, 刘百祥, 余胜军, 等. 面向OceanBase的存储过程设计与实现 [J]. 华东师范大学学报（自然科学版）, 2016(5): 144-153.
 
-[8] 张海藩,牟永敏.《软件工程导论》(第6版).清华大学出版社,2013.
+[8] 侯红, 施荣华. 基于RBAC的权限管理系统的设计与开发 [J]. 铁路计算机应用, 2008, 17(1): 7-9.
 
-[9] Connolly T, Begg C. Database Systems: A Practical Approach to Design, Implementation, and Management (6th Edition). Pearson, 2014.
+[9] 娄斌. 计算机数据库的备份与恢复技术研究 [J]. 电子技术与软件工程, 2022(16): 160-163.
 
-[10] Elmasri R, Navathe S. Fundamentals of Database Systems (7th Edition). Pearson, 2015.
+[10] MARIELLA L, PALMA M, PELLEGRINO D. A WebGIS for Stray Dogs: Methodological and Practical Aspects [J]. Geoinformatics & Geostatistics: An Overview, 2019, S2: 1-10.
 
-[11] 刘增杰,张少林.PostgreSQL数据库从入门到精通[M].中国铁道出版社,2022.
 
-[12] Docker Documentation[EB/OL]. https://docs.docker.com/, 2024.
+
+
 
 ---
 
