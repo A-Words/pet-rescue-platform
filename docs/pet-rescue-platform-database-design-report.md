@@ -142,7 +142,7 @@ This system solves the problems of information asymmetry and irregular processes
 
 宠物走失与领养救助平台的0层数据流图如图1.5所示。
 
-![0层数据流图](images/fit1-5-level-0-dfd.drawio.png)
+![0层数据流图](images/fig1-5-level-0-dfd.drawio.png)
 
 图1.5 0层数据流图
 
