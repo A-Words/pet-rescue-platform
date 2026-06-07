@@ -190,7 +190,7 @@ This system solves the problems of information asymmetry and irregular processes
 
 （1）用户实体包含用户编号、用户名、邮箱、密码哈希值、手机号、头像地址、角色、是否激活、创建时间、更新时间等属性。用户实体属性图如图2.1所示。
 
-![用户实体属性图](images/fig2-1-user.png)
+![用户实体属性图](images/fig2-1-user.drawio.png)
 
 图2.1 用户实体属性图
 
